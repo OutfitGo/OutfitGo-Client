@@ -1,0 +1,13 @@
+package com.outfitgo.store.data.mappers
+
+import com.outfitgo.store.admin.BrandsQuery
+import com.outfitgo.store.domain.model.brand.Brand
+
+fun BrandsQuery.Edge.toBrand(): Brand{
+    return Brand(
+        id = this.node.id,
+        name = this.node.title,
+        imageUrl = this.node.image?.url.toString(),
+        pageCursor = this.cursor
+    )
+}
