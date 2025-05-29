@@ -9,8 +9,6 @@ import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSourceImpl
 import com.outfitgo.store.data.repository.user.UsersRepositoryImpl
 import com.outfitgo.store.domain.repository.user.UsersRepository
 import com.outfitgo.store.domain.usecase.auth.LoginWithEmailAndPasswordUseCase
-import com.outfitgo.store.domain.usecase.auth.ValidateEmailUseCase
-import com.outfitgo.store.domain.usecase.auth.ValidatePasswordUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

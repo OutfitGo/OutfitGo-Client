@@ -8,14 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.apollographql.apollo.ApolloClient
-import com.outfitgo.store.core.di.qualifiers.AdminApollo
-import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
