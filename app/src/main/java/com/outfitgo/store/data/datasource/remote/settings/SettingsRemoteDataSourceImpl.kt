@@ -26,7 +26,7 @@ class SettingsRemoteDataSourceImpl @Inject constructor(private val client: HttpC
                 parameters.append("base_currency", baseCurrency.name)
                 parameters.append("currencies", targetCurrency.name)
             }
-        }.body<CurrencyResponseDTO>().data[targetCurrency.name].toCurrency()
+        }.body<CurrencyResponseDTO>().data[targetCurrency.name]?.toCurrency()
             ?: throw IllegalStateException("Currency '$targetCurrency' not found in response")
     }
 }
