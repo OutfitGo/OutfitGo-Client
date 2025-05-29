@@ -4,6 +4,13 @@ import com.apollographql.apollo.ApolloClient
 import com.outfitgo.store.BuildConfig
 import com.outfitgo.store.core.di.qualifiers.AdminApollo
 import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
+import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSource
+import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSourceImpl
+import com.outfitgo.store.data.repository.user.UsersRepositoryImpl
+import com.outfitgo.store.domain.repository.user.UsersRepository
+import com.outfitgo.store.domain.usecase.auth.LoginWithEmailAndPasswordUseCase
+import com.outfitgo.store.domain.usecase.auth.ValidateEmailUseCase
+import com.outfitgo.store.domain.usecase.auth.ValidatePasswordUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,6 +48,23 @@ object AppModule {
                 value = BuildConfig.SHOPIFY_ADMIN_ACCESS_TOKEN
             )
         }.build()
+    }
+
+    @Provides
+    fun provideLoginWithEmailAndPasswordUseCase(usersRepository: UsersRepository): LoginWithEmailAndPasswordUseCase {
+        return LoginWithEmailAndPasswordUseCase(usersRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUsersRepository(remoteDataSource: UserRemoteDataSource): UsersRepository {
+        return UsersRepositoryImpl(remoteDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUsersRemoteDataSource(@StorefrontApollo client: ApolloClient): UserRemoteDataSource {
+        return UserRemoteDataSourceImpl(client)
     }
 
 
