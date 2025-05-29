@@ -1,0 +1,15 @@
+query GetUserByAccessToken($token: String!) {
+    customer(customerAccessToken: $token) {
+        acceptsMarketing
+        createdAt
+        displayName
+        email
+        firstName
+        id
+        lastName
+        numberOfOrders
+        phone
+        tags
+        updatedAt
+    }
+}
