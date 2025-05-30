@@ -153,4 +153,7 @@ dependencies {
 
     //Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // extended Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }
