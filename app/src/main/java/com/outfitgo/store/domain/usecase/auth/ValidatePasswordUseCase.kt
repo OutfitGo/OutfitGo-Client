@@ -17,17 +17,17 @@ class ValidatePasswordUseCase @Inject constructor() {
             return ValidationResult(isValid = false, error = "Password is too short. It must be at least $MIN_PASSWORD_LENGTH characters long.")
         }
 
-        if (!password.contains(Regex("[A-Z]"))) {
-            return ValidationResult(isValid = false, error = "Password must contain at least one uppercase letter.")
-        }
-
-        if (!password.contains(Regex("[a-z]"))) {
-            return ValidationResult(isValid = false, error = "Password must contain at least one lowercase letter.")
-        }
-
-        if (!password.contains(Regex("[0-9]"))) {
-            return ValidationResult(isValid = false, error = "Password must contain at least one digit.")
-        }
+//        if (!password.contains(Regex("[A-Z]"))) {
+//            return ValidationResult(isValid = false, error = "Password must contain at least one uppercase letter.")
+//        }
+//
+//        if (!password.contains(Regex("[a-z]"))) {
+//            return ValidationResult(isValid = false, error = "Password must contain at least one lowercase letter.")
+//        }
+//
+//        if (!password.contains(Regex("[0-9]"))) {
+//            return ValidationResult(isValid = false, error = "Password must contain at least one digit.")
+//        }
 
         return ValidationResult(isValid = true)
     }
