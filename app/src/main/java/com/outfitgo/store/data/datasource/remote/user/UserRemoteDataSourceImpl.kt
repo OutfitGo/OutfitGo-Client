@@ -7,32 +7,37 @@ import com.outfitgo.store.data.repository.user.toUserModel
 import com.outfitgo.store.domain.model.User
 import com.outfitgo.store.storefront.GetUserByAccessTokenQuery
 import com.outfitgo.store.storefront.LoginMutation
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class UserRemoteDataSourceImpl @Inject constructor(
-    @StorefrontApollo private val client: ApolloClient
-): UserRemoteDataSource {
+    @StorefrontApollo private val client: ApolloClient,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : UserRemoteDataSource {
 
-    override suspend fun loginByEmailAndPassword(email: String, password: String): LoginResponse {
-        val mutation = LoginMutation(email, password)
-        val response = client.mutation(mutation).execute()
+    override suspend fun loginByEmailAndPassword(email: String, password: String): LoginResponse =
+        withContext(dispatcher) {
+            val mutation = LoginMutation(email, password)
+            val response = client.mutation(mutation).execute()
 
-        if(response.hasErrors()) {
-            throw Exception(response.errors?.first()?.message)
+            if (response.hasErrors()) {
+                throw Exception(response.errors?.first()?.message)
+            }
+
+            val data = response.dataAssertNoErrors.customerAccessTokenCreate
+            data.toLoginResponse()
         }
 
-        val data = response.dataAssertNoErrors.customerAccessTokenCreate
-        return data.toLoginResponse()
-    }
-
-    override suspend fun getUserByAccessToken(token: String): User? {
+    override suspend fun getUserByAccessToken(token: String): User? = withContext(dispatcher) {
         val query = GetUserByAccessTokenQuery(token)
         val response = client.query(query).execute()
-        if(response.hasErrors()) {
+        if (response.hasErrors()) {
             throw Exception(response.errors?.first()?.message)
         }
         val data = response.data?.customer
-        return data?.toUserModel()
+        data?.toUserModel()
     }
 }
 
