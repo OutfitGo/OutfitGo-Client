@@ -15,27 +15,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okio.IOException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getBrandsUseCase: GetBrandsUseCase,
     private val getLatestProductsUseCase: GetLatestProductsUseCase
-): ViewModel(){
+) : ViewModel() {
     private val _homeState = MutableStateFlow<HomeState>(HomeState())
     val homeState = _homeState.asStateFlow()
 
     private val brandsPaginator: Paginator<String?, Brand> = DefaultPaginator(
         initialKey = null,
+        isEndReached = {brands ->
+            brands.isEmpty()
+        },
         getNextKey = { brands ->
             brands.last().pageCursor
         },
         onRequest = { nextKey ->
             getBrandsUseCase.execute(first = 10, after = nextKey)
         },
-        onLoadUpdated = { isLoading->
+        onLoadUpdated = { isLoading ->
             _homeState.update {
                 it.copy(isBrandsLoading = isLoading)
             }
@@ -43,12 +44,14 @@ class HomeViewModel @Inject constructor(
         onSuccess = { newBrands ->
             _homeState.update {
                 it.copy(
-                    brands = homeState.value.brands + newBrands,
+                    brands = (homeState.value.brands + newBrands)
+                        .filter { it.name != "Home page" }
+                        .distinctBy { it.name.uppercase() },
                     brandEndReached = newBrands.isEmpty()
                 )
             }
         },
-        onError = { throwable->
+        onError = { throwable ->
             _homeState.update {
                 it.copy(brandsLoadingError = throwable?.message.toString())
             }
@@ -57,6 +60,10 @@ class HomeViewModel @Inject constructor(
 
     private val latestProductsPaginator: Paginator<String?, CommonProduct> = DefaultPaginator(
         initialKey = null,
+        isEndReached = { products ->
+            products.isEmpty()
+
+        },
         getNextKey = { products ->
             products.last().pageCursor
         },
@@ -94,9 +101,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getNextLatestProducts(){
+    fun getNextLatestProducts() {
         viewModelScope.launch(Dispatchers.IO) {
             latestProductsPaginator.loadNextItems()
+        }
+    }
+
+    fun processIntent(intent: HomeIntent) {
+        when (intent) {
+            is HomeIntent.GetNextBrands -> getNextBrands()
+            is HomeIntent.GetNextLatestProducts -> getNextLatestProducts()
+            else -> Unit
         }
     }
 }
