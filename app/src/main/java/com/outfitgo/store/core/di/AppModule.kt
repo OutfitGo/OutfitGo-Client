@@ -1,9 +1,12 @@
 package com.outfitgo.store.core.di
 
+import android.content.Context
 import com.apollographql.apollo.ApolloClient
 import com.outfitgo.store.BuildConfig
 import com.outfitgo.store.core.di.qualifiers.AdminApollo
 import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
+import com.outfitgo.store.data.datasource.local.user.UserLocalDataSource
+import com.outfitgo.store.data.datasource.local.user.UserLocalDataSourceImpl
 import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSource
 import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSourceImpl
 import com.outfitgo.store.data.repository.user.UsersRepositoryImpl
@@ -12,6 +15,7 @@ import com.outfitgo.store.domain.usecase.auth.LoginWithEmailAndPasswordUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,7 +24,8 @@ import javax.inject.Singleton
 object AppModule {
 
     const val SERVER_URL = "https://mad45-sv-and3.myshopify.com/api/2025-04/graphql.json"
-    const val ADMIN_SERVER_URL = "https://mad45-sv-and3.myshopify.com/admin/api/2025-04/graphql.json"
+    const val ADMIN_SERVER_URL =
+        "https://mad45-sv-and3.myshopify.com/admin/api/2025-04/graphql.json"
 
     @Provides
     @Singleton
@@ -55,8 +60,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUsersRepository(remoteDataSource: UserRemoteDataSource): UsersRepository {
-        return UsersRepositoryImpl(remoteDataSource)
+    fun provideUsersRepository(
+        remoteDataSource: UserRemoteDataSource,
+        localDataSource: UserLocalDataSource
+    ): UsersRepository {
+        return UsersRepositoryImpl(
+            remoteDataSource,
+            localDataSource = localDataSource
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserLocalDataSource(@ApplicationContext context: Context): UserLocalDataSource {
+        return UserLocalDataSourceImpl(context)
     }
 
     @Provides
