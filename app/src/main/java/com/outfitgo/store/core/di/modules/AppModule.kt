@@ -33,7 +33,8 @@ import javax.inject.Singleton
 object AppModule {
 
     const val SERVER_URL = "https://mad45-sv-and3.myshopify.com/api/2025-04/graphql.json"
-    const val ADMIN_SERVER_URL = "https://mad45-sv-and3.myshopify.com/admin/api/2025-04/graphql.json"
+    const val ADMIN_SERVER_URL =
+        "https://mad45-sv-and3.myshopify.com/admin/api/2025-04/graphql.json"
     private const val DATASTORE_NAME = "OutfitGo"
 
 
@@ -66,7 +67,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideClient(): HttpClient {
-        return HttpClient(CIO){
+        return HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(Json {
                     ignoreUnknownKeys = true
@@ -74,32 +75,9 @@ object AppModule {
             }
         }
     }
+
     fun provideLoginWithEmailAndPasswordUseCase(usersRepository: UsersRepository): LoginWithEmailAndPasswordUseCase {
         return LoginWithEmailAndPasswordUseCase(usersRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUsersRepository(
-        remoteDataSource: UserRemoteDataSource,
-        localDataSource: UserLocalDataSource
-    ): UsersRepository {
-        return UsersRepositoryImpl(
-            remoteDataSource,
-            localDataSource = localDataSource
-        )
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserLocalDataSource(@ApplicationContext context: Context): UserLocalDataSource {
-        return UserLocalDataSourceImpl(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUsersRemoteDataSource(@StorefrontApollo client: ApolloClient): UserRemoteDataSource {
-        return UserRemoteDataSourceImpl(client)
     }
 
 
