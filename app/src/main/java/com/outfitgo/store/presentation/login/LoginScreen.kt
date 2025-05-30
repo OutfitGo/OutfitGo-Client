@@ -1,7 +1,6 @@
 package com.outfitgo.store.presentation.login
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +13,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Login
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,7 +26,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -113,7 +109,7 @@ fun LoginScreen(
                 label = { Text("Email") },
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
                 singleLine = true,
-                supportingText = {Text(state.emailErrorMsg)},
+                supportingText = {Text(state.emailErrorMsg, color = MaterialTheme.colorScheme.error)},
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -127,7 +123,7 @@ fun LoginScreen(
                     if(showPassword) Icon(Icons.Default.Settings, contentDescription = null)
                     else Icon(Icons.Outlined.AccountCircle, contentDescription = null)
                 },
-                supportingText = {Text(state.passwordErrorMsg)},
+                supportingText = {Text(state.passwordErrorMsg, color = MaterialTheme.colorScheme.error)},
                 visualTransformation = if(showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
