@@ -29,6 +29,7 @@ android {
 
         val apiKey = properties.getProperty("SHOPIFY_STORE_FRONT_ACCESS_TOKEN") ?: ""
         val adminApiKey = properties.getProperty("SHOPIFY_ADMIN_ACCESS_TOKEN") ?: ""
+        val currencyApiKey = properties.getProperty("CURRENCY_API_KEY") ?: ""
 
         buildConfigField(
             type = "String",
@@ -40,6 +41,12 @@ android {
             type = "String",
             name = "SHOPIFY_ADMIN_ACCESS_TOKEN",
             value = adminApiKey
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "CURRENCY_API_KEY",
+            value = currencyApiKey
         )
     }
 
@@ -152,4 +159,14 @@ dependencies {
 
     //Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    //ktor client
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
+
 }
