@@ -97,7 +97,9 @@ android {
             }
         }
 
-        service("admin") {
+        // Login feature makes a conflict when admin and storefront are together
+        // to use Login without problems KEEP THE ADMIN COMMENTED
+       /* service("admin") {
             packageName.set("com.outfitgo.store.admin")
             schemaFile.set(file("src/main/graphql/admin/schema.graphqls"))
             introspection {
@@ -110,7 +112,7 @@ android {
                 )
             }
 
-        }
+        }*/
     }
 }
 
@@ -168,5 +170,9 @@ dependencies {
 
     //datastore
     implementation(libs.androidx.datastore.preferences)
+
+    // extended Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
 
 }

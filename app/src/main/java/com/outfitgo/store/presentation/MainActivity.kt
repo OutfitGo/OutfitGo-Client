@@ -1,20 +1,17 @@
 package com.outfitgo.store.presentation
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.lifecycle.lifecycleScope
-import com.apollographql.apollo.ApolloClient
-import com.outfitgo.store.admin.ProductsQuery
-import com.outfitgo.store.core.di.qualifiers.AdminApollo
-import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
-import com.outfitgo.store.presentation.home.HomeScreen
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.outfitgo.store.presentation.login.LoginScreen
+import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -25,7 +22,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OutfitGoTheme {
-                HomeScreen()
+                val viewModel: LoginViewModel = hiltViewModel()
+                val state =  viewModel.state.collectAsStateWithLifecycle().value
+                LoginScreen(
+                    state = state,
+                    onIntent = viewModel::processIntent,
+                    effectFlow = viewModel.effect,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
 
