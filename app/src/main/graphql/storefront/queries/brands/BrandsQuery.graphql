@@ -1,0 +1,18 @@
+query BrandsQuery($first: Int!, $after: String) {
+    collections(first: $first, after: $after) {
+        edges {
+            cursor
+            node {
+                id
+                title
+                image {
+                    url
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}

@@ -1,0 +1,28 @@
+query LatestProductsQuery($first: Int!, $after: String) {
+    products(first: $first, after: $after, sortKey: CREATED_AT, reverse: true) {
+        edges {
+            cursor
+            node {
+                id
+                title
+                productType
+                vendor
+                images(first: 1) {
+                    nodes {
+                        url
+                    }
+                }
+                priceRange {
+                    minVariantPrice {
+                        amount
+                    }
+                }
+            }
+        }
+
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
