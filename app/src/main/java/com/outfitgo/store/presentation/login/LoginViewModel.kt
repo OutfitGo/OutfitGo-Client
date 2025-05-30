@@ -18,12 +18,13 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "LoginViewModel"
+
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val loginWithEmailAndPasswordUseCase: LoginWithEmailAndPasswordUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginScreenUiState())
     val state = _state.asStateFlow()
@@ -37,11 +38,18 @@ class LoginViewModel @Inject constructor(
                 _state.update { it.copy(email = intent.newEmail) }
                 Log.i(TAG, "processIntent: updated email")
             }
+
             is LoginScreenIntent.PasswordChanged -> {
                 _state.update { it.copy(password = intent.newPassword) }
                 Log.i(TAG, "processIntent: updated password")
             }
+
             LoginScreenIntent.LoginClicked -> login()
+            LoginScreenIntent.LoginAsGuestClicked -> viewModelScope.launch {
+                _effect.emit(
+                    LoginScreenEffect.GoToHomeScreen
+                )
+            }
         }
     }
 
@@ -52,11 +60,12 @@ class LoginViewModel @Inject constructor(
             val passwordValidation = validatePasswordUseCase(_state.value.password)
 
             Log.i(TAG, "login: validated email and password")
-            if(emailValidation.isValid && passwordValidation.isValid) {
+            if (emailValidation.isValid && passwordValidation.isValid) {
                 _state.update { it.copy(isLoading = true) }
                 withContext(Dispatchers.IO) {
-                    val user = loginWithEmailAndPasswordUseCase(_state.value.email, _state.value.password)
-                    if(user != null) {
+                    val user =
+                        loginWithEmailAndPasswordUseCase(_state.value.email, _state.value.password)
+                    if (user != null) {
                         _effect.emit(LoginScreenEffect.DisplaySnack("Login Success: ${user.displayName}"))
                         _state.update { it.copy(isLoading = false) }
                         _effect.emit(LoginScreenEffect.GoToHomeScreen)
@@ -64,11 +73,13 @@ class LoginViewModel @Inject constructor(
                 }
 
             } else {
-                _state.update { it.copy(
-                    emailErrorMsg = emailValidation.error ?: "",
-                    passwordErrorMsg = passwordValidation.error ?: "",
-                    isLoading = false
-                ) }
+                _state.update {
+                    it.copy(
+                        emailErrorMsg = emailValidation.error ?: "",
+                        passwordErrorMsg = passwordValidation.error ?: "",
+                        isLoading = false
+                    )
+                }
                 _effect.emit(LoginScreenEffect.DisplaySnack("ERROR HAppend"))
             }
         }

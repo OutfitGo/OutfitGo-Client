@@ -14,6 +14,7 @@ sealed interface LoginScreenIntent {
     data class EmailChanged(val newEmail: String): LoginScreenIntent
     data class PasswordChanged(val newPassword: String): LoginScreenIntent
     object LoginClicked: LoginScreenIntent
+    object LoginAsGuestClicked: LoginScreenIntent
 }
 
 // effects (actions from vm to ui)
