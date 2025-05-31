@@ -1,5 +1,6 @@
 package com.outfitgo.store.data.datasource.remote.brand
 
+import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
 import com.outfitgo.store.data.mappers.toBrand
@@ -53,6 +54,8 @@ class BrandsRemoteDataSourceImpl @Inject constructor(
         if (brandProductsResponse.hasErrors()) {
             throw Exception(brandProductsResponse.errors?.first()?.message)
         }
+
+        Log.d("````TAG````", "fetchBrandProducts: ${brandProductsResponse.data}")
 
         val brandProducts = brandProductsResponse.dataAssertNoErrors.products.edges.map {
             it.toCommonProduct()

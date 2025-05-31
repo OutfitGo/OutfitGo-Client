@@ -32,7 +32,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    const val SERVER_URL = "https://mad45-sv-and3.myshopify.com/api/2025-04/graphql.json"
+    const val SERVER_URL = "https://mad-and2-sv.myshopify.com/api/2025-04/graphql.json"
     const val ADMIN_SERVER_URL =
         "https://mad45-sv-and3.myshopify.com/admin/api/2025-04/graphql.json"
     private const val DATASTORE_NAME = "OutfitGo"

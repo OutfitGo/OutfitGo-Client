@@ -2,6 +2,7 @@ package com.outfitgo.store.core.di.modules
 
 import com.apollographql.apollo.ApolloClient
 import com.outfitgo.store.core.di.qualifiers.AdminApollo
+import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
 import com.outfitgo.store.data.datasource.remote.product.ProductsRemoteDataSource
 import com.outfitgo.store.data.datasource.remote.product.ProductsRemoteDataSourceImpl
 import com.outfitgo.store.data.repository.product.ProductsRepositoryImpl
@@ -17,7 +18,7 @@ import javax.inject.Singleton
 object ProductsModule {
     @Provides
     @Singleton
-    fun provideProductsRemoteDataSource(@AdminApollo remoteClient: ApolloClient): ProductsRemoteDataSource {
+    fun provideProductsRemoteDataSource(@StorefrontApollo remoteClient: ApolloClient): ProductsRemoteDataSource {
         return ProductsRemoteDataSourceImpl(remoteClient)
     }
 
