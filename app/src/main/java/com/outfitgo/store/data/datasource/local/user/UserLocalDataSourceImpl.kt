@@ -11,24 +11,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
-// At the top level of your kotlin file:
-val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
-
-class UserLocalDataSourceImpl(
-    private val context: Context,
+class UserLocalDataSourceImpl @Inject constructor(
+    private val dataStore: DataStore<Preferences>,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : UserLocalDataSource {
 
     companion object {
-        const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY"
-        const val USER_ID_KEY = "USER_ID_KEY"
+        private const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY"
+        private const val USER_ID_KEY = "USER_ID_KEY"
     }
 
     override suspend fun saveUserToken(token: String) {
         withContext(dispatcher) {
-            context.userDataStore.edit { settings ->
+            dataStore.edit { settings ->
                 settings[stringPreferencesKey(ACCESS_TOKEN_KEY)] = token
             }
         }
@@ -39,7 +37,7 @@ class UserLocalDataSourceImpl(
      * */
     override suspend fun getSavedUserToken(): String? =
         withContext(dispatcher) {
-            context.userDataStore.data.map { settings ->
+            dataStore.data.map { settings ->
                 settings[stringPreferencesKey(ACCESS_TOKEN_KEY)]
             }.first()
         }
@@ -47,7 +45,7 @@ class UserLocalDataSourceImpl(
 
     override suspend fun saveUserId(id: String) {
         withContext(dispatcher) {
-            context.userDataStore.edit { settings ->
+            dataStore.edit { settings ->
                 settings[stringPreferencesKey(USER_ID_KEY)] = id
             }
         }
@@ -58,7 +56,7 @@ class UserLocalDataSourceImpl(
      * */
     override suspend fun getSavedUserId(): String? =
         withContext(dispatcher) {
-            context.userDataStore.data.map { settings ->
+            dataStore.data.map { settings ->
                 settings[stringPreferencesKey(USER_ID_KEY)]
             }.first()
         }
@@ -71,8 +69,9 @@ class UserLocalDataSourceImpl(
 
     override suspend fun logout() {
         withContext(dispatcher) {
-            context.userDataStore.edit { settings ->
-                settings.clear()
+            dataStore.edit { settings ->
+                settings.remove(stringPreferencesKey(ACCESS_TOKEN_KEY))
+                settings.remove(stringPreferencesKey(USER_ID_KEY))
             }
         }
     }
