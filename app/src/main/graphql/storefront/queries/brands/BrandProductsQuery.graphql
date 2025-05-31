@@ -1,0 +1,27 @@
+query BrandProductsQuery($searchQuery: String!, $first: Int!, $after: String) {
+    products(first: $first, after: $after, query: $searchQuery) {
+        edges {
+            cursor
+            node {
+                id
+                title
+                productType
+                vendor
+                images(first: 1) {
+                    nodes {
+                        url
+                    }
+                }
+                priceRange {
+                    minVariantPrice {
+                        amount
+                    }
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}

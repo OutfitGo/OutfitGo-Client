@@ -62,7 +62,6 @@ class HomeViewModel @Inject constructor(
         initialKey = null,
         isEndReached = { products ->
             products.isEmpty()
-
         },
         getNextKey = { products ->
             products.last().pageCursor
