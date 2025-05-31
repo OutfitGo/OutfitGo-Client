@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.presentation.components.CommonProductItem
 import com.outfitgo.store.presentation.components.shadow
 import com.outfitgo.store.presentation.components.shimmerBrush
 
@@ -63,7 +64,7 @@ fun NewArrivalSection(
                     onRequestNextProducts()
                 }
 
-                ProductItem(
+                CommonProductItem(
                     product = product,
                     onProductClicked = onProductClicked
                 )
@@ -75,68 +76,6 @@ fun NewArrivalSection(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ProductItem(
-    product: CommonProduct,
-    onProductClicked: (CommonProduct) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(256.dp)
-            .background(color = MaterialTheme.colorScheme.secondary)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .padding(8.dp)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = { onProductClicked(product) })
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .padding(bottom = 4.dp)
-                .fillMaxWidth()
-                .height(150.dp)
-                .shadow(
-                    color = Color(0xFFC2C1C1),
-
-                    blurRadius = 8.dp
-                )
-                .clip(RoundedCornerShape(8.dp)),
-            model = product.imageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            placeholder = painterResource(R.drawable.product_img_placeholder)
-        )
-
-        Text(
-            modifier = Modifier.padding(bottom = 4.dp),
-            text = product.name,
-            maxLines = 2,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
-
-        Text(
-            text = product.type,
-            style = MaterialTheme.typography.titleSmall.copy(fontSize = 12.sp),
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        //TODO Handle currency here
-        Text(
-            text = stringResource(R.string.le, product.price),
-            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-        )
     }
 }
 
