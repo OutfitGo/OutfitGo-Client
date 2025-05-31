@@ -36,7 +36,7 @@ object UserModule {
 
     @Provides
     @Singleton
-    fun provideUserLocalDataSource(@ApplicationContext dataStore: DataStore<Preferences>): UserLocalDataSource {
+    fun provideUserLocalDataSource(dataStore: DataStore<Preferences>): UserLocalDataSource {
         return UserLocalDataSourceImpl(dataStore)
     }
 
