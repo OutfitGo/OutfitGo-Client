@@ -2,9 +2,9 @@ package com.outfitgo.store.data.datasource.remote.brand
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
-import com.outfitgo.store.admin.BrandsQuery
 import com.outfitgo.store.data.mappers.toBrand
 import com.outfitgo.store.domain.model.brand.Brand
+import com.outfitgo.store.storefront.BrandsQuery
 import javax.inject.Inject
 
 class BrandsRemoteDataSourceImpl @Inject constructor(

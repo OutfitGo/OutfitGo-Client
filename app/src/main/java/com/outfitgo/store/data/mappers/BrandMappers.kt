@@ -1,7 +1,7 @@
 package com.outfitgo.store.data.mappers
 
-import com.outfitgo.store.admin.BrandsQuery
 import com.outfitgo.store.domain.model.brand.Brand
+import com.outfitgo.store.storefront.BrandsQuery
 
 fun BrandsQuery.Edge.toBrand(): Brand{
     return Brand(
