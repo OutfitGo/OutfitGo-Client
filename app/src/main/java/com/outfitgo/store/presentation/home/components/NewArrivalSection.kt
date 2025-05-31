@@ -55,7 +55,6 @@ fun NewArrivalSection(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-
             ) {
             itemsIndexed(
                 items = products

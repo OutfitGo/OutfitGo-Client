@@ -87,7 +87,7 @@ apollo {
         schemaFile.set(file("src/main/graphql/storefront/schema.graphqls"))
         sourceFolder.set("storefront")
         introspection {
-            endpointUrl.set("https://mad45-sv-and3.myshopify.com/api/2025-04/graphql.json")
+            endpointUrl.set("https://mad-and2-sv.myshopify.com/api/2025-04/graphql.json")
             headers.set(
                 mapOf(
                     "X-Shopify-Storefront-Access-Token" to apiKey,
