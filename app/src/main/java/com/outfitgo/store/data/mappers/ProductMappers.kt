@@ -1,7 +1,7 @@
 package com.outfitgo.store.data.mappers
 
-import com.outfitgo.store.admin.LatestProductsQuery
 import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.storefront.LatestProductsQuery
 
 fun LatestProductsQuery.Edge.toCommonProduct(): CommonProduct {
     return CommonProduct(

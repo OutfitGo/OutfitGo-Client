@@ -1,12 +1,10 @@
 package com.outfitgo.store.data.datasource.remote.product
 
-import android.util.Log
 import com.apollographql.apollo.ApolloClient
-import com.apollographql.apollo.api.ApolloResponse
 import com.apollographql.apollo.api.Optional
-import com.outfitgo.store.admin.LatestProductsQuery
 import com.outfitgo.store.data.mappers.toCommonProduct
 import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.storefront.LatestProductsQuery
 import javax.inject.Inject
 
 class ProductsRemoteDataSourceImpl @Inject constructor(
