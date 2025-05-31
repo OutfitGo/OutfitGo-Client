@@ -48,10 +48,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -173,14 +175,12 @@ fun ProductDetailsScreen(
                     Text(
                         text = state.product.title,
                         style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        fontWeight = Bold,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = state.product.description,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Row(
@@ -221,8 +221,7 @@ fun ProductDetailsScreen(
                 ) {
                     Text(
                         text = "Customer Reviews",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -274,7 +273,6 @@ fun ReviewCard(review: Review) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -287,13 +285,13 @@ fun ReviewCard(review: Review) {
             ) {
                 Text(
                     text = review.reviewerName,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = Bold
                 )
                 Text(
                     text = review.dateString,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    modifier = Modifier.alpha(0.6f)
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -302,7 +300,6 @@ fun ReviewCard(review: Review) {
             Text(
                 text = review.comment,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
