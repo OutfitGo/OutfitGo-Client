@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class SettingsLocalDataSourceImpl @Inject constructor(val dataStore: DataStore<Preferences>) :SettingsLocalDataSource {
+class SettingsLocalDataSourceImpl @Inject constructor(val dataStore: DataStore<Preferences>) :
+    SettingsLocalDataSource {
 
     companion object {
         private val KEY_CURRENCY_UNIT = stringPreferencesKey("currency_unit")
@@ -23,11 +24,10 @@ class SettingsLocalDataSourceImpl @Inject constructor(val dataStore: DataStore<P
     }
 
     override fun getCurrencyUnit(): Flow<CurrencyUnit> {
-        return dataStore.data
-            .map { preferences ->
-                val savedValue = preferences[KEY_CURRENCY_UNIT]
-                runCatching { CurrencyUnit.valueOf(savedValue ?: "") }.getOrDefault(DEFAULT_UNIT)
-            }
+        return dataStore.data.map { preferences ->
+            val savedValue = preferences[KEY_CURRENCY_UNIT]
+            runCatching { CurrencyUnit.valueOf(savedValue ?: "") }.getOrDefault(DEFAULT_UNIT)
+        }
     }
 
 }

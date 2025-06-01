@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OutfitGoTheme {
+
                 val vm: ProductDetailsViewModel = hiltViewModel()
                 val state = vm.state.collectAsStateWithLifecycle()
                 val id = "gid://shopify/Product/9762760556824"
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     productId = id,
                 )
+
 
             }
         }

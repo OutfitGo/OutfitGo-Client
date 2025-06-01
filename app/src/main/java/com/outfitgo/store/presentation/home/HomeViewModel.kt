@@ -3,16 +3,22 @@ package com.outfitgo.store.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.CurrencyExchange
+import com.outfitgo.store.core.util.CurrencyUnit
 import com.outfitgo.store.domain.model.brand.Brand
 import com.outfitgo.store.domain.model.product.CommonProduct
 import com.outfitgo.store.domain.usecase.brands.GetBrandsUseCase
 import com.outfitgo.store.domain.usecase.products.GetLatestProductsUseCase
+import com.outfitgo.store.domain.usecase.settings.GetCurrencyUnitUseCase
+import com.outfitgo.store.domain.usecase.settings.GetLatestExchangeRateUseCase
 import com.outfitgo.store.presentation.util.paging.DefaultPaginator
 import com.outfitgo.store.presentation.util.paging.Paginator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,14 +26,35 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getBrandsUseCase: GetBrandsUseCase,
-    private val getLatestProductsUseCase: GetLatestProductsUseCase
+    private val getLatestProductsUseCase: GetLatestProductsUseCase,
+    private val getCurrencyUnitUseCase: GetCurrencyUnitUseCase,
+    private val getLatestExchangeRateUseCase: GetLatestExchangeRateUseCase,
 ) : ViewModel() {
     private val _homeState = MutableStateFlow<HomeState>(HomeState())
     val homeState = _homeState.asStateFlow()
 
+    init {
+        observeCurrencyAndRate()
+    }
+
+    private fun observeCurrencyAndRate() {
+        viewModelScope.launch {
+            getCurrencyUnitUseCase.execute()
+                .distinctUntilChanged()
+                .collectLatest { currency ->
+                    CurrencyExchange.currentCurrencyUnit = currency.name
+                    if (currency != CurrencyUnit.EGP) {
+                        val rate =
+                            getLatestExchangeRateUseCase.execute(targetCurrency = currency).value
+                        CurrencyExchange.rate = rate
+                    }
+                }
+        }
+    }
+
     private val brandsPaginator: Paginator<String?, Brand> = DefaultPaginator(
         initialKey = null,
-        isEndReached = {brands ->
+        isEndReached = { brands ->
             brands.isEmpty()
         },
         getNextKey = { brands ->

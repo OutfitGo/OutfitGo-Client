@@ -1,4 +1,4 @@
-package com.outfitgo.store.core.di
+package com.outfitgo.store.core.di.modules
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -9,13 +9,9 @@ import com.apollographql.apollo.ApolloClient
 import com.outfitgo.store.BuildConfig
 import com.outfitgo.store.core.di.qualifiers.AdminApollo
 import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
-import com.outfitgo.store.data.datasource.local.user.UserLocalDataSource
-import com.outfitgo.store.data.datasource.local.user.UserLocalDataSourceImpl
-import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSource
-import com.outfitgo.store.data.datasource.remote.user.UserRemoteDataSourceImpl
-import com.outfitgo.store.data.repository.user.UsersRepositoryImpl
 import com.outfitgo.store.domain.repository.user.UsersRepository
 import com.outfitgo.store.domain.usecase.auth.LoginWithEmailAndPasswordUseCase
+import com.outfitgo.store.presentation.settings.viewModel.CurrencyManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -89,5 +85,10 @@ object AppModule {
                 context.preferencesDataStoreFile(DATASTORE_NAME)
             }
         )
+    }
+    @Provides
+    @Singleton
+    fun provideCurrencyManager(): CurrencyManager {
+        return CurrencyManager()
     }
 }
