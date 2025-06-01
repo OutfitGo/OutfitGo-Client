@@ -20,6 +20,8 @@ fun LatestProductsQuery.Edge.toCommonProduct(): CommonProduct {
 
 fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
 
+
+
     return DetailedProduct(
         id = this.id,
         title = this.title,
@@ -31,6 +33,6 @@ fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
         vendor = this.vendor,
         category = this.productType,
         imageUrls = this.images.nodes.map { "${it.src}" },
-        reviews = ReviewUtils.generateRandomReviews()
+        reviews = ReviewUtils.generateRandomReviews(),
     )
 }
