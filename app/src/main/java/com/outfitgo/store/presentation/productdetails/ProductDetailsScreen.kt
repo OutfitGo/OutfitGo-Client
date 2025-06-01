@@ -80,6 +80,7 @@ fun ProductDetailsScreen(
     state: ProductDetailsState,
     onIntent: (ProductDetailsIntent) -> Unit,
     effect: SharedFlow<ProductDetailsEffect>,
+    onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(pageCount = { state.product.imageUrls.size })
@@ -115,7 +116,7 @@ fun ProductDetailsScreen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-                        // navigate back
+                        onNavigateUp()
                     }) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
                     }
@@ -389,7 +390,8 @@ fun PreviewProductDetailsScreen() {
             state = ProductDetailsState(product = dummyDetailedProduct),
             onIntent = {  },
             effect = MutableSharedFlow(),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            onNavigateUp = {}
         )
     }
 

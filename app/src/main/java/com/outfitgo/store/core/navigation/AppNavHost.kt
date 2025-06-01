@@ -1,8 +1,100 @@
 package com.outfitgo.store.core.navigation
 
+import ProductDetailsScreen
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.outfitgo.store.domain.model.brand.Brand
+import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
+import com.outfitgo.store.presentation.home.HomeScreen
+import com.outfitgo.store.presentation.login.LoginScreen
+import com.outfitgo.store.presentation.login.LoginViewModel
+import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
+
+    NavHost(
+        navController = navController,
+        startDestination = LoginRoute,
+        modifier = modifier,
+        enterTransition = { fadeIn(tween(600)) + slideInVertically(tween(600)) },
+        exitTransition = {
+            fadeOut(tween(600)) + slideOutVertically(
+                tween(600),
+                targetOffsetY = { it / 2 })
+        }
+    ) {
+
+        composable<LoginRoute> {
+            val viewmodel: LoginViewModel = hiltViewModel()
+            val loginState = viewmodel.state.collectAsStateWithLifecycle()
+            LoginScreen(
+                state = loginState.value,
+                onIntent = viewmodel::processIntent ,
+                effectFlow = viewmodel.effect,
+                modifier = Modifier.fillMaxSize(),
+                onGoToHome = {
+                    navController.navigate(HomeRoute)
+                }
+            )
+        }
+
+        composable<HomeRoute> {
+            HomeScreen(
+                onNavigateToBrandProducts = {
+                    navController.navigate(BrandProductsRoute(it))
+                }, onNavigateToProductDetails = {
+                    navController.navigate(ProductDetailsRoute(it.id))
+                }
+            )
+        }
+
+        composable<BrandProductsRoute> {
+            val entry = it.toRoute<BrandProductsRoute>()
+            BrandProductsScreen(
+                brand = entry.brandId,
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onNavigateToProductDetails = {
+                    navController.navigate(ProductDetailsRoute(it.id))
+                }
+            )
+        }
+
+        composable<ProductDetailsRoute> {
+            val entry = it.toRoute<ProductDetailsRoute>()
+            val viewModel: ProductDetailsViewModel = hiltViewModel()
+            val state = viewModel.state.collectAsStateWithLifecycle()
+            ProductDetailsScreen(
+                productId = entry.productId,
+                state = state.value,
+                onIntent = viewModel::processIntent,
+                effect = viewModel.effect,
+                modifier = Modifier.fillMaxSize(),
+                onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+    }
+
 
 }
