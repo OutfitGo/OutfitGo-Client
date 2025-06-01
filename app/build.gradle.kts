@@ -29,6 +29,7 @@ android {
 
         val apiKey = properties.getProperty("SHOPIFY_STORE_FRONT_ACCESS_TOKEN") ?: ""
         val adminApiKey = properties.getProperty("SHOPIFY_ADMIN_ACCESS_TOKEN") ?: ""
+        val currencyApiKey = properties.getProperty("CURRENCY_API_KEY") ?: ""
 
         buildConfigField(
             type = "String",
@@ -41,6 +42,12 @@ android {
             name = "SHOPIFY_ADMIN_ACCESS_TOKEN",
             value = adminApiKey
         )
+
+        buildConfigField(
+            type = "String",
+            name = "CURRENCY_API_KEY",
+            value = currencyApiKey
+        )
     }
 
     buildTypes {
@@ -50,6 +57,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -65,44 +73,53 @@ android {
         compose = true
     }
 
-    apollo {
+}
 
-        val keystoreFile = project.rootProject.file("local.properties")
-        val properties = Properties()
-        properties.load(keystoreFile.inputStream())
+apollo {
+    val keystoreFile = project.rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(keystoreFile.inputStream())
 
-        val apiKey = properties.getProperty("SHOPIFY_STORE_FRONT_ACCESS_TOKEN") ?: ""
-        val adminApiKey = properties.getProperty("SHOPIFY_ADMIN_ACCESS_TOKEN") ?: ""
+    val apiKey = properties.getProperty("SHOPIFY_STORE_FRONT_ACCESS_TOKEN") ?: ""
 
-
-        service("storefront") {
-            packageName.set("com.outfitgo.store.storefront")
-            schemaFile.set(file("src/main/graphql/storefront/schema.graphqls"))
-            introspection {
-                endpointUrl.set("https://mad45-sv-and3.myshopify.com/api/2025-04/graphql.json")
-                headers.set(
-                    mapOf(
-                        "X-Shopify-Storefront-Access-Token" to apiKey,
-                        "Content-Type" to "application/json"
-                    )
+    service("storefront") {
+        packageName.set("com.outfitgo.store.storefront")
+        schemaFile.set(file("src/main/graphql/storefront/schema.graphqls"))
+        sourceFolder.set("storefront")
+        introspection {
+            endpointUrl.set("https://mad-and2-sv.myshopify.com/api/2025-04/graphql.json")
+            headers.set(
+                mapOf(
+                    "X-Shopify-Storefront-Access-Token" to apiKey,
+                    "Content-Type" to "application/json"
                 )
-            }
+            )
+        }
+    }
+}
+
+apollo {
+
+    val keystoreFile = project.rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(keystoreFile.inputStream())
+
+    val adminApiKey = properties.getProperty("SHOPIFY_ADMIN_ACCESS_TOKEN") ?: ""
+
+    service("admin") {
+        packageName.set("com.outfitgo.store.admin")
+        schemaFile.set(file("src/main/graphql/admin/schema.graphqls"))
+        sourceFolder.set("admin")
+        introspection {
+            endpointUrl.set("https://mad45-sv-and3.myshopify.com/admin/api/2024-10/graphql.json")
+            headers.set(
+                mapOf(
+                    "X-Shopify-Access-Token" to adminApiKey,
+                    "Content-Type" to "application/json"
+                )
+            )
         }
 
-        service("admin") {
-            packageName.set("com.outfitgo.store.admin")
-            schemaFile.set(file("src/main/graphql/admin/schema.graphqls"))
-            introspection {
-                endpointUrl.set("https://mad45-sv-and3.myshopify.com/admin/api/2024-10/graphql.json")
-                headers.set(
-                    mapOf(
-                        "X-Shopify-Access-Token" to adminApiKey,
-                        "Content-Type" to "application/json"
-                    )
-                )
-            }
-
-        }
     }
 }
 
@@ -151,4 +168,17 @@ dependencies {
 
     //Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    //ktor client
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    //datastore
+    implementation(libs.androidx.datastore.preferences)
+
+    // extended Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
 }

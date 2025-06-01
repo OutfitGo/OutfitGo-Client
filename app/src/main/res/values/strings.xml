@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">OutfitGo</string>
+    <string name="brands">Brands</string>
+    <string name="new_arrival">New Arrival</string>
+    <string name="le">%1$s LE</string>
+    <string name="search">Search</string>
+    <string name="currency">Currency</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="settings">Settings</string>
 </resources>
