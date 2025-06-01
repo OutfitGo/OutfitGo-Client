@@ -55,6 +55,7 @@ fun LoginScreen(
     state: LoginScreenUiState,
     onIntent: (LoginScreenIntent) -> Unit,
     effectFlow: Flow<LoginScreenEffect>,
+    onGoToHome: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
@@ -70,6 +71,7 @@ fun LoginScreen(
                 LoginScreenEffect.GoToHomeScreen -> {
                     // navigation
                     Log.i(TAG, "LoginScreen: Navigating")
+                    onGoToHome()
                 }
             }
         }
@@ -162,7 +164,8 @@ private fun LoginScreenPreview() {
             state = LoginScreenUiState(),
             onIntent = {  },
             effectFlow = flow { LoginScreenEffect.DisplaySnack("") },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            onGoToHome = {}
         )
     }
 
