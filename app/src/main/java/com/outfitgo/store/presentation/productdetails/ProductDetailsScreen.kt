@@ -19,6 +19,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.NavigateNext
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -30,6 +31,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,11 +62,14 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.outfitgo.store.domain.model.Review
 import com.outfitgo.store.domain.model.ReviewUtils
+import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.presentation.productdetails.ProductDetailsEffect
 import com.outfitgo.store.presentation.productdetails.ProductDetailsIntent
 import com.outfitgo.store.presentation.productdetails.ProductDetailsState
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.flow
 
 private const val TAG = "ProductDetailsScreen"
 
@@ -106,9 +111,15 @@ fun ProductDetailsScreen(
             TopAppBar(
                 title = { Text("Product Details") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                    containerColor = MaterialTheme.colorScheme.background,
+                ),
+                navigationIcon = {
+                    IconButton(onClick = {
+                        // navigate back
+                    }) {
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
+                    }
+                }
             )
         },
         snackbarHost = {
@@ -172,16 +183,29 @@ fun ProductDetailsScreen(
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
+                    Text(state.product.category, modifier = Modifier.alpha(0.8f))
                     Text(
                         text = state.product.title,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = Bold,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
+
+                    Text("Brand: ${state.product.vendor}", fontWeight = Bold, modifier = Modifier.padding(bottom = 8.dp))
+
+                    Text(state.product.tags.joinToString(" | "), modifier = Modifier.alpha(0.8f))
+
+                    HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(top = 8.dp))
+                    Text(
+                        text = "Product Description",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
+                        modifier = Modifier.padding(top = 16.dp)
+                    )
+
                     Text(
                         text = state.product.description,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp).alpha(0.8f)
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -202,7 +226,7 @@ fun ProductDetailsScreen(
                     }
                     Text(
                         text = "${state.product.currencyCode} ${state.product.price}",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -245,7 +269,9 @@ fun ProductDetailsScreen(
             }
 
             item {
-                Row (modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)){
+                Row (modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)){
                     IconButton(onClick = {
                         onIntent(ProductDetailsIntent.AddToWishlist(productId))
                     }) {
@@ -325,7 +351,47 @@ fun RatingBar(rating: Double, maxRating: Int = 5, starSize: Dp = 20.dp) {
 @Composable
 fun PreviewProductDetailsScreen() {
     OutfitGoTheme {
+        val dummyDetailedProduct = DetailedProduct(
+            id = "prod_001",
+            title = "Stylish Smartwatch X200",
+            description = "A sleek and feature-rich smartwatch with health tracking, notifications, and long battery life. Perfect for fitness enthusiasts and tech lovers.",
+            price = "249.99",
+            imageUrls = listOf(
+                "https://images.unsplash.com/photo-1546868870-7607a7509f7a?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Example: Smartwatch on wrist
+                "https://images.unsplash.com/photo-1579586326442-f0450529d33b?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Example: Smartwatch close-up
+                "https://images.unsplash.com/photo-1585973715104-e3dc1ee9a099?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"  // Example: Smartwatch in box
+            ),
+            tags = listOf("wearable", "electronics", "fitness", "smartwatch"),
+            vendor = "TechGadgets Inc.",
+            category = "Electronics",
+            rating = 4.7,
+            reviews = listOf(
+                Review(
+                    id = "rev_001",
+                    reviewerName = "Alice Smith",
+                    rating = 5.0,
+                    comment = "Amazing product! The battery life is incredible and it's super accurate.",
+                    dateString = "2024-05-15"
+                ),
+                Review(
+                    id = "rev_002",
+                    reviewerName = "Bob Johnson",
+                    rating = 4.5,
+                    comment = "Great smartwatch for the price. The app could be a bit more user-friendly.",
+                    dateString = "2024-05-20"
+                )
+            ),
+            currencyCode = "USD"
+        )
 
+        ProductDetailsScreen(
+            productId = dummyDetailedProduct.id,
+            state = ProductDetailsState(product = dummyDetailedProduct),
+            onIntent = {  },
+            effect = MutableSharedFlow(),
+            modifier = Modifier.fillMaxSize()
+        )
     }
+
 }
 
