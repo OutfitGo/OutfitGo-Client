@@ -1,6 +1,5 @@
 package com.outfitgo.store.core.navigation
 
-import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Home
@@ -39,7 +38,9 @@ data object CategoriesRoute
 @Serializable
 data object CartRoute
 @Serializable
-data object ProfileRoute
+data object SettingsRoute
+@Serializable data object CurrencySettingsRoute
+
 
 @Serializable
 data class ProductDetailsRoute(val productId: String)
@@ -74,7 +75,7 @@ val topLevelRoutes = listOf(
     ),
     TopLevelRoute(
         title = "Profile",
-        route = ProfileRoute,
+        route = SettingsRoute,
         selectedIcon = Icons.Filled.Person,
         unSelectedIcon = Icons.Outlined.Person
     ),

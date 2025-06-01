@@ -11,19 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.outfitgo.store.domain.model.brand.Brand
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.home.HomeScreen
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
+import com.outfitgo.store.presentation.settings.view.CurrencyScreen
+import com.outfitgo.store.presentation.settings.view.SettingsScreen
 
 @Composable
 fun AppNavHost(
@@ -92,6 +90,16 @@ fun AppNavHost(
                 modifier = Modifier.fillMaxSize(),
                 onNavigateUp = { navController.navigateUp() }
             )
+        }
+
+        composable<SettingsRoute> {
+            SettingsScreen {
+                navController.navigate(CurrencySettingsRoute)
+            }
+        }
+
+        composable<CurrencySettingsRoute> {
+            CurrencyScreen()
         }
 
     }
