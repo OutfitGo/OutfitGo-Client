@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.outfitgo.store.R
+import com.outfitgo.store.core.util.CurrencyExchange
+import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.domain.model.product.CommonProduct
 
 
@@ -83,7 +85,8 @@ fun CommonProductItem(
 
         //TODO Handle currency here
         Text(
-            text = stringResource(R.string.le, product.price),
+//            text = stringResource(R.string.le, product.price.toCurrency()),
+            text = "${product.price.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
         )
     }
