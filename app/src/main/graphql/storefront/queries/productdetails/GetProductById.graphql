@@ -1,0 +1,36 @@
+query GetProductById($id: ID!, $varCount: Int!) {
+    product(id: $id) {
+        description
+        id
+        productType
+        tags
+        title
+        totalInventory
+        vendor
+        images(first: 5) {
+            nodes {
+                src
+            }
+        }
+        variantsCount {
+            count
+            precision
+        }
+        priceRange {
+            maxVariantPrice {
+                amount
+                currencyCode
+            }
+            minVariantPrice {
+                amount
+                currencyCode
+            }
+        }
+        variants(first: $varCount) {
+            nodes {
+                id
+                title
+            }
+        }
+    }
+}

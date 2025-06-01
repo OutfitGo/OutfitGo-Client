@@ -1,5 +1,7 @@
 package com.outfitgo.store.presentation
 
+
+import ProductDetailsScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,11 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.outfitgo.store.presentation.home.HomeScreen
-import com.outfitgo.store.presentation.login.LoginScreen
-import com.outfitgo.store.presentation.login.LoginViewModel
-import com.outfitgo.store.presentation.settings.view.CurrencyScreen
-import com.outfitgo.store.presentation.settings.view.SettingsScreen
+import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,17 +23,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             OutfitGoTheme {
- /*               val viewModel: LoginViewModel = hiltViewModel()
-                val state =  viewModel.state.collectAsStateWithLifecycle().value
-                LoginScreen(
-                    state = state,
-                    onIntent = viewModel::processIntent,
-                    effectFlow = viewModel.effect,
-                    modifier = Modifier.fillMaxSize()
-                )*/
-                HomeScreen()
-//                CurrencyScreen()
-//                SettingsScreen()
+
+                val vm: ProductDetailsViewModel = hiltViewModel()
+                val state = vm.state.collectAsStateWithLifecycle()
+                val id = "gid://shopify/Product/9762760556824"
+                ProductDetailsScreen(
+                    state = state.value,
+                    onIntent = vm::processIntent,
+                    effect = vm.effect,
+                    modifier = Modifier.fillMaxSize(),
+                    productId = id,
+                )
+
+
             }
         }
 
