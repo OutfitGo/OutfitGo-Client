@@ -1,6 +1,5 @@
 package com.outfitgo.store.presentation.home.components
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,9 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.Coupon
 import kotlinx.coroutines.delay
@@ -37,9 +33,11 @@ fun CouponAdsSection(coupons: List<Coupon>) {
     if (pagerState.pageCount > 0) {
         LaunchedEffect(pagerState) {
             while (true) {
-                delay(4000L)
-                val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
-                pagerState.animateScrollToPage(nextPage)
+                if (pagerState.pageCount > 0) {
+                    delay(4000L)
+                    val nextPage = (pagerState.currentPage + 1) % pagerState.pageCount
+                    pagerState.animateScrollToPage(nextPage)
+                }
             }
         }
     }
@@ -57,13 +55,14 @@ fun CouponAdsSection(coupons: List<Coupon>) {
                 .clip(RoundedCornerShape(12.dp))
         ) { page ->
             val coupon = coupons[page]
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    clipboardManager.setText(AnnotatedString(coupon.code))
-                    Toast.makeText(context, "Copied: ${coupon.code}", Toast.LENGTH_SHORT)
-                        .show()
-                }) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        clipboardManager.setText(AnnotatedString(coupon.code))
+                        Toast.makeText(context, "Copied: ${coupon.code}", Toast.LENGTH_SHORT)
+                            .show()
+                    }) {
 
                 Image(
                     painter = painterResource(R.drawable.ad),
@@ -76,7 +75,9 @@ fun CouponAdsSection(coupons: List<Coupon>) {
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(end=8.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 8.dp)
                 )
             }
         }
