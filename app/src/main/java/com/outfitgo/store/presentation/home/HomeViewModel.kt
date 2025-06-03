@@ -8,6 +8,7 @@ import com.outfitgo.store.core.util.CurrencyUnit
 import com.outfitgo.store.domain.model.brand.Brand
 import com.outfitgo.store.domain.model.product.CommonProduct
 import com.outfitgo.store.domain.usecase.brands.GetBrandsUseCase
+import com.outfitgo.store.domain.usecase.coupon.GetCouponsUseCase
 import com.outfitgo.store.domain.usecase.products.GetLatestProductsUseCase
 import com.outfitgo.store.domain.usecase.settings.GetCurrencyUnitUseCase
 import com.outfitgo.store.domain.usecase.settings.GetLatestExchangeRateUseCase
@@ -29,12 +30,17 @@ class HomeViewModel @Inject constructor(
     private val getLatestProductsUseCase: GetLatestProductsUseCase,
     private val getCurrencyUnitUseCase: GetCurrencyUnitUseCase,
     private val getLatestExchangeRateUseCase: GetLatestExchangeRateUseCase,
+    private val getCouponsUseCase: GetCouponsUseCase
 ) : ViewModel() {
     private val _homeState = MutableStateFlow<HomeState>(HomeState())
     val homeState = _homeState.asStateFlow()
 
     init {
         observeCurrencyAndRate()
+//        getNextBrands()
+//        getNextLatestProducts()
+        getCoupons()
+
     }
 
     private fun observeCurrencyAndRate() {
@@ -116,11 +122,6 @@ class HomeViewModel @Inject constructor(
         }
     )
 
-    init {
-        getNextBrands()
-        getNextLatestProducts()
-    }
-
     fun getNextBrands() {
         viewModelScope.launch(Dispatchers.IO) {
             brandsPaginator.loadNextItems()
@@ -133,10 +134,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getCoupons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val coupons = getCouponsUseCase.execute()
+            _homeState.update { it.copy(coupons = coupons) }
+        }
+    }
+
     fun processIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.GetNextBrands -> getNextBrands()
             is HomeIntent.GetNextLatestProducts -> getNextLatestProducts()
+            is HomeIntent.GetCoupons -> getCoupons()
             else -> Unit
         }
     }
