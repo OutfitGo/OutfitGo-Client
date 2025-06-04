@@ -35,13 +35,7 @@ class HomeViewModel @Inject constructor(
     private val _homeState = MutableStateFlow<HomeState>(HomeState())
     val homeState = _homeState.asStateFlow()
 
-    init {
-        observeCurrencyAndRate()
-//        getNextBrands()
-//        getNextLatestProducts()
-        getCoupons()
 
-    }
 
     private fun observeCurrencyAndRate() {
         viewModelScope.launch {
@@ -121,6 +115,13 @@ class HomeViewModel @Inject constructor(
             }
         }
     )
+    init {
+        observeCurrencyAndRate()
+        getNextBrands()
+        getNextLatestProducts()
+        getCoupons()
+
+    }
 
     fun getNextBrands() {
         viewModelScope.launch(Dispatchers.IO) {
