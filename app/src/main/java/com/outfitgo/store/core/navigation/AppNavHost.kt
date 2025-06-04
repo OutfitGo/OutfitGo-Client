@@ -24,6 +24,7 @@ import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
+import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 
 @Composable
 fun AppNavHost(
@@ -33,7 +34,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = HomeRoute,
+        startDestination = SplashRoute,
         modifier = modifier,
         enterTransition = { fadeIn(tween(600)) + slideInVertically(tween(600)) },
         exitTransition = {
@@ -113,6 +114,15 @@ fun AppNavHost(
                 reviews = reviews,
                 onNavigateUp = { navController.navigateUp() },
                 modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        composable<SplashRoute> {
+            OutfitGoSplashScreen(
+                viewModel = hiltViewModel(),
+                modifier = Modifier.fillMaxSize(),
+                onGoToHome = { navController.navigate(HomeRoute) },
+                onGoToLogin = { navController.navigate(LoginRoute) }
             )
         }
 
