@@ -20,6 +20,7 @@ import com.outfitgo.store.presentation.home.components.BrandsSection
 import com.outfitgo.store.presentation.home.components.CouponAdsSection
 import com.outfitgo.store.presentation.home.components.HomeHeaderBar
 import com.outfitgo.store.presentation.home.components.NewArrivalSection
+import com.outfitgo.store.presentation.settings.viewModel.CurrencyManager
 
 @Composable
 fun HomeScreen(

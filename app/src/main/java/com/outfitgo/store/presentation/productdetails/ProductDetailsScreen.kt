@@ -60,6 +60,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.outfitgo.store.core.util.CurrencyExchange
+import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.domain.model.Review
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.domain.model.product.DetailedProduct
@@ -80,6 +82,7 @@ fun ProductDetailsScreen(
     state: ProductDetailsState,
     onIntent: (ProductDetailsIntent) -> Unit,
     effect: SharedFlow<ProductDetailsEffect>,
+    onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(pageCount = { state.product.imageUrls.size })
@@ -115,7 +118,7 @@ fun ProductDetailsScreen(
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
-                        // navigate back
+                        onNavigateUp()
                     }) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
                     }
@@ -225,7 +228,7 @@ fun ProductDetailsScreen(
                         )
                     }
                     Text(
-                        text = "${state.product.currencyCode} ${state.product.price}",
+                        text = "${CurrencyExchange.currentCurrencyUnit} ${state.product.price.toCurrency()}",
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
@@ -389,7 +392,8 @@ fun PreviewProductDetailsScreen() {
             state = ProductDetailsState(product = dummyDetailedProduct),
             onIntent = {  },
             effect = MutableSharedFlow(),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            onNavigateUp = {}
         )
     }
 
