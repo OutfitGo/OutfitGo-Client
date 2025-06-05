@@ -1,6 +1,7 @@
 package com.outfitgo.store.presentation.login
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,6 +57,7 @@ fun LoginScreen(
     onIntent: (LoginScreenIntent) -> Unit,
     effectFlow: Flow<LoginScreenEffect>,
     onGoToHome: () -> Unit,
+    onGoToSignup: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
@@ -68,6 +70,7 @@ fun LoginScreen(
                     Log.d(TAG, "LoginScreen: ${effect.msg}")
                     snackbarHostState.showSnackbar(effect.msg)
                 }
+
                 LoginScreenEffect.GoToHomeScreen -> {
                     // navigation
                     Log.i(TAG, "LoginScreen: Navigating")
@@ -87,7 +90,10 @@ fun LoginScreen(
                 actions = {
                     OutlinedButton(onClick = { onIntent(LoginScreenIntent.LoginAsGuestClicked) }) {
                         Text("Login As Guest")
-                        Icon(Icons.AutoMirrored.Outlined.Login, contentDescription = "Login As Guest")
+                        Icon(
+                            Icons.AutoMirrored.Outlined.Login,
+                            contentDescription = "Login As Guest"
+                        )
                     }
                 },
                 title = { Text("OutfitGo", fontWeight = FontWeight.ExtraBold) },
@@ -96,7 +102,9 @@ fun LoginScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.padding(innerPadding).padding(horizontal = 16.dp),
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
@@ -111,7 +119,12 @@ fun LoginScreen(
                 label = { Text("Email") },
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
                 singleLine = true,
-                supportingText = {Text(state.emailErrorMsg, color = MaterialTheme.colorScheme.error)},
+                supportingText = {
+                    Text(
+                        state.emailErrorMsg,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -122,16 +135,24 @@ fun LoginScreen(
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
                 singleLine = true,
                 trailingIcon = {
-                    if(showPassword) Icon(Icons.Default.Settings, contentDescription = null)
+                    if (showPassword) Icon(Icons.Default.Settings, contentDescription = null)
                     else Icon(Icons.Outlined.AccountCircle, contentDescription = null)
                 },
-                supportingText = {Text(state.passwordErrorMsg, color = MaterialTheme.colorScheme.error)},
-                visualTransformation = if(showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                supportingText = {
+                    Text(
+                        state.passwordErrorMsg,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                },
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
-                Checkbox(checked = showPassword, onCheckedChange = {showPassword = it})
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Checkbox(checked = showPassword, onCheckedChange = { showPassword = it })
                 Text("Show Password")
             }
 
@@ -140,13 +161,16 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isLoading
             ) {
-                if(state.isLoading) CircularProgressIndicator() else Text("Login")
+                if (state.isLoading) CircularProgressIndicator() else Text("Login")
             }
 
             Row {
                 Text("Don't Have an Account? ")
-                Text("Sign in", color = Color.Blue,
-                    textDecoration = TextDecoration.Underline)
+                Text(
+                    "Sign in", color = Color.Blue,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable(onClick = onGoToSignup)
+                )
             }
         }
 
@@ -155,17 +179,17 @@ fun LoginScreen(
 }
 
 
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun LoginScreenPreview() {
     OutfitGoTheme {
         LoginScreen(
             state = LoginScreenUiState(),
-            onIntent = {  },
+            onIntent = { },
             effectFlow = flow { LoginScreenEffect.DisplaySnack("") },
             modifier = Modifier.fillMaxSize(),
-            onGoToHome = {}
+            onGoToHome = {},
+            onGoToSignup = {}
         )
     }
 
