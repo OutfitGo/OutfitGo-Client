@@ -22,6 +22,7 @@ import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
+import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
@@ -64,6 +65,8 @@ fun AppNavHost(
                     navController.navigate(BrandProductsRoute(it))
                 }, onNavigateToProductDetails = {
                     navController.navigate(ProductDetailsRoute(it.id))
+                }, onNavigateToSearchScreen = {
+                    navController.navigate(SearchRoute)
                 }
             )
         }
@@ -123,6 +126,16 @@ fun AppNavHost(
                 modifier = Modifier.fillMaxSize(),
                 onGoToHome = { navController.navigate(HomeRoute) },
                 onGoToLogin = { navController.navigate(LoginRoute) }
+            )
+        }
+
+        composable<SearchRoute> {
+            SearchScreen(
+                modifier = Modifier.fillMaxSize(),
+                onNavigateUp = { navController.navigateUp() },
+                onNavigateToProductDetails = {productId ->
+                    navController.navigate(ProductDetailsRoute(productId))
+                }
             )
         }
 
