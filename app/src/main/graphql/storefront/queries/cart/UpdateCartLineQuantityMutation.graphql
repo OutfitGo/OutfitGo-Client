@@ -1,0 +1,35 @@
+mutation UpdateCartLineQuantityMutation($cartId:ID!,$lineId:ID!,$quantity:Int!){
+    cartLinesUpdate(
+        cartId: $cartId,
+        lines: [
+            {
+                id: $lineId,
+                quantity: $quantity
+            }
+        ]
+    ) {
+        cart {
+            id
+            lines(first: 5) {
+                edges {
+                    node {
+                        id
+                        quantity
+                        merchandise {
+                            ... on ProductVariant {
+                                title
+                                product {
+                                    title
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}

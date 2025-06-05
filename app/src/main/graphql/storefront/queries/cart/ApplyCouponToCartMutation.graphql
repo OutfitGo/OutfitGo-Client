@@ -1,0 +1,18 @@
+mutation ApplyCouponToCartMutation($cartId:ID!,$coupon:String!) {
+    cartDiscountCodesUpdate(
+        cartId: $cartId,
+        discountCodes: [$coupon]
+    ) {
+        cart {
+            id
+            discountCodes {
+                code
+                applicable
+            }
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}

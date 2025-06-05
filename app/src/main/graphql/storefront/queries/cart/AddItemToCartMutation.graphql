@@ -1,0 +1,36 @@
+mutation AddItemToCartMutation($cartId:ID!,$quantity:Int!, $productVariantId:ID!){
+    cartLinesAdd(
+        cartId: $cartId,
+        lines: [
+            {
+                quantity: $quantity,
+                merchandiseId: $productVariantId
+            }
+        ]
+    ) {
+        cart {
+            id
+            lines(first: 10) {
+                edges {
+                    node {
+                        id
+                        quantity
+                        merchandise {
+                            ... on ProductVariant {
+                                id
+                                title
+                                product {
+                                    title
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
