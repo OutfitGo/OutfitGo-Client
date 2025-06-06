@@ -1,13 +1,12 @@
 package com.outfitgo.store.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.Const.PAGE_SIZE
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.CurrencyUnit
-import com.outfitgo.store.domain.model.brand.Brand
-import com.outfitgo.store.domain.model.product.CommonProduct
-import com.outfitgo.store.domain.usecase.brands.GetBrandsUseCase
+import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.domain.usecase.collections.GetBrandsUseCase
 import com.outfitgo.store.domain.usecase.products.GetLatestProductsUseCase
 import com.outfitgo.store.domain.usecase.settings.GetCurrencyUnitUseCase
 import com.outfitgo.store.domain.usecase.settings.GetLatestExchangeRateUseCase
@@ -30,8 +29,8 @@ class HomeViewModel @Inject constructor(
     private val getCurrencyUnitUseCase: GetCurrencyUnitUseCase,
     private val getLatestExchangeRateUseCase: GetLatestExchangeRateUseCase,
 ) : ViewModel() {
-    private val _homeState = MutableStateFlow<HomeState>(HomeState())
-    val homeState = _homeState.asStateFlow()
+    private val _uiState = MutableStateFlow<HomeState>(HomeState())
+    val uiState = _uiState.asStateFlow()
 
     init {
         observeCurrencyAndRate()
@@ -52,40 +51,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private val brandsPaginator: Paginator<String?, Brand> = DefaultPaginator(
-        initialKey = null,
-        isEndReached = { brands ->
-            brands.isEmpty()
-        },
-        getNextKey = { brands ->
-            brands.last().pageCursor
-        },
-        onRequest = { nextKey ->
-            getBrandsUseCase.execute(first = 10, after = nextKey)
-        },
-        onLoadUpdated = { isLoading ->
-            _homeState.update {
-                it.copy(isBrandsLoading = isLoading)
-            }
-        },
-        onSuccess = { newBrands ->
-            _homeState.update {
-                it.copy(
-                    brands = (homeState.value.brands + newBrands)
-                        .filter { it.name != "Home page" }
-                        .distinctBy { it.name.uppercase() },
-                    brandEndReached = newBrands.isEmpty()
-                )
-            }
-        },
-        onError = { throwable ->
-            _homeState.update {
-                it.copy(brandsLoadingError = throwable?.message.toString())
-            }
-        }
-    )
-
-    private val latestProductsPaginator: Paginator<String?, CommonProduct> = DefaultPaginator(
+    private val latestProductsPaginator: Paginator<String?, Product> = DefaultPaginator(
         initialKey = null,
         isEndReached = { products ->
             products.isEmpty()
@@ -97,33 +63,43 @@ class HomeViewModel @Inject constructor(
             getLatestProductsUseCase.execute(first = 10, after = nextKey)
         },
         onLoadUpdated = { isLoading ->
-            _homeState.update {
+            _uiState.update {
                 it.copy(isLatestProductsLoading = isLoading)
             }
         },
         onSuccess = { newProducts ->
-            _homeState.update {
+            _uiState.update {
                 it.copy(
-                    latestProducts = homeState.value.latestProducts + newProducts,
-                    latestProductsEndReached = newProducts.isEmpty()
+                    latestProducts = uiState.value.latestProducts + newProducts,
+                    latestProductsEndReached = newProducts.size < PAGE_SIZE
                 )
             }
         },
         onError = { throwable ->
-            _homeState.update {
+            _uiState.update {
                 it.copy(latestProductsLoadingError = throwable?.message.toString())
             }
         }
     )
 
     init {
-        getNextBrands()
+        getBrands()
         getNextLatestProducts()
     }
 
-    fun getNextBrands() {
+    fun getBrands() {
         viewModelScope.launch(Dispatchers.IO) {
-            brandsPaginator.loadNextItems()
+            try {
+                val brands = getBrandsUseCase.execute()
+                _uiState.update {
+                    it.copy(
+                        isBrandsLoading = false,
+                        brands = brands
+                    )
+                }
+            } catch (exception: Exception) {
+                //TODO Handle Error
+            }
         }
     }
 
@@ -135,7 +111,7 @@ class HomeViewModel @Inject constructor(
 
     fun processIntent(intent: HomeIntent) {
         when (intent) {
-            is HomeIntent.GetNextBrands -> getNextBrands()
+            is HomeIntent.GetNextBrands -> getBrands()
             is HomeIntent.GetNextLatestProducts -> getNextLatestProducts()
             else -> Unit
         }
