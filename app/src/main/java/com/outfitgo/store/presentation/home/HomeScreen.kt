@@ -15,21 +15,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.presentation.home.components.BrandsSection
 import com.outfitgo.store.presentation.home.components.CouponAdsSection
 import com.outfitgo.store.presentation.home.components.HomeHeaderBar
 import com.outfitgo.store.presentation.home.components.NewArrivalSection
-import com.outfitgo.store.presentation.settings.viewModel.CurrencyManager
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToSearchScreen: () -> Unit = {},
     onNavigateToBrandProducts: (String) -> Unit = {},
-    onNavigateToProductDetails: (CommonProduct) -> Unit = {}
+    onNavigateToProductDetails: (Product) -> Unit = {}
 ) {
-    val homeState = viewModel.homeState.collectAsStateWithLifecycle()
+    val homeState = viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreenContent(
         homeState = homeState.value,
@@ -83,10 +82,6 @@ private fun HomeScreenContent(
         BrandsSection(
             brands = homeState.brands,
             isLoading = homeState.isBrandsLoading,
-            isEndReached = homeState.brandEndReached,
-            onRequestNextBrands = {
-                onEvent(HomeIntent.GetNextBrands)
-            },
             onBrandClicked = { brand ->
                 onEvent(HomeIntent.GoToBrandProducts(brand.name))
             }
