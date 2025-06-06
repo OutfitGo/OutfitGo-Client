@@ -16,16 +16,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.outfitgo.store.domain.model.product.CommonProduct
-import com.outfitgo.store.presentation.components.CommonProductItem
+import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.presentation.components.ProductItem
 import com.outfitgo.store.presentation.components.shimmerBrush
 
 @Composable
 fun BrandProductsSection(
-    products: List<CommonProduct>,
+    products: List<Product>,
     isEndReached: Boolean,
     isLoading: Boolean,
-    onProductClicked: (CommonProduct) -> Unit,
+    onProductClicked: (Product) -> Unit,
     onRequestNextProducts: () -> Unit
 ) {
     LazyVerticalGrid(
@@ -41,12 +41,12 @@ fun BrandProductsSection(
                 onRequestNextProducts()
             }
 
-            CommonProductItem(
+            ProductItem(
                 product = product,
                 onProductClicked = onProductClicked
             )
         }
-
+        
         if (isLoading) {
             items(count = 4) {
                 ProductsPageLoadingState()
