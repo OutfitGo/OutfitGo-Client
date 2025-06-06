@@ -1,8 +1,9 @@
-package com.outfitgo.store.domain.model.brand
+package com.outfitgo.store.domain.model
 
-data class Brand(
+data class Collection(
     val id: String,
     val name: String,
+    val handle: String,
     val imageUrl: String,
     val pageCursor: String
 )

@@ -4,18 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.outfitgo.store.R
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.presentation.brandproducts.components.BrandProductsHeaderBar
 import com.outfitgo.store.presentation.brandproducts.components.BrandProductsSection
 import com.outfitgo.store.presentation.brandproducts.components.ProductsSearchBar
@@ -26,7 +28,7 @@ fun BrandProductsScreen(
     brand: String,
     viewModel: BrandProductsViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit = {},
-    onNavigateToProductDetails: (CommonProduct) -> Unit = {}
+    onNavigateToProductDetails: (Product) -> Unit = {}
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -61,8 +63,7 @@ private fun BrandProductsScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.secondary)
-            .padding(top = 42.dp, bottom = 24.dp)
-            .padding(horizontal = 24.dp)
+            .padding(vertical = 24.dp, horizontal = 24.dp)
     ) {
         BrandProductsHeaderBar(
             brand = brand,
@@ -76,6 +77,7 @@ private fun BrandProductsScreenContent(
         )
 
         ProductsSearchBar(
+            modifier = Modifier.fillMaxWidth(),
             onQueryChanged = { query ->
                 onEvent(BrandProductsIntent.ChangeSearchQuery(query = query))
             }
@@ -100,8 +102,8 @@ private fun BrandProductsScreenContent(
         if(state.products.isEmpty() && !state.isLoading){
             EmptyState(
                 imgRes = R.drawable.search_empty_img,
-                mainText = "No Results Found",
-                description = "Try checking your spelling or using different keywords. We couldn’t find any products matching your search."
+                mainText = stringResource(R.string.no_results_found),
+                description = stringResource(R.string.search_empty_state_description)
             )
         }
     }

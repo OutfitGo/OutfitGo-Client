@@ -1,4 +1,4 @@
-query BrandProductsQuery($searchQuery: String!, $first: Int!, $after: String) {
+query BrandCollectionProductsQuery($searchQuery: String!, $first: Int!, $after: String) {
     products(first: $first, after: $after, query: $searchQuery) {
         edges {
             cursor

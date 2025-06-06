@@ -1,10 +1,11 @@
-query BrandsQuery($first: Int!, $after: String) {
-    collections(first: $first, after: $after) {
+query CollectionsQuery {
+    collections(first: 100) {
         edges {
             cursor
             node {
                 id
                 title
+                handle
                 image {
                     url
                 }

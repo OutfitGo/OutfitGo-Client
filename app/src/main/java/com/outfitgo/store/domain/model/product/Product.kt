@@ -1,6 +1,6 @@
 package com.outfitgo.store.domain.model.product
 
-data class CommonProduct(
+data class Product(
     val id: String,
     val name: String,
     val type: String,

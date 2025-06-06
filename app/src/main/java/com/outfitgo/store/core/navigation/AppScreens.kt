@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.outfitgo.store.domain.model.Collection
 import kotlinx.serialization.Serializable
 
 sealed class AppScreens {
@@ -45,6 +46,8 @@ data class ProductDetailsRoute(val productId: String)
 data class BrandProductsRoute(val brandId: String)
 
 @Serializable
+data class CategoryProductsRoute(val categoryHandle: String, val categoryName: String)
+
 object SplashRoute
 
 @Serializable

@@ -2,8 +2,9 @@ package com.outfitgo.store.presentation.brandproducts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.outfitgo.store.domain.model.product.CommonProduct
-import com.outfitgo.store.domain.usecase.brands.GetBrandProductsUseCase
+import com.outfitgo.store.core.util.Const.PAGE_SIZE
+import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.domain.usecase.collections.GetBrandProductsUseCase
 import com.outfitgo.store.presentation.util.paging.DefaultPaginator
 import com.outfitgo.store.presentation.util.paging.Paginator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,7 @@ class BrandProductsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(BrandProductsState())
     val uiState = _uiState.asStateFlow()
 
-    private val _searchQuery = MutableStateFlow("")
+    private val _searchQuery = MutableStateFlow<String?>(null)
 
     private var brandName: String = ""
 
@@ -36,6 +37,7 @@ class BrandProductsViewModel @Inject constructor(
                 .debounce(500)
                 .distinctUntilChanged()
                 .collectLatest { query ->
+                    if (query == null) return@collectLatest
                     _uiState.update {
                         it.copy(products = emptyList())
                     }
@@ -45,7 +47,7 @@ class BrandProductsViewModel @Inject constructor(
         }
     }
 
-    private val brandProductsPaginator: Paginator<String?, CommonProduct> = DefaultPaginator(
+    private val brandProductsPaginator: Paginator<String?, Product> = DefaultPaginator(
         initialKey = null,
         isEndReached = { products ->
             products.isEmpty()
@@ -56,8 +58,8 @@ class BrandProductsViewModel @Inject constructor(
         onRequest = { nextKey ->
             getBrandProductsUseCase.execute(
                 brand = brandName,
-                searchQuery = _searchQuery.value,
-                first = 8,
+                productName = _searchQuery.value ?: "",
+                first = PAGE_SIZE,
                 after = nextKey
             )
         },
@@ -70,7 +72,7 @@ class BrandProductsViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     products = uiState.value.products + newProducts,
-                    productsEndReached = newProducts.isEmpty()
+                    productsEndReached = newProducts.size < PAGE_SIZE
                 )
             }
         },

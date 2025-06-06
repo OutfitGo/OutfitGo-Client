@@ -2,9 +2,9 @@ package com.outfitgo.store.data.datasource.remote.product
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
-import com.outfitgo.store.data.mappers.toCommonProduct
+import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.data.mappers.toDetailedProduct
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.storefront.GetProductByIdQuery
 import com.outfitgo.store.storefront.GetProductsByTitleQuery
@@ -17,7 +17,7 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
     override suspend fun fetchLatestProducts(
         first: Int,
         after: String?
-    ): List<CommonProduct> {
+    ): List<Product> {
         val latestProductsResponse = remoteClient.query(
             LatestProductsQuery(
                 first = first,
@@ -30,7 +30,7 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
         }
 
         val latestProducts = latestProductsResponse.dataAssertNoErrors.products.edges.map {
-            it.toCommonProduct()
+            it.toProduct()
         }
 
         return latestProducts
