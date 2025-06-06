@@ -10,4 +10,6 @@ interface ProductsRepository {
     ):List<Product>
 
     suspend fun fetchProductById(id: String, variantCount: Int = 3): DetailedProduct
+
+    suspend fun searchProductsByTitle(title: String): List<CommonProduct>
 }

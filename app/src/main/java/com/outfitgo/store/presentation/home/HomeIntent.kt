@@ -8,4 +8,5 @@ sealed interface HomeIntent {
     object GetNextBrands : HomeIntent
     object GetNextLatestProducts : HomeIntent
     data class GoToProductDetails(val product: Product) : HomeIntent
+    object GetCoupons:HomeIntent
 }

@@ -56,7 +56,7 @@ fun BrandProductsSection(
 }
 
 @Composable
-private fun ProductsPageLoadingState() {
+fun ProductsPageLoadingState() {
     Column(
         modifier = Modifier
             .fillMaxWidth()

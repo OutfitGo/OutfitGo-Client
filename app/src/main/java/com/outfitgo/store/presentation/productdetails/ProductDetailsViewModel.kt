@@ -32,13 +32,8 @@ class ProductDetailsViewModel @Inject constructor(
         when (intent) {
             is ProductDetailsIntent.AddToCart -> addToCart(intent.productId)
             is ProductDetailsIntent.AddToWishlist -> addToWishList(intent.productId)
-            ProductDetailsIntent.ShowAllReviews -> {
-                viewModelScope.launch {
-                    _effect.emit(ProductDetailsEffect.GoToReviewsScreen)
-                }
-            }
-
             is ProductDetailsIntent.GetProductById -> loadProduct(intent.productId)
+            else -> Unit
         }
     }
 
@@ -56,12 +51,14 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     private fun addToCart(productId: String) {
+        _state.update { it.copy(isAddedToCart = true) }
         viewModelScope.launch {
             _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
         }
     }
 
     private fun addToWishList(productId: String) {
+        _state.update { it.copy(isFavorite = !(it.isFavorite)) }
         viewModelScope.launch {
             _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Wishlist"))
         }

@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.categories.CategoriesScreen
 import com.outfitgo.store.presentation.categoryproducts.CategoryProductsScreen
@@ -23,8 +24,11 @@ import com.outfitgo.store.presentation.home.HomeScreen
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
+import com.outfitgo.store.presentation.productdetails.ReviewsScreen
+import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
+import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 
 @Composable
 fun AppNavHost(
@@ -34,7 +38,7 @@ fun AppNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = LoginRoute,
+        startDestination = SplashRoute,
         modifier = modifier,
         enterTransition = { fadeIn(tween(600)) + slideInVertically(tween(600)) },
         exitTransition = {
@@ -64,6 +68,8 @@ fun AppNavHost(
                     navController.navigate(BrandProductsRoute(it))
                 }, onNavigateToProductDetails = {
                     navController.navigate(ProductDetailsRoute(it.id))
+                }, onNavigateToSearchScreen = {
+                    navController.navigate(SearchRoute)
                 }
             )
         }
@@ -119,7 +125,10 @@ fun AppNavHost(
                 onIntent = viewModel::processIntent,
                 effect = viewModel.effect,
                 modifier = Modifier.fillMaxSize(),
-                onNavigateUp = { navController.navigateUp() }
+                onNavigateUp = { navController.navigateUp() },
+                onShowMoreReviewsClicked = {
+                    navController.navigate(ReviewsRoute)
+                }
             )
         }
 
@@ -131,6 +140,34 @@ fun AppNavHost(
 
         composable<CurrencySettingsRoute> {
             CurrencyScreen()
+        }
+
+        composable<ReviewsRoute> {
+            val reviews = ReviewUtils.generateRandomReviews(6)
+            ReviewsScreen(
+                reviews = reviews,
+                onNavigateUp = { navController.navigateUp() },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        composable<SplashRoute> {
+            OutfitGoSplashScreen(
+                viewModel = hiltViewModel(),
+                modifier = Modifier.fillMaxSize(),
+                onGoToHome = { navController.navigate(HomeRoute) },
+                onGoToLogin = { navController.navigate(LoginRoute) }
+            )
+        }
+
+        composable<SearchRoute> {
+            SearchScreen(
+                modifier = Modifier.fillMaxSize(),
+                onNavigateUp = { navController.navigateUp() },
+                onNavigateToProductDetails = {productId ->
+                    navController.navigate(ProductDetailsRoute(productId))
+                }
+            )
         }
 
     }

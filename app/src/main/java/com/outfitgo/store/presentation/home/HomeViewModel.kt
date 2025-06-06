@@ -7,6 +7,7 @@ import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.CurrencyUnit
 import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.usecase.collections.GetBrandsUseCase
+import com.outfitgo.store.domain.usecase.coupon.GetCouponsUseCase
 import com.outfitgo.store.domain.usecase.products.GetLatestProductsUseCase
 import com.outfitgo.store.domain.usecase.settings.GetCurrencyUnitUseCase
 import com.outfitgo.store.domain.usecase.settings.GetLatestExchangeRateUseCase
@@ -28,13 +29,12 @@ class HomeViewModel @Inject constructor(
     private val getLatestProductsUseCase: GetLatestProductsUseCase,
     private val getCurrencyUnitUseCase: GetCurrencyUnitUseCase,
     private val getLatestExchangeRateUseCase: GetLatestExchangeRateUseCase,
+    private val getCouponsUseCase: GetCouponsUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeState>(HomeState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        observeCurrencyAndRate()
-    }
+
 
     private fun observeCurrencyAndRate() {
         viewModelScope.launch {
@@ -81,10 +81,12 @@ class HomeViewModel @Inject constructor(
             }
         }
     )
-
     init {
         getBrands()
+        observeCurrencyAndRate()
         getNextLatestProducts()
+        getCoupons()
+
     }
 
     fun getBrands() {
@@ -109,10 +111,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getCoupons() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val coupons = getCouponsUseCase.execute()
+            _homeState.update { it.copy(coupons = coupons) }
+        }
+    }
+
     fun processIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.GetNextBrands -> getBrands()
             is HomeIntent.GetNextLatestProducts -> getNextLatestProducts()
+            is HomeIntent.GetCoupons -> getCoupons()
             else -> Unit
         }
     }

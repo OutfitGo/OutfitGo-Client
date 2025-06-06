@@ -10,5 +10,7 @@ interface ProductsRemoteDataSource {
     ): List<Product>
 
     suspend fun fetchProductById(id: String, variantCount: Int = 3): DetailedProduct
+
+    suspend fun fetchProductsByTitle(title: String): List<CommonProduct>
 }
 

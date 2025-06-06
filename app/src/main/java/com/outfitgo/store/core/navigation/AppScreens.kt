@@ -15,19 +15,6 @@ import kotlinx.serialization.Serializable
 
 sealed class AppScreens {
 }
-
-/**
- * login
- * signup
- * splash
- * profile
- * cart
- * home
- * categories
- * brand product
- * product details
- * */
-
 @Serializable
 data object LoginRoute
 
@@ -45,9 +32,12 @@ data object CartRoute
 
 @Serializable
 data object SettingsRoute
+
 @Serializable
 data object CurrencySettingsRoute
 
+@Serializable
+data object ReviewsRoute
 
 @Serializable
 data class ProductDetailsRoute(val productId: String)
@@ -57,6 +47,11 @@ data class BrandProductsRoute(val brandId: String)
 
 @Serializable
 data class CategoryProductsRoute(val categoryHandle: String, val categoryName: String)
+
+object SplashRoute
+
+@Serializable
+object SearchRoute
 
 data class TopLevelRoute<T : Any>(
     val title: String,
