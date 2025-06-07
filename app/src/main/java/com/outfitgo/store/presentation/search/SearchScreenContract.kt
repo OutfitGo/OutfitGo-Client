@@ -1,9 +1,10 @@
 package com.outfitgo.store.presentation.search
 
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
+
 
 data class SearchScreenUiState(
-    val products: List<CommonProduct> = emptyList(),
+    val products: List<Product> = emptyList(),
     val isLoading: Boolean = false,
 )
 data class SearchUiState(

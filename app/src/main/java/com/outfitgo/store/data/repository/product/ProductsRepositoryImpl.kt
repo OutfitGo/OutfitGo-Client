@@ -26,7 +26,7 @@ class ProductsRepositoryImpl @Inject constructor(
         return productsRemoteDataSource.fetchProductById(id, variantCount)
     }
     
-    override suspend fun searchProductsByTitle(title: String): List<CommonProduct> {
+    override suspend fun searchProductsByTitle(title: String): List<Product> {
         return productsRemoteDataSource.fetchProductsByTitle(title)
     }
 }

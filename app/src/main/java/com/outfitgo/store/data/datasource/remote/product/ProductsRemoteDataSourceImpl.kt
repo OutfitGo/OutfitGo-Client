@@ -51,7 +51,7 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
         return product.toDetailedProduct()
     }
 
-    override suspend fun fetchProductsByTitle(title: String): List<CommonProduct> {
+    override suspend fun fetchProductsByTitle(title: String): List<Product> {
         val searchQuery = "title:*${title}*" // to get anything like the title . if empty string provided empty list will come
         val query = GetProductsByTitleQuery(searchQuery = searchQuery)
         val response = remoteClient.query(query).execute()
@@ -66,8 +66,8 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
     }
 }
 
-fun GetProductsByTitleQuery.Node.toCommonProduct(): CommonProduct {
-    return CommonProduct(
+fun GetProductsByTitleQuery.Node.toCommonProduct(): Product {
+    return Product(
         id = this.id,
         name = this.title,
         type = this.productType,

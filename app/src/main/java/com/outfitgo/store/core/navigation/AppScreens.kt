@@ -48,6 +48,7 @@ data class BrandProductsRoute(val brandId: String)
 @Serializable
 data class CategoryProductsRoute(val categoryHandle: String, val categoryName: String)
 
+@Serializable
 object SplashRoute
 
 @Serializable

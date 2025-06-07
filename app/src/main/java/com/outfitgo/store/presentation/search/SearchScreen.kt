@@ -34,8 +34,8 @@ import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.presentation.brandproducts.components.ProductsPageLoadingState
 import com.outfitgo.store.presentation.brandproducts.components.ProductsSearchBar
-import com.outfitgo.store.presentation.components.CommonProductItem
 import com.outfitgo.store.presentation.components.EmptyState
+import com.outfitgo.store.presentation.components.ProductItem
 
 private const val TAG = "SearchScreen"
 @Composable
@@ -124,7 +124,7 @@ fun SearchScreenContents(
                         items = state.products
                     ) { index, product ->
 
-                        CommonProductItem(
+                        ProductItem(
                             product = product,
                             onProductClicked = {
                                 onEvent(SearchScreenIntent.GoToProductDetails(product.id))

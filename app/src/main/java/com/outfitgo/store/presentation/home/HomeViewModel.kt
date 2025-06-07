@@ -34,8 +34,6 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeState>(HomeState())
     val uiState = _uiState.asStateFlow()
 
-
-
     private fun observeCurrencyAndRate() {
         viewModelScope.launch {
             getCurrencyUnitUseCase.execute()
@@ -114,7 +112,7 @@ class HomeViewModel @Inject constructor(
     private fun getCoupons() {
         viewModelScope.launch(Dispatchers.IO) {
             val coupons = getCouponsUseCase.execute()
-            _homeState.update { it.copy(coupons = coupons) }
+            _uiState.update { it.copy(coupons = coupons) }
         }
     }
 
