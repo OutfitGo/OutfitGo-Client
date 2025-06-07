@@ -21,6 +21,9 @@ query GetCartQuery($cartId:ID!){
                             }
                             product {
                                 title
+                                featuredImage{
+                                    url
+                                }
                             }
                         }
                     }
