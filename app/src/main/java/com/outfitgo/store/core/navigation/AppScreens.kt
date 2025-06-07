@@ -53,6 +53,9 @@ object SplashRoute
 @Serializable
 object SearchRoute
 
+@Serializable
+object RegisterRoute
+
 data class TopLevelRoute<T : Any>(
     val title: String,
     val route: T,

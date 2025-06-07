@@ -25,6 +25,7 @@ import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
+import com.outfitgo.store.presentation.register.RegisterScreen
 import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
@@ -58,6 +59,9 @@ fun AppNavHost(
                 modifier = Modifier.fillMaxSize(),
                 onGoToHome = {
                     navController.navigate(HomeRoute)
+                },
+                onGoToSignup = {
+                    navController.navigate(RegisterRoute)
                 }
             )
         }
@@ -164,8 +168,23 @@ fun AppNavHost(
             SearchScreen(
                 modifier = Modifier.fillMaxSize(),
                 onNavigateUp = { navController.navigateUp() },
-                onNavigateToProductDetails = {productId ->
+                onNavigateToProductDetails = { productId ->
                     navController.navigate(ProductDetailsRoute(productId))
+                }
+            )
+        }
+
+        composable<RegisterRoute> {
+            RegisterScreen(
+                modifier = Modifier.fillMaxSize(),
+                onContinueAsGuestClicked = {
+                    navController.navigate(HomeRoute)
+                },
+                onGoToLoginClicked = {
+                    navController.navigate(LoginRoute)
+                },
+                onGoToHome = {
+                    navController.navigate(HomeRoute)
                 }
             )
         }

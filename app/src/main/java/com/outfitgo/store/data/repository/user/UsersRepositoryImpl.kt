@@ -30,6 +30,20 @@ class UsersRepositoryImpl @Inject constructor(
         return remoteDataSource.getUserByAccessToken(token)
     }
 
+    override suspend fun registerUser(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): User? {
+        val newUser = remoteDataSource.registerNewUser(firstName, lastName, email, password)
+        localDataSource.saveUserId(newUser.id)
+
+        val loginResponse = remoteDataSource.loginByEmailAndPassword(email, password)
+        localDataSource.saveUserToken(loginResponse.token)
+        return newUser
+    }
+
     override suspend fun getSavedUserToken(): String? {
         return localDataSource.getSavedUserToken()
     }

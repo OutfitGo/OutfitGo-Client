@@ -1,0 +1,23 @@
+mutation CreateNewCustomer($fistName: String!, $lastName: String!, $email: String!, $password: String!) {
+    customerCreate(
+        input: {
+            firstName: $fistName
+            lastName: $lastName
+            email: $email
+            password: $password
+        }
+    ) {
+        customer {
+            displayName
+            email
+            firstName
+            id
+            lastName
+        }
+        customerUserErrors {
+            code
+            field
+            message
+        }
+    }
+}
