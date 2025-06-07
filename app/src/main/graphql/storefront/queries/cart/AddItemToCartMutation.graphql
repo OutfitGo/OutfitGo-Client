@@ -10,21 +10,9 @@ mutation AddItemToCartMutation($cartId:ID!,$quantity:Int!, $productVariantId:ID!
     ) {
         cart {
             id
-            lines(first: 10) {
-                edges {
-                    node {
-                        id
-                        quantity
-                        merchandise {
-                            ... on ProductVariant {
-                                id
-                                title
-                                product {
-                                    title
-                                }
-                            }
-                        }
-                    }
+            cost {
+                totalAmount {
+                    amount
                 }
             }
         }

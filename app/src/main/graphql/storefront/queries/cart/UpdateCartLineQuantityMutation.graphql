@@ -10,20 +10,9 @@ mutation UpdateCartLineQuantityMutation($cartId:ID!,$lineId:ID!,$quantity:Int!){
     ) {
         cart {
             id
-            lines(first: 5) {
-                edges {
-                    node {
-                        id
-                        quantity
-                        merchandise {
-                            ... on ProductVariant {
-                                title
-                                product {
-                                    title
-                                }
-                            }
-                        }
-                    }
+            cost {
+                totalAmount {
+                    amount
                 }
             }
         }

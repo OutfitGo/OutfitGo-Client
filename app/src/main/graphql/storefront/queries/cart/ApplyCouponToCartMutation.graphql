@@ -9,6 +9,11 @@ mutation ApplyCouponToCartMutation($cartId:ID!,$coupon:String!) {
                 code
                 applicable
             }
+            cost{
+                totalAmount{
+                    amount
+                }
+            }
         }
         userErrors {
             field
