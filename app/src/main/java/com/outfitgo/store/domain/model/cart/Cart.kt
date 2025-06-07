@@ -1,12 +1,12 @@
 package com.outfitgo.store.domain.model.cart
 
 data class Cart(
-    val id:String,
-    val totalQuantity:Int,
-    val buyerIdentity:BuyerIdentity,
-    val items: List<CartItem>,
-    val discountCode: DiscountCode,
-    val cost:Cost
+    val id:String?,
+    val totalQuantity:Int?,
+    val buyerIdentity:BuyerIdentity?,
+    val items: List<CartItem>?,
+    val discountCode: DiscountCode?,
+    val cost:Cost?
 
 )
 data class BuyerIdentity(
