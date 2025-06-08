@@ -111,7 +111,7 @@ apollo {
         schemaFile.set(file("src/main/graphql/admin/schema.graphqls"))
         sourceFolder.set("admin")
         introspection {
-            endpointUrl.set("https://mad45-sv-and3.myshopify.com/admin/api/2024-10/graphql.json")
+            endpointUrl.set("https://mad-and2-sv.myshopify.com/admin/api/2024-10/graphql.json")
             headers.set(
                 mapOf(
                     "X-Shopify-Access-Token" to adminApiKey,

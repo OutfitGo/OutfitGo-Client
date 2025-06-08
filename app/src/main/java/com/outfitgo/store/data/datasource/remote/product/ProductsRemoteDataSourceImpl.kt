@@ -2,11 +2,12 @@ package com.outfitgo.store.data.datasource.remote.product
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Optional
-import com.outfitgo.store.data.mappers.toCommonProduct
+import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.data.mappers.toDetailedProduct
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.storefront.GetProductByIdQuery
+import com.outfitgo.store.storefront.GetProductsByTitleQuery
 import com.outfitgo.store.storefront.LatestProductsQuery
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
     override suspend fun fetchLatestProducts(
         first: Int,
         after: String?
-    ): List<CommonProduct> {
+    ): List<Product> {
         val latestProductsResponse = remoteClient.query(
             LatestProductsQuery(
                 first = first,
@@ -29,7 +30,7 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
         }
 
         val latestProducts = latestProductsResponse.dataAssertNoErrors.products.edges.map {
-            it.toCommonProduct()
+            it.toProduct()
         }
 
         return latestProducts
@@ -49,7 +50,32 @@ class ProductsRemoteDataSourceImpl @Inject constructor(
         val product = data.product
         return product.toDetailedProduct()
     }
+
+    override suspend fun fetchProductsByTitle(title: String): List<Product> {
+        val searchQuery = "title:*${title}*" // to get anything like the title . if empty string provided empty list will come
+        val query = GetProductsByTitleQuery(searchQuery = searchQuery)
+        val response = remoteClient.query(query).execute()
+        val data = response.data
+        if(data?.products == null) {
+            throw Exception("Products are NULL")
+        }
+        val products = data.products.nodes.map {
+            it.toCommonProduct()
+        }
+        return products
+    }
 }
 
+fun GetProductsByTitleQuery.Node.toCommonProduct(): Product {
+    return Product(
+        id = this.id,
+        name = this.title,
+        type = this.productType,
+        price = "${this.priceRange.minVariantPrice.amount}",
+        imageUrl = "${this.images.nodes.first().url}",
+        vendor = this.vendor,
+        pageCursor = "" // i won't use pagination in search
+    )
+}
 
 

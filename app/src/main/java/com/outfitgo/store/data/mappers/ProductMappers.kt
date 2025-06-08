@@ -2,12 +2,12 @@ package com.outfitgo.store.data.mappers
 
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.domain.model.ReviewUtils
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.storefront.GetProductByIdQuery
 import com.outfitgo.store.storefront.LatestProductsQuery
 
-fun LatestProductsQuery.Edge.toCommonProduct(): CommonProduct {
-    return CommonProduct(
+fun LatestProductsQuery.Edge.toProduct(): Product {
+    return Product(
         id = node.id,
         name = node.title,
         type = node.productType,
@@ -23,7 +23,7 @@ fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
 
 
     return DetailedProduct(
-        id = this.id,
+        id = this.variants.edges.first().node.id,
         title = this.title,
         description = this.description,
         price = "${this.priceRange.maxVariantPrice.amount}",

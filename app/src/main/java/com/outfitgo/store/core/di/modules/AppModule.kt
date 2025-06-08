@@ -30,7 +30,7 @@ object AppModule {
 
     const val SERVER_URL = "https://mad-and2-sv.myshopify.com/api/2025-04/graphql.json"
     const val ADMIN_SERVER_URL =
-        "https://mad45-sv-and3.myshopify.com/admin/api/2025-04/graphql.json"
+        "https://mad-and2-sv.myshopify.com/admin/api/2025-04/graphql.json"
     private const val DATASTORE_NAME = "OutfitGo"
 
 
@@ -85,10 +85,5 @@ object AppModule {
                 context.preferencesDataStoreFile(DATASTORE_NAME)
             }
         )
-    }
-    @Provides
-    @Singleton
-    fun provideCurrencyManager(): CurrencyManager {
-        return CurrencyManager()
     }
 }

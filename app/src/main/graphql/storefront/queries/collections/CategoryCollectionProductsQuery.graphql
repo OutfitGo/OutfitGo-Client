@@ -1,0 +1,24 @@
+query CategoryCollectionProductsQuery($handle: String!) {
+    collection(handle: $handle) {
+        products(first: 100) {
+            edges {
+                node {
+                    id
+                    title
+                    productType
+                    vendor
+                    images(first: 1) {
+                        nodes {
+                            url
+                        }
+                    }
+                    priceRange {
+                        minVariantPrice {
+                            amount
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

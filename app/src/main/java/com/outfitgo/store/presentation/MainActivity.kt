@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.outfitgo.store.core.navigation.AppNavHost
 import com.outfitgo.store.core.navigation.HomeRoute
 import com.outfitgo.store.core.navigation.topLevelRoutes
+import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,9 +92,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize().padding(innerPadding)
                     )
                 }
-
-
-
             }
         }
 
