@@ -1,13 +1,16 @@
 package com.outfitgo.store.data.repository.cart
 
+import com.outfitgo.store.data.datasource.local.cart.CartLocalDataSource
 import com.outfitgo.store.data.datasource.remote.cart.CartRemoteDataSource
 import com.outfitgo.store.domain.model.cart.Cart
 import com.outfitgo.store.domain.model.cart.Cost
 import com.outfitgo.store.domain.repository.cart.CartRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class CartRepositoryImpl @Inject constructor(
-    private val remote: CartRemoteDataSource
+    private val remote: CartRemoteDataSource,
+    private val local: CartLocalDataSource
 ) : CartRepository {
     override suspend fun getCart(cartId: String): Cart {
         return remote.getCart(cartId)
@@ -46,10 +49,10 @@ class CartRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveCartId(cartId: String) {
-        TODO("Not yet implemented")
+        local.saveCartId(cartId)
     }
 
-    override suspend fun getCartId(): String {
-        TODO("Not yet implemented")
+    override suspend fun getCartId(): Flow<String> {
+        return local.getCartId()
     }
 }
