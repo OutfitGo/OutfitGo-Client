@@ -28,7 +28,7 @@ class CartViewModel @Inject constructor(
 ) : ViewModel() {
     private val _cartState: MutableStateFlow<CartState> = MutableStateFlow(CartState())
     val cartState = _cartState.asStateFlow()
-    val cartId = "gid://shopify/Cart/Z2NwLWV1cm9wZS13ZXN0MTowMUpXWUFYWTQ0UDFSWFFFMlJCNFAxSzdLRA?key=c8eefa970b2177b0b16a4e3838320891"
+    private val cartId = Const.cartId
     private val _effect = MutableSharedFlow<CartEffect>()
     val effect = _effect.asSharedFlow()
 

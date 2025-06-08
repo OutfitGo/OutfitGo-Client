@@ -18,10 +18,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -179,6 +181,7 @@ fun CartItemsListSection(
         modifier = modifier
             .fillMaxWidth()
     ) {
+
         if (cartItems.isNotEmpty()) {
             items(cartItems) { item ->
                 CartItemRow(
@@ -197,6 +200,64 @@ fun CartItemsListSection(
             }
         }
     }
+
+    /*if (cartItems.isNotEmpty()) {
+        items(cartItems, key = { it.id }) { item ->
+            val dismissState = rememberDismissState(
+                confirmValueChange = {
+                    if (it == DismissValue.DismissedToStart) {
+                        onDecreaseQuantity(item.id, item.quantity)
+                        true
+                    } else false
+                }
+            )
+
+            SwipeToDismiss(
+                state = dismissState,
+                directions = setOf(DismissDirection.EndToStart),
+                background = {
+                    val color =
+                        if (dismissState.dismissDirection == DismissDirection.EndToStart) {
+                            Color.Red
+                        } else {
+                            Color.Transparent
+                        }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color)
+                            .padding(horizontal = 20.dp),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color.White
+                        )
+                    }
+                },
+                dismissContent = {
+                    Column {
+                        CartItemRow(
+                            cartItem = item,
+                            addQuantityAction = onIncreaseQuantity,
+                            removeItemAction = onDecreaseQuantity
+                        )
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
+                    }
+                }
+            )
+        }
+    } else {
+        item {
+            Text("Add Some items to cart")
+        }
+    }
+}*/
 }
 
 @Composable
