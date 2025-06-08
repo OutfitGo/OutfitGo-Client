@@ -4,8 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.domain.usecase.auth.LoginWithEmailAndPasswordUseCase
-import com.outfitgo.store.domain.usecase.auth.ValidateEmailUseCase
-import com.outfitgo.store.domain.usecase.auth.ValidatePasswordUseCase
+import com.outfitgo.store.domain.usecase.auth.ValidationResult
+import com.outfitgo.store.presentation.util.auth.isValidEmail
+import com.outfitgo.store.presentation.util.auth.isValidPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +20,6 @@ private const val TAG = "LoginViewModel"
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val loginWithEmailAndPasswordUseCase: LoginWithEmailAndPasswordUseCase
 ) : ViewModel() {
 
@@ -51,7 +50,7 @@ class LoginViewModel @Inject constructor(
 
     private fun login() {
         viewModelScope.launch {
-            val isInputValid = isInputValid()
+            val isInputValid = validateInput()
             if(isInputValid) {
                 try {
                     _state.update { it.copy(isLoading = true) }
@@ -71,21 +70,19 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun isInputValid(): Boolean {
-        val emailValidation = validateEmailUseCase(_state.value.email)
-        val passwordValidation = validatePasswordUseCase(_state.value.password)
-        if (emailValidation.isValid && passwordValidation.isValid) {
-            return true
-        } else {
-            _state.update {
-                it.copy(
-                    emailErrorMsg = emailValidation.error ?: "",
-                    passwordErrorMsg = passwordValidation.error ?: "",
-                    isLoading = false
-                )
-            }
-            return false
-        }
+
+    private fun validateInput(): Boolean {
+        val results: MutableList<ValidationResult> = mutableListOf()
+
+        val emailResult = _state.value.email.isValidEmail()
+        _state.update { it.copy(emailErrorMsg = emailResult.error ?: "") }
+        results.add(emailResult)
+
+        val passwordResult = _state.value.password.isValidPassword()
+        _state.update { it.copy(passwordErrorMsg = passwordResult.error ?: "") }
+        results.add(passwordResult)
+
+        return results.all { it.isValid }
     }
 }
 

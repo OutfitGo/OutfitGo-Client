@@ -13,33 +13,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.outfitgo.store.R
-import com.outfitgo.store.domain.model.brand.Brand
-import com.outfitgo.store.presentation.components.shadow
+import com.outfitgo.store.domain.model.Collection
 import com.outfitgo.store.presentation.components.shimmerBrush
 
 @Composable
 fun BrandsSection(
-    brands: List<Brand>,
-    isEndReached: Boolean,
+    brands: List<Collection>,
     isLoading: Boolean,
-    onBrandClicked: (Brand) -> Unit,
-    onRequestNextBrands: () -> Unit
+    onBrandClicked: (Collection) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -53,12 +47,8 @@ fun BrandsSection(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             itemsIndexed(items = brands) { index, brand ->
-                if (index >= brands.size - 1 && !isEndReached && !isLoading) {
-                    onRequestNextBrands()
-                }
-
                 BrandItem(
-                    brand = brand,
+                    collection = brand,
                     onBrandClicked = onBrandClicked
                 )
             }
@@ -74,8 +64,8 @@ fun BrandsSection(
 
 @Composable
 private fun BrandItem(
-    brand: Brand,
-    onBrandClicked: (Brand) -> Unit
+    collection: Collection,
+    onBrandClicked: (Collection) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -90,7 +80,7 @@ private fun BrandItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {
-                    onBrandClicked(brand)
+                    onBrandClicked(collection)
                 }
             ),
     ) {
@@ -98,7 +88,7 @@ private fun BrandItem(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(16.dp)),
-            model = brand.imageUrl,
+            model = collection.imageUrl,
             contentScale = ContentScale.FillBounds,
             contentDescription = null
         )

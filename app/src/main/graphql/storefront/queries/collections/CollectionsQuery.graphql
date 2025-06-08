@@ -1,0 +1,19 @@
+query CollectionsQuery {
+    collections(first: 100) {
+        edges {
+            cursor
+            node {
+                id
+                title
+                handle
+                image {
+                    url
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}

@@ -1,0 +1,20 @@
+query GetProductsByTitle($searchQuery: String!) {
+    products(first: 50, query: $searchQuery) {
+        nodes {
+            id
+            title
+            vendor
+            productType
+            images(first: 1) {
+                nodes {
+                    url
+                }
+            }
+            priceRange {
+                minVariantPrice {
+                    amount
+                }
+            }
+        }
+    }
+}
