@@ -3,11 +3,16 @@ package com.outfitgo.store.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.CurrencyUnit
 import com.outfitgo.store.domain.model.brand.Brand
 import com.outfitgo.store.domain.model.product.CommonProduct
 import com.outfitgo.store.domain.usecase.brands.GetBrandsUseCase
+import com.outfitgo.store.domain.usecase.cart.AddBuyerToCartUseCase
+import com.outfitgo.store.domain.usecase.cart.CreateCartUseCase
+import com.outfitgo.store.domain.usecase.cart.GetCartIdUseCase
+import com.outfitgo.store.domain.usecase.cart.SaveCartIdUseCase
 import com.outfitgo.store.domain.usecase.coupon.GetCouponsUseCase
 import com.outfitgo.store.domain.usecase.products.GetLatestProductsUseCase
 import com.outfitgo.store.domain.usecase.settings.GetCurrencyUnitUseCase
@@ -30,12 +35,32 @@ class HomeViewModel @Inject constructor(
     private val getLatestProductsUseCase: GetLatestProductsUseCase,
     private val getCurrencyUnitUseCase: GetCurrencyUnitUseCase,
     private val getLatestExchangeRateUseCase: GetLatestExchangeRateUseCase,
-    private val getCouponsUseCase: GetCouponsUseCase
+    private val getCouponsUseCase: GetCouponsUseCase,
+    private val createCartUseCase: CreateCartUseCase,
+    private val addBuyerToCartUseCase: AddBuyerToCartUseCase,
+    private val getCartIdUseCase: GetCartIdUseCase,
+    private val saveCartIdUseCase: SaveCartIdUseCase
 ) : ViewModel() {
     private val _homeState = MutableStateFlow<HomeState>(HomeState())
     val homeState = _homeState.asStateFlow()
 
 
+    private fun cartInit(){
+        viewModelScope.launch(Dispatchers.IO){
+            getCartIdUseCase.execute().collect{
+                if (it.isBlank()){
+                    val cartId = createCartUseCase.execute()
+                    Const.cartId =cartId
+                    saveCartIdUseCase.execute(cartId)
+                    /*if (Const.isLoggedIn){
+                      //TODO addCart to buyer
+                    }*/
+                }else{
+                    Const.cartId=it
+                }
+            }
+        }
+    }
 
     private fun observeCurrencyAndRate() {
         viewModelScope.launch {
@@ -120,7 +145,7 @@ class HomeViewModel @Inject constructor(
         getNextBrands()
         getNextLatestProducts()
         getCoupons()
-
+        cartInit()
     }
 
     fun getNextBrands() {

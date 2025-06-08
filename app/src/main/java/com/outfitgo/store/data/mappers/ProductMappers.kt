@@ -23,7 +23,7 @@ fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
 
 
     return DetailedProduct(
-        id = this.id,
+        id = this.variants.edges.first().node.id,
         title = this.title,
         description = this.description,
         price = "${this.priceRange.maxVariantPrice.amount}",

@@ -2,6 +2,7 @@ package com.outfitgo.store.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.domain.usecase.auth.IsUserLoggedInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,6 +21,7 @@ class SplashViewModel @Inject constructor (
         viewModelScope.launch {
             if(isUserLoggedInUseCase.execute()) {
                 _effect.emit(SplashEffect.GoToHomeScreen)
+                Const.isLoggedIn=true
             } else {
                 _effect.emit(SplashEffect.GoToLoginScreen)
             }

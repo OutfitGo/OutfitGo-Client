@@ -1,7 +1,9 @@
 package com.outfitgo.store.presentation.productdetails
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.domain.usecase.cart.AddProductToCartUseCase
 import com.outfitgo.store.domain.usecase.products.GetProductByIdUseCase
 import com.outfitgo.store.domain.usecase.wishlist.AddProductToWishlistUseCase
@@ -53,7 +55,12 @@ class ProductDetailsViewModel @Inject constructor(
     private fun addToCart(productId: String) {
         _state.update { it.copy(isAddedToCart = true) }
         viewModelScope.launch {
-            _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+            try{
+                addProductToCartUseCase.execute(Const.cartId,1,_state.value.product.id)
+                _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+            } catch (e:Exception){
+                Log.d("``TAG``", "addToCart: ${e.message} id is $productId ")
+            }
         }
     }
 
