@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
+import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.home.HomeScreen
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
@@ -80,7 +81,9 @@ fun AppNavHost(
                 }
             )
         }
-
+        composable<CartRoute> {
+            CartScreen()
+        }
         composable<ProductDetailsRoute> {
             val entry = it.toRoute<ProductDetailsRoute>()
             val viewModel: ProductDetailsViewModel = hiltViewModel()

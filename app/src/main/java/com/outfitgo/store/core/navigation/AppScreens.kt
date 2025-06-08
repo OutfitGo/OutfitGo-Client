@@ -47,6 +47,7 @@ data class BrandProductsRoute(val brandId: String)
 @Serializable
 object SplashRoute
 
+
 data class TopLevelRoute<T : Any>(
     val title: String,
     val route: T,
