@@ -3,11 +3,6 @@ package com.outfitgo.store.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
-import com.outfitgo.store.core.util.CurrencyExchange
-import com.outfitgo.store.core.util.CurrencyUnit
-import com.outfitgo.store.domain.model.brand.Brand
-import com.outfitgo.store.domain.model.product.CommonProduct
-import com.outfitgo.store.domain.usecase.brands.GetBrandsUseCase
 import com.outfitgo.store.domain.usecase.cart.AddBuyerToCartUseCase
 import com.outfitgo.store.domain.usecase.cart.CreateCartUseCase
 import com.outfitgo.store.domain.usecase.cart.GetCartIdUseCase
