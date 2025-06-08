@@ -2,6 +2,7 @@ package com.outfitgo.store.presentation.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.domain.usecase.auth.LoginWithEmailAndPasswordUseCase
 import com.outfitgo.store.domain.usecase.auth.ValidationResult
 import com.outfitgo.store.presentation.util.auth.isValidEmail
@@ -58,6 +59,7 @@ class LoginViewModel @Inject constructor(
                     user?.let {
                         _effect.emit(LoginScreenEffect.DisplaySnack("Login Success: ${it.displayName}"))
                         _state.update { it.copy(isLoading = false) }
+                        Const.isLoggedIn=true
                         _effect.emit(LoginScreenEffect.GoToHomeScreen)
                     }
                 } catch (exp: Exception) {

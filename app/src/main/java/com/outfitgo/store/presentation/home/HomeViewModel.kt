@@ -2,6 +2,16 @@ package com.outfitgo.store.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.core.util.Const
+import com.outfitgo.store.core.util.CurrencyExchange
+import com.outfitgo.store.core.util.CurrencyUnit
+import com.outfitgo.store.domain.model.brand.Brand
+import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.usecase.brands.GetBrandsUseCase
+import com.outfitgo.store.domain.usecase.cart.AddBuyerToCartUseCase
+import com.outfitgo.store.domain.usecase.cart.CreateCartUseCase
+import com.outfitgo.store.domain.usecase.cart.GetCartIdUseCase
+import com.outfitgo.store.domain.usecase.cart.SaveCartIdUseCase
 import com.outfitgo.store.core.util.Const.PAGE_SIZE
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.CurrencyUnit
@@ -29,10 +39,34 @@ class HomeViewModel @Inject constructor(
     private val getLatestProductsUseCase: GetLatestProductsUseCase,
     private val getCurrencyUnitUseCase: GetCurrencyUnitUseCase,
     private val getLatestExchangeRateUseCase: GetLatestExchangeRateUseCase,
-    private val getCouponsUseCase: GetCouponsUseCase
+    private val getCouponsUseCase: GetCouponsUseCase,
+    private val createCartUseCase: CreateCartUseCase,
+    private val addBuyerToCartUseCase: AddBuyerToCartUseCase,
+    private val getCartIdUseCase: GetCartIdUseCase,
+    private val saveCartIdUseCase: SaveCartIdUseCase
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow<HomeState>(HomeState())
     val uiState = _uiState.asStateFlow()
+
+    private fun cartInit(){
+        viewModelScope.launch(Dispatchers.IO){
+            getCartIdUseCase.execute().collect{
+                if (it.isBlank()){
+                    val cartId = createCartUseCase.execute()
+                    Const.cartId =cartId
+                    saveCartIdUseCase.execute(cartId)
+                    /*if (Const.isLoggedIn){
+                      //TODO addCart to buyer
+                    }*/
+                }else{
+                    Const.cartId=it
+                }
+            }
+        }
+    }
+
+    
 
     private fun observeCurrencyAndRate() {
         viewModelScope.launch {
@@ -84,7 +118,7 @@ class HomeViewModel @Inject constructor(
         observeCurrencyAndRate()
         getNextLatestProducts()
         getCoupons()
-
+        cartInit()
     }
 
     fun getBrands() {

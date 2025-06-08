@@ -51,6 +51,7 @@ data class CategoryProductsRoute(val categoryHandle: String, val categoryName: S
 @Serializable
 object SplashRoute
 
+
 @Serializable
 object SearchRoute
 

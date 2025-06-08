@@ -27,6 +27,11 @@ query GetProductById($id: ID!, $varCount: Int!) {
             }
         }
         variants(first: $varCount) {
+            edges {
+                node {
+                    id
+                }
+            }
             nodes {
                 id
                 title
