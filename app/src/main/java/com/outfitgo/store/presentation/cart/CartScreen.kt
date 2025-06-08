@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,9 +27,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +54,7 @@ import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.domain.model.cart.CartItem
 import com.outfitgo.store.domain.model.cart.Cost
 import com.outfitgo.store.presentation.cart.components.PromoCodeInput
+import com.outfitgo.store.presentation.components.EmptyState
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 
 @Composable
@@ -168,6 +173,7 @@ fun CartHeaderSection(modifier: Modifier = Modifier) {
     )
 }
 
+/*
 @Composable
 fun CartItemsListSection(
     cartItems: List<CartItem>,
@@ -259,6 +265,87 @@ fun CartItemsListSection(
     }
 }*/
 }
+*/
+@Composable
+fun CartItemsListSection(
+    cartItems: List<CartItem>,
+    onIncreaseQuantity: (String, Int) -> Unit,
+    onDecreaseQuantity: (String, Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = modifier.fillMaxWidth()
+    ) {
+        if (cartItems.isNotEmpty()) {
+            items(cartItems, key = { it.id }) { item ->
+
+                val dismissState = rememberSwipeToDismissBoxState(
+                    confirmValueChange = { value ->
+                        if (value == SwipeToDismissBoxValue.EndToStart) {
+                            onDecreaseQuantity(item.id, 1)
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                )
+
+                SwipeToDismissBox(
+                    state = dismissState,
+                    enableDismissFromStartToEnd = false,
+                    backgroundContent = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.errorContainer)
+                                .padding(horizontal = 24.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                    }
+                ) {
+                    Box(
+                        contentAlignment = Alignment.BottomCenter,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                    ){
+                        CartItemRow(
+                            cartItem = item,
+                            addQuantityAction = onIncreaseQuantity,
+                            removeItemAction = onDecreaseQuantity
+                        )
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
+                    }
+                }
+                LaunchedEffect(dismissState.currentValue) {
+                    if (dismissState.currentValue != SwipeToDismissBoxValue.EndToStart &&
+                        dismissState.targetValue == SwipeToDismissBoxValue.Settled
+                    ) {
+                        dismissState.reset()
+                    }
+                }
+            }
+        } else {
+            item {
+                EmptyState(
+                    imgRes = R.drawable.ic_empty_cart,
+                    mainText = "Cart is empty",
+                    description = "Add some items to cart"
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun CartItemRow(
@@ -271,6 +358,7 @@ fun CartItemRow(
         modifier = modifier
             .fillMaxWidth()
             .height(90.dp)
+            .background(MaterialTheme.colorScheme.background)
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
