@@ -2,6 +2,7 @@ package com.outfitgo.store.data.datasource.remote.wishlist
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.domain.model.product.Product
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -49,7 +50,9 @@ class WishlistRemoteDataSourceImpl @Inject constructor(
             .await()
             .documents
             .mapNotNull { document ->
-                document.toObject(Product::class.java)
+                // requires providing default values to Product primary constructor
+                // document.toObject(Product::class.java)
+                document.toProduct()
             }
     }
 
@@ -64,8 +67,11 @@ class WishlistRemoteDataSourceImpl @Inject constructor(
             .await()
             .documents
             .mapNotNull { doc ->
-                doc.toObject(Product::class.java)
+                // requires providing default values to Product primary constructor
+                // doc.toObject(Product::class.java)
+                doc.toProduct()
             }
         return products.any { cleanId(it.id) == cleanId(productId) }
     }
 }
+
