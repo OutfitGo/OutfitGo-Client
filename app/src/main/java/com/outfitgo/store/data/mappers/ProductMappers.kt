@@ -36,3 +36,15 @@ fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
         reviews = ReviewUtils.generateRandomReviews(),
     )
 }
+
+fun DetailedProduct.toProduct(): Product {
+    return Product(
+        id = this.id,
+        name = this.title,
+        type = this.category,
+        price = this.price,
+        imageUrl = this.imageUrls.first(),
+        vendor = this.vendor,
+        pageCursor = ""
+    )
+}
