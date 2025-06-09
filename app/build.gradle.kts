@@ -8,6 +8,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     kotlin("plugin.serialization") version "2.1.21"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -180,5 +181,10 @@ dependencies {
 
     // extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
+    // firestore
+    implementation("com.google.firebase:firebase-firestore")
 
 }
