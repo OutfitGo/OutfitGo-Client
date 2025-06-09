@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.NavigateNext
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,12 +52,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.toCurrency
+import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.domain.model.Review
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.domain.model.product.DetailedProduct
+import com.outfitgo.store.presentation.cart.CartIntent
 import com.outfitgo.store.presentation.components.RatingBar
 import com.outfitgo.store.presentation.components.ReviewCard
 import com.outfitgo.store.presentation.productdetails.ProductDetailsEffect
@@ -80,8 +84,8 @@ fun ProductDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(pageCount = { state.product.imageUrls.size })
-    var showAllReviews by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+    var showConfirmationDialog by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -275,11 +279,9 @@ fun ProductDetailsScreen(
                     }
                 }
 
-                val reviewsToShow =
-                    if (showAllReviews) state.product.reviews else state.product.reviews.take(2) // Show first 2 reviews initially
                 item {
                     LazyRow {
-                        items(reviewsToShow) { review ->
+                        items(state.product.reviews.take(2) ) { review ->
                             ReviewCard(review)
                         }
                     }
@@ -293,7 +295,11 @@ fun ProductDetailsScreen(
                             .padding(horizontal = 16.dp)
                     ) {
                         IconButton(onClick = {
-                            onIntent(ProductDetailsIntent.AddToWishlist(productId))
+                            if(state.isFavorite) {
+                                showConfirmationDialog = true
+                            } else {
+                                onIntent(ProductDetailsIntent.AddToWishlist(state.product.toProduct()))
+                            }
                         }) {
                             Icon(
                                 imageVector = if (state.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -316,7 +322,31 @@ fun ProductDetailsScreen(
         }
 
 
+        if(showConfirmationDialog) {
+            AlertDialog(
+                onDismissRequest = { showConfirmationDialog = false },
+                title = { Text("Remove ${state.product.title}") },
+                text = { Text("Are you sure you want to remove this item from your wishlist?") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showConfirmationDialog = false
+                            onIntent(ProductDetailsIntent.RemoveFromWishList(state.product.id))
+                        }
+                    ) {
+                        Text("Remove")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showConfirmationDialog = false }) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
     }
+
+
 }
 
 
