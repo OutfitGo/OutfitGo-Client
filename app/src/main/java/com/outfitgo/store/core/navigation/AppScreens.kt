@@ -58,6 +58,9 @@ object SearchRoute
 @Serializable
 object RegisterRoute
 
+@Serializable
+object WishlistRoute
+
 data class TopLevelRoute<T : Any>(
     val title: String,
     val route: T,

@@ -4,9 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
+import com.outfitgo.store.data.mappers.toProduct
+import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.domain.usecase.auth.GetSavedUserIdUseCase
 import com.outfitgo.store.domain.usecase.cart.AddProductToCartUseCase
 import com.outfitgo.store.domain.usecase.products.GetProductByIdUseCase
 import com.outfitgo.store.domain.usecase.wishlist.AddProductToWishlistUseCase
+import com.outfitgo.store.domain.usecase.wishlist.GetIsProductInWishlistUseCase
+import com.outfitgo.store.domain.usecase.wishlist.RemoveProductFromWishlistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,11 +21,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "ProductDetailsViewModel"
+
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     private val getProductByIdUseCase: GetProductByIdUseCase,
     private val addProductToCartUseCase: AddProductToCartUseCase,
-    private val addProductToWishlistUseCase: AddProductToWishlistUseCase
+    private val addProductToWishlistUseCase: AddProductToWishlistUseCase,
+    private val removeProductFromWishlistUseCase: RemoveProductFromWishlistUseCase,
+    private val getSavedUserIdUseCase: GetSavedUserIdUseCase,
+    private val getIsInWishlistUseCase: GetIsProductInWishlistUseCase
 ): ViewModel() {
 
     private val _state: MutableStateFlow<ProductDetailsState> = MutableStateFlow(ProductDetailsState())
@@ -29,14 +39,47 @@ class ProductDetailsViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<ProductDetailsEffect>()
     val effect = _effect.asSharedFlow()
 
+    private lateinit var userId: String
+
+    init {
+        viewModelScope.launch {
+            userId = getSavedUserIdUseCase.execute() ?: ""
+            Log.i(TAG, "userId: $userId")
+        }
+    }
+
 
     fun processIntent(intent: ProductDetailsIntent) {
         when (intent) {
             is ProductDetailsIntent.AddToCart -> addToCart(intent.productId)
-            is ProductDetailsIntent.AddToWishlist -> addToWishList(intent.productId)
+            is ProductDetailsIntent.AddToWishlist -> addToWishList(intent.product)
+            is ProductDetailsIntent.RemoveFromWishList -> removeFromWishlist(intent.productId)
             is ProductDetailsIntent.GetProductById -> loadProduct(intent.productId)
             else -> Unit
         }
+    }
+
+    private fun removeFromWishlist(productId: String) {
+        Log.i(TAG, "removeFromWishlist: started")
+        runIfAuthenticated(
+            authedBlock = {
+                viewModelScope.launch {
+                    try {
+                        removeProductFromWishlistUseCase.execute(userId, productId)
+                        _state.update { it.copy(isFavorite = false) }
+                        _effect.emit(ProductDetailsEffect.SendSnackBar("removed from favorite"))
+                    } catch (exp: Exception) {
+                        _effect.emit(ProductDetailsEffect.SendSnackBar(exp.message ?: "Error while removing from wishlist"))
+                    }
+                }
+
+            },
+            unAuthedBlock = {
+                viewModelScope.launch {
+                    _effect.emit(ProductDetailsEffect.SendSnackBar("can't remove from wishlist in guest mode, please login first"))
+                }
+            }
+        )
     }
 
     private fun loadProduct(productId: String) {
@@ -45,6 +88,18 @@ class ProductDetailsViewModel @Inject constructor(
             try {
                 val product = getProductByIdUseCase.execute(productId)
                 _state.update { it.copy(product = product, isLoading = false) }
+
+                runIfAuthenticated(
+                    authedBlock = {
+                        viewModelScope.launch {
+                            val isFav = getIsInWishlistUseCase.execute(userId, _state.value.product.id)
+                            Log.i(TAG, "loadProduct: $productId isFav: $isFav")
+                            _state.update { it.copy(isFavorite = isFav) }
+                        }
+                    },
+                    unAuthedBlock = {}
+                )
+
             } catch (ex: Exception) {
                 _state.update { it.copy(isLoading = false) }
                 _effect.emit(ProductDetailsEffect.SendSnackBar(ex.localizedMessage ?: "ERROR"))
@@ -53,21 +108,55 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     private fun addToCart(productId: String) {
-        _state.update { it.copy(isAddedToCart = true) }
-        viewModelScope.launch {
-            try{
-                addProductToCartUseCase.execute(Const.cartId,1,_state.value.product.id)
-                _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
-            } catch (e:Exception){
-                Log.d("``TAG``", "addToCart: ${e.message} id is $productId ")
+        runIfAuthenticated(
+            authedBlock = {
+                viewModelScope.launch {
+                    try {
+                        addProductToCartUseCase.execute(Const.cartId, 1, _state.value.product.id)
+                        _state.update { it.copy(isAddedToCart = true) }
+                        _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+                    } catch (e: Exception) {
+                        Log.d("``TAG``", "addToCart: ${e.message} id is $productId ")
+                    }
+                }
+            },
+            unAuthedBlock = {
+                viewModelScope.launch {
+                    _effect.emit(ProductDetailsEffect.SendSnackBar("You Can't add Products to cart in guest mode, please login first"))
+                }
             }
-        }
+        )
     }
 
-    private fun addToWishList(productId: String) {
-        _state.update { it.copy(isFavorite = !(it.isFavorite)) }
-        viewModelScope.launch {
-            _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Wishlist"))
+    private fun addToWishList(product: Product) {
+        runIfAuthenticated(
+            authedBlock = {
+                viewModelScope.launch {
+                    try {
+                        Log.i(TAG, "addToWishList: started")
+                        addProductToWishlistUseCase.execute(userId, product)
+                        _state.update { it.copy(isFavorite = true) }
+                        Log.i(TAG, "addToWishList: added successfully")
+                    } catch (exp: Exception) {
+                        _effect.emit(ProductDetailsEffect.SendSnackBar(exp.message ?: "ERROR while adding to wishlist"))
+                    }
+
+                }
+            },
+            unAuthedBlock = {
+                viewModelScope.launch {
+                    _effect.emit(ProductDetailsEffect.SendSnackBar("You Can't add Products to wishlist in guest mode, please login first"))
+                }
+            }
+        )
+
+    }
+
+    private fun runIfAuthenticated(authedBlock: () -> Unit, unAuthedBlock: () -> Unit) {
+        if(userId.isNotBlank()) {
+            authedBlock()
+        } else {
+            unAuthedBlock()
         }
     }
 

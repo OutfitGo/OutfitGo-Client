@@ -31,6 +31,7 @@ import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
+import com.outfitgo.store.presentation.wishlist.WishlistScreen
 
 @Composable
 fun AppNavHost(
@@ -140,9 +141,14 @@ fun AppNavHost(
         }
 
         composable<SettingsRoute> {
-            SettingsScreen {
-                navController.navigate(CurrencySettingsRoute)
-            }
+            SettingsScreen(
+                onNavToCurrencySettings = {
+                    navController.navigate(CurrencySettingsRoute)
+                },
+                onNavToWishlistScreen = {
+                    navController.navigate(WishlistRoute)
+                }
+            )
         }
 
         composable<CurrencySettingsRoute> {
@@ -188,6 +194,18 @@ fun AppNavHost(
                 },
                 onGoToHome = {
                     navController.navigate(HomeRoute)
+                }
+            )
+        }
+
+        composable<WishlistRoute> {
+            WishlistScreen(
+                modifier = Modifier.fillMaxSize(),
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onGoToProductDetails = {productId ->
+                    navController.navigate(ProductDetailsRoute(productId))
                 }
             )
         }
