@@ -17,4 +17,7 @@
     <string name="filters">Filters</string>
     <string name="no_results_found">No Results Found</string>
     <string name="search_empty_state_description">Try checking your spelling or using different keywords. We couldn’t find any products matching your search.</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="back">Back</string>
+    <string name="delete_item_from_wishlist">Delete Item from wishlist</string>
 </resources>
