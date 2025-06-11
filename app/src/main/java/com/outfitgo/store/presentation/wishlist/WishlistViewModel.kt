@@ -1,5 +1,6 @@
 package com.outfitgo.store.presentation.wishlist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.domain.model.product.Product
@@ -11,10 +12,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.isActive
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val TAG = "WishlistViewModel"
 
 @HiltViewModel
 class WishlistViewModel @Inject constructor (
@@ -41,8 +43,31 @@ class WishlistViewModel @Inject constructor (
         when(intent) {
             is WishlistIntent.AddProductToCart -> addProductToCart(intent.product)
             WishlistIntent.GetAllWishlistProducts -> loadProducts()
+            WishlistIntent.RefreshWishlistProducts -> refreshProducts()
             is WishlistIntent.RemoveProduct -> removeProduct(intent.product)
             else -> Unit
+        }
+    }
+
+    private fun refreshProducts() {
+        Log.i(TAG, "refreshProducts: ")
+        _state.update { it.copy(isRefreshing = true) }
+        viewModelScope.launch {
+            try {
+                safeAuth(
+                    authBlock = {
+                        val products = getAllProductsFromWishlistUseCase.execute(userId)
+                        _state.update { it.copy(isRefreshing = false, products = products) }
+                    },
+                    unAuthBlock = {
+                        _state.update { it.copy(isRefreshing = false) }
+                        _effect.emit(WishlistEffect.SendSnackBar("You Must Be Authenticated"))
+                    }
+                )
+            } catch (exp: Exception) {
+                _state.update { it.copy(isRefreshing = false) }
+                _effect.emit(WishlistEffect.SendSnackBar(exp.message ?: "ERROR"))
+            }
         }
     }
 
