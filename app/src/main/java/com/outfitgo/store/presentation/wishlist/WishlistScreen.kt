@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,6 +78,7 @@ fun WishlistScreenContent(
     val snackbarHostState = remember { SnackbarHostState() }
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var selectedProductToDelete: Product? by remember { mutableStateOf(null) }
+    var isRefreshing by remember { mutableStateOf(false) }
 
 
     // effects
@@ -111,47 +113,58 @@ fun WishlistScreenContent(
         modifier = modifier
     ) { innerPadding ->
 
-        if (state.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else if (state.products.isEmpty()) {
-            EmptyState(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                imgRes = R.drawable.wishlist_empty,
-                mainText = "Empty Wishlist",
-                description = "start browsing and add items to wishlist"
-            )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
-                items(state.products, key = { it.id }) { product ->
-                    WishlistItem(
-                        product = product,
-                        onRemoveClicked = {
-                            showConfirmationDialog = true
-                            selectedProductToDelete = it
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        onClicked = {
-                            onIntent(WishlistIntent.GoToProductDetails(it))
-                        }
-                    )
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = {
+                onIntent(WishlistIntent.RefreshWishlistProducts)
+            },
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else if (state.products.isEmpty()) {
+                EmptyState(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    imgRes = R.drawable.wishlist_empty,
+                    mainText = "Empty Wishlist",
+                    description = "start browsing and add items to wishlist"
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    items(state.products, key = { it.id }) { product ->
+                        WishlistItem(
+                            product = product,
+                            onRemoveClicked = {
+                                showConfirmationDialog = true
+                                selectedProductToDelete = it
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            onClicked = {
+                                onIntent(WishlistIntent.GoToProductDetails(it))
+                            }
+                        )
+                    }
                 }
             }
         }
+
+
 
         if (showConfirmationDialog) {
             AlertDialog(

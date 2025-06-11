@@ -149,7 +149,6 @@ class ProductDetailsViewModel @Inject constructor(
                     } catch (exp: Exception) {
                         _effect.emit(ProductDetailsEffect.SendSnackBar(exp.message ?: "ERROR while adding to wishlist"))
                     }
-
                 }
             },
             unAuthedBlock = {
