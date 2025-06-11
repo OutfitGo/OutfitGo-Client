@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.domain.model.product.ProductVariant
 import com.outfitgo.store.storefront.GetProductByIdQuery
 import com.outfitgo.store.storefront.LatestProductsQuery
 
@@ -21,10 +22,8 @@ fun LatestProductsQuery.Edge.toProduct(): Product {
 
 fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
 
-
-
     return DetailedProduct(
-        id = this.variants.edges.first().node.id,
+        id = this.id,
         title = this.title,
         description = this.description,
         price = "${this.priceRange.maxVariantPrice.amount}",
@@ -35,7 +34,9 @@ fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
         category = this.productType,
         imageUrls = this.images.nodes.map { "${it.src}" },
         reviews = ReviewUtils.generateRandomReviews(),
+        variants = this.variants.nodes.map { ProductVariant(id = it.id, title = it.title) }
     )
+
 }
 
 fun DetailedProduct.toProduct(): Product {
