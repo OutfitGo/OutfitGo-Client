@@ -3,8 +3,10 @@ package com.outfitgo.store.presentation.search
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.usecase.products.SearchProductByTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -16,6 +18,7 @@ import javax.inject.Inject
 
 private const val TAG = "SearchViewModel"
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchProductByTitleUseCase: SearchProductByTitleUseCase
@@ -25,6 +28,9 @@ class SearchViewModel @Inject constructor(
 
     private val _searchState = MutableStateFlow(SearchUiState())
     val searchState = _searchState.asStateFlow()
+
+    // to handle result of searching when user decreases the price
+    private var originalProducts: List<Product> = emptyList()
 
     init {
         viewModelScope.launch {
@@ -47,6 +53,9 @@ class SearchViewModel @Inject constructor(
                 _searchState.update { it.copy(searchTitle = intent.newTitle) }
             }
             is SearchScreenIntent.FilterProductsByPrice -> filterProductsByPrice(intent.price)
+            is SearchScreenIntent.ChangeCurrentPrice -> {
+                _searchState.update { it.copy(currentPrice = intent.currentPrice) }
+            }
             else -> Unit
         }
     }
@@ -55,11 +64,15 @@ class SearchViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
-                val products = searchProductByTitleUseCase.execute(title).sortedBy { it.price }
-                val maxPrice = products.last().price.toDouble() + 100
+                val products = searchProductByTitleUseCase.execute(title)
+                val maxPrice = products.maxOf { it.price.toDouble() } + 50
                 _searchState.update { it.copy(maxPrice = maxPrice) }
-                val filteredProducts = products.filter {
+
+                originalProducts = products
+                val filteredProducts = originalProducts.filter {
                     it.price.toDouble() <= _searchState.value.maxPrice
+                            &&
+                            it.price.toDouble() > _searchState.value.currentPrice.toDouble()
                 }
                 _state.update { it.copy(products = filteredProducts, isLoading = false) }
             } catch (exp: Exception) {
@@ -74,7 +87,7 @@ class SearchViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             try {
-                val filteredProducts = _state.value.products.filter {
+                val filteredProducts = originalProducts.filter {
                     it.price.toDouble() >= price
                 }
                 _state.update { it.copy(products = filteredProducts, isLoading = false) }

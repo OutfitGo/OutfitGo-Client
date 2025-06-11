@@ -10,7 +10,8 @@ data class SearchScreenUiState(
 data class SearchUiState(
     val searchTitle: String = "",
     val minPrice: Double = 0.0,
-    val maxPrice: Double = 100.0
+    val maxPrice: Double = 100.0,
+    val currentPrice: Float = 0f
 )
 
 sealed interface SearchScreenIntent {
@@ -19,4 +20,5 @@ sealed interface SearchScreenIntent {
     data class FilterProductsByPrice(val price: Double): SearchScreenIntent
     data object GoBack: SearchScreenIntent
     data class GoToProductDetails(val productId: String): SearchScreenIntent
+    data class ChangeCurrentPrice(val currentPrice: Float) : SearchScreenIntent
 }
