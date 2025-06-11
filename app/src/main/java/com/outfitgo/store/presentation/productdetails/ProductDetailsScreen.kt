@@ -22,10 +22,12 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.NavigateNext
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,7 +54,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import coil3.compose.AsyncImage
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.toCurrency
@@ -60,7 +61,7 @@ import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.domain.model.Review
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.domain.model.product.DetailedProduct
-import com.outfitgo.store.presentation.cart.CartIntent
+import com.outfitgo.store.domain.model.product.ProductVariant
 import com.outfitgo.store.presentation.components.RatingBar
 import com.outfitgo.store.presentation.components.ReviewCard
 import com.outfitgo.store.presentation.productdetails.ProductDetailsEffect
@@ -139,6 +140,7 @@ fun ProductDetailsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
                     .background(MaterialTheme.colorScheme.background)
             ) {
 
@@ -149,7 +151,7 @@ fun ProductDetailsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
-                            .padding(16.dp)
+                            .padding(vertical = 16.dp)
                             .clip(RoundedCornerShape(12.dp))
                     ) { page ->
                         // Use AsyncImage to load images from URLs
@@ -190,7 +192,7 @@ fun ProductDetailsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(vertical = 16.dp)
                     ) {
                         Text(state.product.category, modifier = Modifier.alpha(0.8f))
                         Text(
@@ -243,11 +245,35 @@ fun ProductDetailsScreen(
                             )
                         }
                         Text(
-                            text = "${CurrencyExchange.currentCurrencyUnit} ${state.product.price.toCurrency()}",
+                            text = "${state.product.price.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = 16.dp)
+                            modifier = Modifier.padding(bottom = 8.dp)
                         )
+                    }
+                }
+
+                item {
+                    Text(
+                        text = "Available Variants",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    LazyRow(modifier = Modifier.padding(bottom = 8.dp)) {
+                        items(state.product.variants) {
+                            FilterChip(
+                                selected = it.id == state.selectedVariantId,
+                                onClick = { onIntent(ProductDetailsIntent.SelectProductVariant(it)) },
+                                label = { Text(it.title) },
+                                leadingIcon = {
+                                    if (it.id == state.selectedVariantId) Icon(
+                                        Icons.Outlined.Check,
+                                        contentDescription = null
+                                    )
+                                },
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
                     }
                 }
 
@@ -256,15 +282,13 @@ fun ProductDetailsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = "Customer Reviews",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
-                            modifier = Modifier.padding(bottom = 16.dp)
                         )
 
                         TextButton(onClick = {
@@ -280,7 +304,7 @@ fun ProductDetailsScreen(
                 }
 
                 item {
-                    LazyRow {
+                    LazyRow(modifier = Modifier.padding(bottom = 8.dp)) {
                         items(state.product.reviews.take(2) ) { review ->
                             ReviewCard(review)
                         }
@@ -292,7 +316,7 @@ fun ProductDetailsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(vertical = 16.dp)
                     ) {
                         IconButton(onClick = {
                             if(state.isFavorite) {
@@ -308,8 +332,8 @@ fun ProductDetailsScreen(
                         }
 
                         Button(onClick = {
-                            onIntent(ProductDetailsIntent.AddToCart(productId))
-                        }, modifier = Modifier.weight(1f), enabled = !state.isAddedToCart) {
+                            onIntent(ProductDetailsIntent.AddToCart(state.selectedVariantId))
+                        }, modifier = Modifier.weight(1f)) {
                             if (state.isAddedToCart) {
                                 Text("Already In Cart")
                             } else {
@@ -384,7 +408,13 @@ fun PreviewProductDetailsScreen() {
                     dateString = "2024-05-20"
                 )
             ),
-            currencyCode = "USD"
+            currencyCode = "USD",
+            variants = listOf(
+                ProductVariant(id = "sdlfkjsdl", title = "4 / burgandy"),
+                ProductVariant(id = "sdlfkjsdl", title = "5 / burgandy"),
+                ProductVariant(id = "sdlfkjsdl", title = "10 / burgandy"),
+                ProductVariant(id = "sdlfkjsdl", title = "8 / burgandy"),
+            )
         )
 
         ProductDetailsScreen(
