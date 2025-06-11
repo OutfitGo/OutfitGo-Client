@@ -112,9 +112,17 @@ class ProductDetailsViewModel @Inject constructor(
             authedBlock = {
                 viewModelScope.launch {
                     try {
-                        addProductToCartUseCase.execute(Const.cartId, 1, _state.value.selectedVariantId)
-                        _state.update { it.copy(isAddedToCart = true) }
-                        _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+                        if (_state.value.selectedVariantId.isEmpty()) {
+                            _effect.emit(ProductDetailsEffect.SendSnackBar("You Have to Choose Variant to be added to the cart"))
+                        } else {
+                            addProductToCartUseCase.execute(
+                                Const.cartId,
+                                1,
+                                _state.value.selectedVariantId
+                            )
+                            _state.update { it.copy(isAddedToCart = true) }
+                            _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+                        }
                     } catch (e: Exception) {
                         Log.d("``TAG``", "addToCart: ${e.message} id is $productId ")
                     }
