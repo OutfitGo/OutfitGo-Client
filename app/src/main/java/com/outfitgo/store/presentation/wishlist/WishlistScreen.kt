@@ -161,7 +161,7 @@ fun WishlistScreenContent(
                 },
                 confirmButton = {
                     TextButton(onClick = {
-                        onIntent(WishlistIntent.RemoveProduct(selectedProductToDelete ?: Product()))
+                        onIntent(WishlistIntent.RemoveProduct(selectedProductToDelete!!))
                         showConfirmationDialog = false
                         selectedProductToDelete = null
                     }) { Text("Remove") }
