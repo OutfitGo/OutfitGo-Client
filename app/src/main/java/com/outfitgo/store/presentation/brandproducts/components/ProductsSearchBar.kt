@@ -23,13 +23,13 @@ import com.outfitgo.store.R
 
 @Composable
 fun ProductsSearchBar(
+    modifier: Modifier = Modifier,
     onQueryChanged: (String) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .padding(8.dp),
         value = searchQuery,
         shape = RoundedCornerShape(24.dp),

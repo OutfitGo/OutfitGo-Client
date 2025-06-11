@@ -1,6 +1,7 @@
 package com.outfitgo.store.presentation.productdetails
 
 import com.outfitgo.store.domain.model.product.DetailedProduct
+import com.outfitgo.store.domain.model.product.Product
 
 data class ProductDetailsState(
     val product: DetailedProduct = DetailedProduct(
@@ -24,7 +25,8 @@ data class ProductDetailsState(
 
 sealed interface ProductDetailsIntent{
     data class GetProductById(val productId: String): ProductDetailsIntent
-    data class AddToWishlist(val productId: String): ProductDetailsIntent
+    data class AddToWishlist(val product: Product): ProductDetailsIntent
+    data class RemoveFromWishList(val productId: String): ProductDetailsIntent
     data class AddToCart(val productId: String): ProductDetailsIntent
 }
 

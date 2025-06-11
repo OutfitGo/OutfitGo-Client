@@ -1,0 +1,20 @@
+query GetCouponsQuery {
+    discountNodes(first: 10) {
+        edges {
+            node {
+                discount {
+                    ... on DiscountCodeBasic {
+                        codes(first: 5) {
+                            edges {
+                                node {
+                                    code
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
