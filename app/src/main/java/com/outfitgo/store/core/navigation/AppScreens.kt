@@ -10,7 +10,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.outfitgo.store.domain.model.Collection
 import kotlinx.serialization.Serializable
 
 sealed class AppScreens {
@@ -60,6 +59,14 @@ object RegisterRoute
 
 @Serializable
 object WishlistRoute
+
+@Serializable
+data class PendingRoute(
+    val email: String,
+    val password: String,
+    val firstName: String,
+    val lastName: String
+)
 
 data class TopLevelRoute<T : Any>(
     val title: String,

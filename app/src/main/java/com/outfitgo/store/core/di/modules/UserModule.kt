@@ -1,9 +1,9 @@
 package com.outfitgo.store.core.di.modules
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.apollographql.apollo.ApolloClient
+import com.google.firebase.auth.FirebaseAuth
 import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
 import com.outfitgo.store.data.datasource.local.user.UserLocalDataSource
 import com.outfitgo.store.data.datasource.local.user.UserLocalDataSourceImpl
@@ -14,7 +14,6 @@ import com.outfitgo.store.domain.repository.user.UsersRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -26,11 +25,13 @@ object UserModule {
     @Singleton
     fun provideUsersRepository(
         remoteDataSource: UserRemoteDataSource,
-        localDataSource: UserLocalDataSource
+        localDataSource: UserLocalDataSource,
+        firebaseAuth: FirebaseAuth
     ): UsersRepository {
         return UsersRepositoryImpl(
-            remoteDataSource,
-            localDataSource = localDataSource
+            remoteDataSource = remoteDataSource,
+            localDataSource = localDataSource,
+            firebaseAuth = firebaseAuth
         )
     }
 
@@ -44,6 +45,12 @@ object UserModule {
     @Singleton
     fun provideUsersRemoteDataSource(@StorefrontApollo client: ApolloClient): UserRemoteDataSource {
         return UserRemoteDataSourceImpl(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
     }
 
 }
