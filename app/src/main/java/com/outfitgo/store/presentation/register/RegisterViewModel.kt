@@ -1,9 +1,9 @@
 package com.outfitgo.store.presentation.register
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.domain.usecase.auth.RegisterNewUserUseCase
+import com.outfitgo.store.domain.usecase.auth.SendVerificationEmailUseCase
 import com.outfitgo.store.domain.usecase.auth.ValidationResult
 import com.outfitgo.store.presentation.util.auth.isValidEmail
 import com.outfitgo.store.presentation.util.auth.isValidName
@@ -21,6 +21,7 @@ private const val TAG = "RegisterViewModel"
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
+    private val sendVerificationEmailUseCase: SendVerificationEmailUseCase,
     private val registerNewUserUseCase: RegisterNewUserUseCase
 ) : ViewModel() {
 
@@ -55,20 +56,33 @@ class RegisterViewModel @Inject constructor(
             if(isValidInput) {
                 _state.update { it.copy(isLoading = true) }
                 try {
-                    val user = registerNewUserUseCase.execute(
-                        firstName = _state.value.firstName,
-                        lastName = _state.value.lastName,
+                    /*                    val user = registerNewUserUseCase.execute(
+                                            firstName = _state.value.firstName,
+                                            lastName = _state.value.lastName,
+                                            email = _state.value.email,
+                                            password = _state.value.password
+                                        )
+                                        if(user != null) { // success
+                                            _effect.emit(RegisterEffect.GoToHome)
+                                            Log.i(TAG, "register: successfully added user ${user.firstname}")
+                                            Log.i(TAG, "register: id: ${user.id}")
+                                        } else { // failure
+                                            _state.update { it.copy(isLoading = false) }
+                                            _effect.emit(RegisterEffect.SendSnackBar("Failure"))
+                                        }*/
+                    sendVerificationEmailUseCase.execute(
                         email = _state.value.email,
                         password = _state.value.password
                     )
-                    if(user != null) { // success
-                        _effect.emit(RegisterEffect.GoToHome)
-                        Log.i(TAG, "register: successfully added user ${user.firstname}")
-                        Log.i(TAG, "register: id: ${user.id}")
-                    } else { // failure
-                        _state.update { it.copy(isLoading = false) }
-                        _effect.emit(RegisterEffect.SendSnackBar("Failure"))
-                    }
+                    _effect.emit(
+                        RegisterEffect.GoToPendingScreen(
+                            email = _state.value.email,
+                            password = _state.value.password,
+                            firstName = _state.value.firstName,
+                            lastName = _state.value.lastName
+                        )
+                    )
+                    _state.update { it.copy(isLoading = false) }
                 } catch (exp: Exception) {
                     _state.update { it.copy(isLoading = false) }
                     _effect.emit(RegisterEffect.SendSnackBar(exp.message ?: "ERROR"))

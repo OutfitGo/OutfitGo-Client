@@ -27,4 +27,10 @@ sealed interface RegisterIntent {
 sealed interface RegisterEffect {
     data class SendSnackBar(val msg: String): RegisterEffect
     object GoToHome: RegisterEffect
+    data class GoToPendingScreen(
+        val email: String,
+        val password: String,
+        val firstName: String,
+        val lastName: String
+    ) : RegisterEffect
 }
