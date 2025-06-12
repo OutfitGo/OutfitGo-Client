@@ -1,7 +1,7 @@
 package com.outfitgo.store.data.repository.product
 
 import com.outfitgo.store.data.datasource.remote.product.ProductsRemoteDataSource
-import com.outfitgo.store.domain.model.product.CommonProduct
+import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.domain.repository.product.ProductsRepository
 import javax.inject.Inject
@@ -12,7 +12,7 @@ class ProductsRepositoryImpl @Inject constructor(
     override suspend fun fetchLatestProducts(
         first: Int,
         after: String?
-    ): List<CommonProduct> {
+    ): List<Product> {
         return productsRemoteDataSource.fetchLatestProducts(
             first = first,
             after = after
@@ -25,8 +25,8 @@ class ProductsRepositoryImpl @Inject constructor(
     ): DetailedProduct {
         return productsRemoteDataSource.fetchProductById(id, variantCount)
     }
-
-    override suspend fun searchProductsByTitle(title: String): List<CommonProduct> {
+    
+    override suspend fun searchProductsByTitle(title: String): List<Product> {
         return productsRemoteDataSource.fetchProductsByTitle(title)
     }
 }

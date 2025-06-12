@@ -1,6 +1,7 @@
 package com.outfitgo.store.core.navigation
 
 import ProductDetailsScreen
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,6 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
+import com.outfitgo.store.presentation.cart.CartScreen
+import com.outfitgo.store.presentation.categories.CategoriesScreen
+import com.outfitgo.store.presentation.categoryproducts.CategoryProductsScreen
 import com.outfitgo.store.presentation.home.HomeScreen
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
@@ -27,6 +31,7 @@ import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
+import com.outfitgo.store.presentation.wishlist.WishlistScreen
 
 @Composable
 fun AppNavHost(
@@ -75,6 +80,34 @@ fun AppNavHost(
             )
         }
 
+        composable<CategoriesRoute> {
+            CategoriesScreen(
+                onNavigateToCategoryProducts = { category ->
+                    Log.d("```TAG```", "AppNavHost: Clicked")
+                    navController.navigate(
+                        CategoryProductsRoute(
+                            categoryHandle = category.handle,
+                            categoryName = category.name
+                        )
+                    )
+                }
+            )
+        }
+
+        composable<CategoryProductsRoute> {
+            val entry = it.toRoute<CategoryProductsRoute>()
+            CategoryProductsScreen(
+                categoryName = entry.categoryName,
+                categoryHandle = entry.categoryHandle,
+                onNavigateToProductDetails = { product ->
+                    navController.navigate(ProductDetailsRoute(product.id))
+                },
+                onNavigateUp = {
+                    navController.navigateUp()
+                }
+            )
+        }
+
         composable<BrandProductsRoute> {
             val entry = it.toRoute<BrandProductsRoute>()
             BrandProductsScreen(
@@ -87,7 +120,9 @@ fun AppNavHost(
                 }
             )
         }
-
+        composable<CartRoute> {
+            CartScreen()
+        }
         composable<ProductDetailsRoute> {
             val entry = it.toRoute<ProductDetailsRoute>()
             val viewModel: ProductDetailsViewModel = hiltViewModel()
@@ -106,9 +141,14 @@ fun AppNavHost(
         }
 
         composable<SettingsRoute> {
-            SettingsScreen {
-                navController.navigate(CurrencySettingsRoute)
-            }
+            SettingsScreen(
+                onNavToCurrencySettings = {
+                    navController.navigate(CurrencySettingsRoute)
+                },
+                onNavToWishlistScreen = {
+                    navController.navigate(WishlistRoute)
+                }
+            )
         }
 
         composable<CurrencySettingsRoute> {
@@ -154,6 +194,18 @@ fun AppNavHost(
                 },
                 onGoToHome = {
                     navController.navigate(HomeRoute)
+                }
+            )
+        }
+
+        composable<WishlistRoute> {
+            WishlistScreen(
+                modifier = Modifier.fillMaxSize(),
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onGoToProductDetails = {productId ->
+                    navController.navigate(ProductDetailsRoute(productId))
                 }
             )
         }

@@ -153,7 +153,7 @@ fun RegisterScreenContent(
                 label = { Text("First Name") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
                     Text(
                         state.firstNameErrorMsg,
@@ -170,7 +170,7 @@ fun RegisterScreenContent(
                 label = { Text("Last Name") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
                     Text(
                         state.lastNameErrorMsg,
@@ -187,7 +187,7 @@ fun RegisterScreenContent(
                 label = { Text("Email") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
                     Text(
                         state.emailErrorMsg,
@@ -204,7 +204,7 @@ fun RegisterScreenContent(
                 label = { Text("Password") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
                     Text(
                         state.passwordErrorMsg,
@@ -228,7 +228,7 @@ fun RegisterScreenContent(
                 enabled = !state.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator()

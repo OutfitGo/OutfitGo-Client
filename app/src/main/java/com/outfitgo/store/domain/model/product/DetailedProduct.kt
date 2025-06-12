@@ -15,4 +15,6 @@ data class DetailedProduct(
     val rating: Double,
     val reviews: List<Review>,
     val currencyCode: String,
+    val variants: List<ProductVariant>
 )
+

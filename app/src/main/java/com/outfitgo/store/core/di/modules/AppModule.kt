@@ -86,9 +86,4 @@ object AppModule {
             }
         )
     }
-    @Provides
-    @Singleton
-    fun provideCurrencyManager(): CurrencyManager {
-        return CurrencyManager()
-    }
 }

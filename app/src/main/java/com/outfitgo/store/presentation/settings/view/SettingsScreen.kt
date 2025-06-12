@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.outfitgo.store.R
 
 @Composable
-fun SettingsScreen(onNavToCurrencySettings: () -> Unit) {
+fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -36,17 +36,30 @@ fun SettingsScreen(onNavToCurrencySettings: () -> Unit) {
             .padding(horizontal = 24.dp)
     ) {
         Text(stringResource(R.string.settings), style = MaterialTheme.typography.titleLarge)
-        SettingsScreenContent(onNavToCurrencySettings = onNavToCurrencySettings)
+        SettingsScreenContent(
+            onNavToCurrencySettings = onNavToCurrencySettings,
+            onNavToWishlistScreen = onNavToWishlistScreen
+        )
     }
 }
 
 @Composable
-fun SettingsScreenContent(onNavToCurrencySettings: () -> Unit, modifier: Modifier = Modifier) {
+fun SettingsScreenContent(
+    onNavToCurrencySettings: () -> Unit,
+    onNavToWishlistScreen: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column {
         SettingRow(
             title = stringResource(R.string.currency),
             icon = R.drawable.ic_currency,
             onClick = onNavToCurrencySettings
+        )
+
+        SettingRow(
+            title = "Wishlist",
+            icon = R.drawable.wishlist_icon,
+            onClick = onNavToWishlistScreen
         )
     }
 }

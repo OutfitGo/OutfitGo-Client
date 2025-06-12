@@ -1,0 +1,22 @@
+mutation AddBuyerToCartMutation($cartId: ID!,$customerAccessToken:String!){
+    cartBuyerIdentityUpdate(
+        cartId: $cartId,
+        buyerIdentity: {
+            customerAccessToken: $customerAccessToken
+        }
+    ) {
+        cart {
+            id
+            buyerIdentity {
+                customer {
+                    email
+                    firstName
+                }
+            }
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}

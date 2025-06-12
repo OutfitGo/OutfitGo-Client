@@ -1,6 +1,5 @@
 package com.outfitgo.store.presentation.search
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +13,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,8 +28,8 @@ import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.presentation.brandproducts.components.ProductsPageLoadingState
 import com.outfitgo.store.presentation.brandproducts.components.ProductsSearchBar
-import com.outfitgo.store.presentation.components.CommonProductItem
 import com.outfitgo.store.presentation.components.EmptyState
+import com.outfitgo.store.presentation.components.ProductItem
 
 private const val TAG = "SearchScreen"
 @Composable
@@ -95,18 +89,16 @@ fun SearchScreenContents(
                 }
             )
 
-            var sliderPosition by remember { mutableFloatStateOf(0f) }
             Slider(
-                value = sliderPosition,
+                value = searchState.currentPrice,
                 valueRange = searchState.minPrice.toFloat()..searchState.maxPrice.toFloat(),
                 onValueChange = {
-                    sliderPosition = it
-                    Log.i(TAG, "SearchScreenContents: $it")
+                    onEvent(SearchScreenIntent.ChangeCurrentPrice(it))
                     onEvent(SearchScreenIntent.FilterProductsByPrice(it.toDouble()))
                 },
                 steps = 5
             )
-            Text("From ${sliderPosition} ${CurrencyExchange.currentCurrencyUnit} To ${searchState.maxPrice} ${CurrencyExchange.currentCurrencyUnit}")
+            Text("From ${searchState.currentPrice} ${CurrencyExchange.currentCurrencyUnit} To ${searchState.maxPrice} ${CurrencyExchange.currentCurrencyUnit}")
 
             if (state.products.isEmpty() && !state.isLoading) {
                 EmptyState(
@@ -124,7 +116,7 @@ fun SearchScreenContents(
                         items = state.products
                     ) { index, product ->
 
-                        CommonProductItem(
+                        ProductItem(
                             product = product,
                             onProductClicked = {
                                 onEvent(SearchScreenIntent.GoToProductDetails(product.id))
