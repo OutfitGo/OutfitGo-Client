@@ -42,4 +42,5 @@
     <string name="see_order_status">See Order Status</string>
     <string name="no_orders_yet">No Orders Yet</string>
     <string name="empty_orders_description">It looks like you haven’t placed any orders yet. Start exploring our products and make your first purchase today!</string>
+    <string name="profile">Profile</string>
 </resources>
