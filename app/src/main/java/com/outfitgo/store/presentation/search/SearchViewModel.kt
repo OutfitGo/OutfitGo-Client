@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.usecase.products.SearchProductByTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private const val TAG = "SearchViewModel"
@@ -26,6 +28,8 @@ class SearchViewModel @Inject constructor(
     private val _state = MutableStateFlow(SearchScreenUiState())
     val state = _state.asStateFlow()
 
+    private val _queryState = MutableStateFlow("")
+
     private val _searchState = MutableStateFlow(SearchUiState())
     val searchState = _searchState.asStateFlow()
 
@@ -34,11 +38,11 @@ class SearchViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _searchState
+            _queryState
                 .debounce(500)
                 .distinctUntilChanged()
                 .collectLatest {
-                    searchByTitle(it.searchTitle)
+                    searchByTitle(it)
                 }
         }
     }
@@ -46,17 +50,33 @@ class SearchViewModel @Inject constructor(
 
     fun processIntent(intent: SearchScreenIntent) {
         when(intent) {
-            is SearchScreenIntent.MaxPriceChanged -> {
-                _searchState.update { it.copy(maxPrice = intent.newMax) }
+            is SearchScreenIntent.SearchRangeChanged -> {
+                _searchState.update { it.copy(range = intent.newRange) }
             }
             is SearchScreenIntent.SearchTitleChanged -> {
-                _searchState.update { it.copy(searchTitle = intent.newTitle) }
+                _queryState.update { intent.newTitle }
             }
-            is SearchScreenIntent.FilterProductsByPrice -> filterProductsByPrice(intent.price)
-            is SearchScreenIntent.ChangeCurrentPrice -> {
-                _searchState.update { it.copy(currentPrice = intent.currentPrice) }
-            }
+
+            is SearchScreenIntent.FilterProductsByRange -> filterProductsByRange(intent.range)
             else -> Unit
+        }
+    }
+
+    private fun filterProductsByRange(range: ClosedFloatingPointRange<Float>) {
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    val filteredProducts = originalProducts.filter {
+                        it.price.toFloat() in range
+                    }
+                    _state.update { it.copy(products = filteredProducts, isLoading = false) }
+                }
+            } catch (exp: Exception) {
+                _state.update { it.copy(products = emptyList(), isLoading = false) }
+                Log.e(TAG, "searchByTitle: error in search", exp)
+            }
+
         }
     }
 
@@ -65,14 +85,19 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val products = searchProductByTitleUseCase.execute(title)
-                val maxPrice = products.maxOf { it.price.toDouble() } + 50
-                _searchState.update { it.copy(maxPrice = maxPrice) }
+                val maxPrice = products.maxOf { it.price.toFloat() } + 20
+                var minPrice = products.minOf { it.price.toFloat() } - 20
+                if (minPrice < 0) minPrice = 0f
+                _searchState.update {
+                    it.copy(
+                        maxRange = (minPrice..maxPrice),
+                        range = (minPrice..maxPrice),
+                    )
+                }
 
                 originalProducts = products
                 val filteredProducts = originalProducts.filter {
-                    it.price.toDouble() <= _searchState.value.maxPrice
-                            &&
-                            it.price.toDouble() > _searchState.value.currentPrice.toDouble()
+                    it.price.toFloat() in _searchState.value.range
                 }
                 _state.update { it.copy(products = filteredProducts, isLoading = false) }
             } catch (exp: Exception) {
@@ -82,22 +107,5 @@ class SearchViewModel @Inject constructor(
 
         }
     }
-
-    private fun filterProductsByPrice(price: Double) {
-        _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
-            try {
-                val filteredProducts = originalProducts.filter {
-                    it.price.toDouble() >= price
-                }
-                _state.update { it.copy(products = filteredProducts, isLoading = false) }
-            } catch (exp: Exception) {
-                _state.update { it.copy(products = emptyList(), isLoading = false) }
-                Log.e(TAG, "searchByTitle: error in search", exp)
-            }
-
-        }
-    }
-
 
 }
