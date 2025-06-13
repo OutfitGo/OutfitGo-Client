@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.usecase.address.CreateAddressUseCase
 import com.outfitgo.store.domain.usecase.address.DeleteAddressUseCase
@@ -80,9 +79,8 @@ class AddressViewModel @Inject constructor(
     private fun loadAddressesWithDefault() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { it.copy(isLoading = true) }
-            val addresses = getAddressesUseCase(Const.userToken)
-//            val addresses = getAddressesUseCase(userToken)
-            val defaultAddress = getDefaultAddressUseCase(Const.userToken)
+            val addresses = getAddressesUseCase(userToken)
+            val defaultAddress = getDefaultAddressUseCase(userToken)
 
             val updatedList = addresses.map {
                 it.copy(isDefault = getPureId(it.id) == getPureId(defaultAddress.id))
@@ -99,7 +97,7 @@ class AddressViewModel @Inject constructor(
     private fun deleteAddress(id: String) {
         viewModelScope.launch {
             try {
-                deleteAddressUseCase(token = Const.userToken, addressId = id)
+                deleteAddressUseCase(token = userToken, addressId = id)
                 _state.update { it.copy(addresses = it.addresses.filter { it.id != id }) }
                 _effect.emit(AddressEffect.onAddressRemoved)
             } catch (e: Exception) {
@@ -111,7 +109,7 @@ class AddressViewModel @Inject constructor(
     private fun addAddress(address: Address) {
         viewModelScope.launch {
             try {
-                addAddressUseCase(token = Const.userToken, address = address)
+                addAddressUseCase(token = userToken, address = address)
                 _effect.emit(AddressEffect.onAddAddress)
             } catch (e: Exception) {
                 Log.d("``TAG``", "addAddress: ${e.message}")
@@ -122,7 +120,7 @@ class AddressViewModel @Inject constructor(
     private fun updateAddress(updatedAddress: Address) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                updateAddressUseCase(token = Const.userToken, updatedAddress)
+                updateAddressUseCase(token = userToken, updatedAddress)
                 if (updatedAddress.isDefault){
                     updateDefaultAddress(updatedAddress.id)
                 }
@@ -140,7 +138,7 @@ class AddressViewModel @Inject constructor(
     private fun updateDefaultAddress(addressId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                setDefaultAddressUseCase(Const.userToken, addressId = addressId)
+                setDefaultAddressUseCase(userToken, addressId = addressId)
             } catch (e: Exception) {
                 _effect.emit(
                     AddressEffect.onAddressUpdateError(
