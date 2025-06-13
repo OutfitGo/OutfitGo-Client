@@ -134,7 +134,7 @@ fun CartScreen(
                 couponMessage = cartState.value.couponMessage,
                 onCouponCodeChange = { viewModel.processIntent(CartIntent.UpdateCouponCode(it)) },
                 onApplyCouponClick = { viewModel.processIntent(CartIntent.ApplyCoupon) },
-                onContinueClick = { /* handle */ },
+                onContinueClick = { viewModel.processIntent(CartIntent.Checkout) },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }

@@ -43,7 +43,7 @@ fun GetCartQuery.Node.toDomain(): CartItem {
     return CartItem(
         id = id,
         quantity = quantity,
-        merchandise = (merchandise as? GetCartQuery.Merchandise)?.toDomain() ?: Merchandise("", "","")
+        merchandise = (merchandise as? GetCartQuery.Merchandise)?.toDomain() ?: Merchandise("", "","","")
     )
 }
 
@@ -51,7 +51,8 @@ fun GetCartQuery.Merchandise.toDomain(): Merchandise {
     return Merchandise(
         title = onProductVariant?.title ?: "",
         price = "${onProductVariant?.price?.amount ?: "0.0"}",
-        img = "${onProductVariant?.product?.featuredImage?.url?: ""}"
+        img = "${onProductVariant?.product?.featuredImage?.url?: ""}",
+        variantId = onProductVariant?.id?: ""
     )
 }
 

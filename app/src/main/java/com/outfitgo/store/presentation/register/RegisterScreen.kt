@@ -61,6 +61,7 @@ fun RegisterScreen(
     onContinueAsGuestClicked: () -> Unit,
     onGoToLoginClicked: () -> Unit,
     onGoToHome: () -> Unit,
+    onGoToPending: (email: String, password: String, firstName: String, lastName: String) -> Unit,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
@@ -75,7 +76,8 @@ fun RegisterScreen(
         },
         effectFlow = viewModel.effect,
         modifier = modifier,
-        onGoToHome = onGoToHome
+        onGoToHome = onGoToHome,
+        onGoToPending = onGoToPending
     )
 
 }
@@ -87,6 +89,7 @@ fun RegisterScreenContent(
     onEvent: (RegisterIntent) -> Unit,
     effectFlow: SharedFlow<RegisterEffect>,
     onGoToHome: () -> Unit,
+    onGoToPending: (email: String, password: String, firstName: String, lastName: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
@@ -99,7 +102,12 @@ fun RegisterScreenContent(
                     snackbarHostState.showSnackbar(effect.msg)
                 }
                 is RegisterEffect.GoToHome -> onGoToHome()
-                else -> Unit
+                is RegisterEffect.GoToPendingScreen -> onGoToPending(
+                    effect.email,
+                    effect.password,
+                    effect.firstName,
+                    effect.lastName
+                )
             }
         }
     }
@@ -272,7 +280,10 @@ private fun RegisterScreenPreview() {
             onEvent = { },
             effectFlow = MutableSharedFlow(),
             modifier = Modifier.fillMaxSize(),
-            onGoToHome = {}
+            onGoToHome = {},
+            onGoToPending = { e, p, f, l ->
+
+            }
         )
     }
 

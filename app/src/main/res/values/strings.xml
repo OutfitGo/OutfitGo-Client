@@ -20,4 +20,26 @@
     <string name="wishlist">Wishlist</string>
     <string name="back">Back</string>
     <string name="delete_item_from_wishlist">Delete Item from wishlist</string>
+    <string name="share_from_wishlist">share %1$s from wishlist</string>
+    <string name="orders">Orders</string>
+    <string name="items">Items</string>
+    <string name="total_price">Total Price</string>
+    <string name="ordered_at">Ordered at: %1$s</string>
+    <string name="payment_status">Payment Status</string>
+    <string name="order">Order #%1$s</string>
+    <string name="total_orders">Total Orders (%1$s)</string>
+    <string name="your_orders">Your Orders</string>
+    <string name="order_details">Order Details</string>
+    <string name="order_summery">Order Summery</string>
+    <string name="items_count">%1$s items</string>
+    <string name="order_number">Order Number</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="contact_information">Contact Information</string>
+    <string name="variant">Variant: %1$s</string>
+    <string name="each">%1$s %2$s each</string>
+    <string name="order_items">Order Items (%1$s)</string>
+    <string name="total">Total</string>
+    <string name="see_order_status">See Order Status</string>
+    <string name="no_orders_yet">No Orders Yet</string>
+    <string name="empty_orders_description">It looks like you haven’t placed any orders yet. Start exploring our products and make your first purchase today!</string>
 </resources>

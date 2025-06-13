@@ -1,5 +1,6 @@
 package com.outfitgo.store.presentation.settings.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,11 +25,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.outfitgo.store.R
 
+private const val TAG = "SettingsScreen"
+
 @Composable
 fun SettingsScreen(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
-    onNavToAddressScreen: () -> Unit
+    onNavToAddressScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -43,7 +47,12 @@ fun SettingsScreen(
         SettingsScreenContent(
             onNavToCurrencySettings = onNavToCurrencySettings,
             onNavToWishlistScreen = onNavToWishlistScreen,
-            onNavToAddressScreen = onNavToAddressScreen
+
+            onNavToAddressScreen = onNavToAddressScreen,
+            onNavToOrdersScreen = onNavToOrdersScreen,
+            onLogoutClicked = {
+                Log.i(TAG, "SettingsScreen: logout clicked")
+            }
         )
     }
 }
@@ -53,6 +62,8 @@ fun SettingsScreenContent(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
     onNavToAddressScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit,
+    onLogoutClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -67,10 +78,25 @@ fun SettingsScreenContent(
             icon = R.drawable.wishlist_icon,
             onClick = onNavToWishlistScreen
         )
+
         SettingRow(
             title = "Address",
             icon = R.drawable.ic_address,
             onClick = onNavToAddressScreen
+          )
+
+        SettingRow(
+            title = "Orders",
+            icon = R.drawable.orders_icon,
+            onClick = onNavToOrdersScreen
+        )
+        
+        SettingRow(
+            title = "Logout",
+            icon = R.drawable.ic_launcher_foreground,
+            onClick = {
+                onLogoutClicked()
+            }
         )
     }
 }

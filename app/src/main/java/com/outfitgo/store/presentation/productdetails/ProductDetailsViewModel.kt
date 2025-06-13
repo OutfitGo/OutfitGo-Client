@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
-import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.usecase.auth.GetSavedUserIdUseCase
 import com.outfitgo.store.domain.usecase.cart.AddProductToCartUseCase
@@ -51,10 +50,11 @@ class ProductDetailsViewModel @Inject constructor(
 
     fun processIntent(intent: ProductDetailsIntent) {
         when (intent) {
-            is ProductDetailsIntent.AddToCart -> addToCart(intent.productId)
+            is ProductDetailsIntent.AddToCart -> addToCart(intent.productVariantId)
             is ProductDetailsIntent.AddToWishlist -> addToWishList(intent.product)
             is ProductDetailsIntent.RemoveFromWishList -> removeFromWishlist(intent.productId)
             is ProductDetailsIntent.GetProductById -> loadProduct(intent.productId)
+            is ProductDetailsIntent.SelectProductVariant -> _state.update { it.copy(selectedVariantId = intent.variant.id) }
             else -> Unit
         }
     }
@@ -112,9 +112,17 @@ class ProductDetailsViewModel @Inject constructor(
             authedBlock = {
                 viewModelScope.launch {
                     try {
-                        addProductToCartUseCase.execute(Const.cartId, 1, _state.value.product.id)
-                        _state.update { it.copy(isAddedToCart = true) }
-                        _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+                        if (_state.value.selectedVariantId.isEmpty()) {
+                            _effect.emit(ProductDetailsEffect.SendSnackBar("You Have to Choose Variant to be added to the cart"))
+                        } else {
+                            addProductToCartUseCase.execute(
+                                Const.cartId,
+                                1,
+                                _state.value.selectedVariantId
+                            )
+                            _state.update { it.copy(isAddedToCart = true) }
+                            _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+                        }
                     } catch (e: Exception) {
                         Log.d("``TAG``", "addToCart: ${e.message} id is $productId ")
                     }
@@ -137,10 +145,10 @@ class ProductDetailsViewModel @Inject constructor(
                         addProductToWishlistUseCase.execute(userId, product)
                         _state.update { it.copy(isFavorite = true) }
                         Log.i(TAG, "addToWishList: added successfully")
+                        _effect.emit(ProductDetailsEffect.SendSnackBar("added ${product.name} to your Wishlist"))
                     } catch (exp: Exception) {
                         _effect.emit(ProductDetailsEffect.SendSnackBar(exp.message ?: "ERROR while adding to wishlist"))
                     }
-
                 }
             },
             unAuthedBlock = {
