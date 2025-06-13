@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.Collection
 import com.outfitgo.store.presentation.categories.CategoriesIntent.GoToCategoryProducts
+import com.outfitgo.store.presentation.categories.components.CategoriesLoadingState
 import com.outfitgo.store.presentation.categories.components.CategoryItem
 
 @Composable
@@ -48,7 +49,7 @@ private fun CategoriesScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -61,16 +62,20 @@ private fun CategoriesScreenContent(
             modifier = Modifier.height(24.dp)
         )
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            items(items = state.categories) { category ->
-                CategoryItem(
-                    category = category,
-                    onCategoryClicked = { category -> onEvent(GoToCategoryProducts(category = category)) }
-                )
+        if (state.isLoading) {
+            CategoriesLoadingState()
+        } else {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(items = state.categories) { category ->
+                    CategoryItem(
+                        category = category,
+                        onCategoryClicked = { category -> onEvent(GoToCategoryProducts(category = category)) }
+                    )
+                }
             }
         }
+
     }
 }

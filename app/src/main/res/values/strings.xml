@@ -81,4 +81,5 @@
     <string name="add_to_cart">Add To Cart</string>
     <string name="remove_title">Remove %1$s</string>
     <string name="are_you_sure_you_want_to_remove_this_item_from_your_wishlist">Are you sure you want to remove this item from your wishlist?</string>
+    <string name="outfit_go">Outfit Go</string>
 </resources>

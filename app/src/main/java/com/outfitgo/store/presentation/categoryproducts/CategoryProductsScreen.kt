@@ -102,7 +102,7 @@ private fun CategoryProductsScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(24.dp)
     ) {
         CategoryProductsHeaderBar(

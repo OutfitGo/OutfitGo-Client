@@ -24,9 +24,10 @@ import com.outfitgo.store.presentation.home.components.NewArrivalSection
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onNavigateToSearchScreen: () -> Unit = {},
-    onNavigateToBrandProducts: (String) -> Unit = {},
-    onNavigateToProductDetails: (Product) -> Unit = {}
+    onNavigateToSearchScreen: () -> Unit,
+    onNavigateToSettingsScreen: () -> Unit,
+    onNavigateToBrandProducts: (String) -> Unit,
+    onNavigateToProductDetails: (Product) -> Unit,
 ) {
     val homeState = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -43,7 +44,7 @@ fun HomeScreen(
                 }
 
                 is HomeIntent.GoToSearch -> onNavigateToSearchScreen()
-
+                is HomeIntent.GoToSettings -> onNavigateToSettingsScreen()
                 else -> viewModel.processIntent(event)
             }
         }
@@ -53,18 +54,21 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     homeState: HomeState,
-    onEvent: (HomeIntent) -> Unit
+    onEvent: (HomeIntent) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(all = 24.dp)
             .verticalScroll(rememberScrollState())
     ) {
         HomeHeaderBar(
             onSearchClicked = {
                 onEvent(HomeIntent.GoToSearch)
+            },
+            onSettingsClicked = {
+                onEvent(HomeIntent.GoToSettings)
             }
         )
 

@@ -19,12 +19,14 @@ import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.presentation.orders.OrdersIntent.GoBack
 import com.outfitgo.store.presentation.orders.components.OrdersScreenHeader
 import com.outfitgo.store.presentation.orders.components.OrdersSection
+import com.outfitgo.store.presentation.profile.components.UnAuthenticatedScreen
 
 @Composable
 fun OrdersScreen(
     viewModel: OrdersViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit,
-    onNavigateToOrderDetails: (Order) -> Unit
+    onNavigateToOrderDetails: (Order) -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -33,6 +35,7 @@ fun OrdersScreen(
         onEvent = { event ->
             when (event) {
                 is GoBack -> onNavigateUp()
+                is OrdersIntent.GoToLogin -> onNavigateToLogin()
                 is OrdersIntent.OpenOrderDetails -> {
                     onNavigateToOrderDetails(event.order)
                 }
@@ -50,7 +53,7 @@ private fun OrdersScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(24.dp)
     ) {
         OrdersScreenHeader(
@@ -74,7 +77,9 @@ private fun OrdersScreenContent(
                 onOrderClicked = { onEvent(OrdersIntent.OpenOrderDetails(order = it)) }
             )
         }else{
-            //TODO display the login state here
+            UnAuthenticatedScreen(
+                onClickLogin = { onEvent(OrdersIntent.GoToLogin) }
+            )
         }
     }
 }
