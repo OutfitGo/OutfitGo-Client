@@ -21,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,7 @@ private fun SearchScreenContents(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Search", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.search), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         onEvent(SearchScreenIntent.GoBack)
@@ -94,16 +95,6 @@ private fun SearchScreenContents(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            /*Slider(
-                value = searchState.currentPrice,
-                valueRange = searchState.minPrice.toFloat()..searchState.maxPrice.toFloat(),
-                onValueChange = {
-                    onEvent(SearchScreenIntent.ChangeCurrentPrice(it))
-                    onEvent(SearchScreenIntent.FilterProductsByPrice(it.toDouble()))
-                },
-                steps = 5
-            )*/
-
             RangeSlider(
                 value = searchState.range,
                 onValueChange = {
@@ -114,17 +105,15 @@ private fun SearchScreenContents(
             )
 
             Text(
-                "From ${
-                    String.format(
+                stringResource(
+                    R.string.from_to, String.format(
                         "%.2f",
                         searchState.range.start
-                    )
-                } ${CurrencyExchange.currentCurrencyUnit} To ${
-                    String.format(
+                    ), CurrencyExchange.currentCurrencyUnit, String.format(
                         "%.2f",
                         searchState.range.endInclusive
-                    )
-                } ${CurrencyExchange.currentCurrencyUnit}",
+                    ), CurrencyExchange.currentCurrencyUnit
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -134,8 +123,8 @@ private fun SearchScreenContents(
             if (state.products.isEmpty() && !state.isLoading) {
                 EmptyState(
                     imgRes = R.drawable.search_empty_img,
-                    mainText = "No Results Found",
-                    description = "Try checking your spelling or using different keywords. We couldn’t find any products matching your search."
+                    mainText = stringResource(R.string.no_results_found),
+                    description = stringResource(R.string.try_checking_your_spelling_or_using_different_keywords_we_couldn_t_find_any_products_matching_your_search)
                 )
             } else {
                 LazyVerticalGrid(

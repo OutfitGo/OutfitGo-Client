@@ -52,10 +52,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.data.mappers.toProduct
@@ -108,7 +110,7 @@ fun ProductDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Product Details") },
+                title = { Text(stringResource(R.string.product_details)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                 ),
@@ -219,7 +221,7 @@ fun ProductDetailsScreen(
                         )
 
                         Text(
-                            "Brand: ${state.product.vendor}",
+                            stringResource(R.string.brand, state.product.vendor),
                             fontWeight = Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
@@ -250,7 +252,7 @@ fun ProductDetailsScreen(
                         HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
 
                         Text(
-                            text = "Product Description",
+                            text = stringResource(R.string.product_description),
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                             modifier = Modifier.padding(top = 16.dp)
                         )
@@ -269,7 +271,7 @@ fun ProductDetailsScreen(
                 // variants section
                 item {
                     Text(
-                        text = "Available Variants",
+                        text = stringResource(R.string.available_variants),
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
@@ -301,14 +303,14 @@ fun ProductDetailsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Customer Reviews",
+                            text = stringResource(R.string.customer_reviews),
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                         )
 
                         TextButton(onClick = {
                             onShowMoreReviewsClicked(state.product.reviews)
                         }) {
-                            Text("More")
+                            Text(stringResource(R.string.more))
                             Icon(
                                 Icons.AutoMirrored.Outlined.NavigateNext,
                                 contentDescription = "more reviews"
@@ -337,9 +339,9 @@ fun ProductDetailsScreen(
                             .padding(vertical = 16.dp)
                     ) {
                         if (state.isAddedToCart) {
-                            Text("Already In Cart")
+                            Text(stringResource(R.string.already_in_cart))
                         } else {
-                            Text("Add To Cart")
+                            Text(stringResource(R.string.add_to_cart))
                         }
                     }
                 }
@@ -350,8 +352,8 @@ fun ProductDetailsScreen(
         if(showConfirmationDialog) {
             AlertDialog(
                 onDismissRequest = { showConfirmationDialog = false },
-                title = { Text("Remove ${state.product.title}") },
-                text = { Text("Are you sure you want to remove this item from your wishlist?") },
+                title = { Text(stringResource(R.string.remove_title, state.product.title)) },
+                text = { Text(stringResource(R.string.are_you_sure_you_want_to_remove_this_item_from_your_wishlist)) },
                 confirmButton = {
                     TextButton(
                         onClick = {
@@ -359,12 +361,12 @@ fun ProductDetailsScreen(
                             onIntent(ProductDetailsIntent.RemoveFromWishList(state.product.id))
                         }
                     ) {
-                        Text("Remove")
+                        Text(stringResource(R.string.remove))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showConfirmationDialog = false }) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             )

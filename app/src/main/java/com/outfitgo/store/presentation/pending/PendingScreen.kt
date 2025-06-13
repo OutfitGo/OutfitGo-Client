@@ -20,9 +20,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.outfitgo.store.R
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
@@ -84,7 +86,10 @@ fun PendingScreenContent(
         ) {
 
             Text(
-                "We Have Sent a Verification email to ${state.email}. \n Click the Button after clicking on link sent to your email",
+                stringResource(
+                    R.string.we_have_sent_a_verification_email_to_click_the_button_after_clicking_on_link_sent_to_your_email,
+                    state.email
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -100,7 +105,7 @@ fun PendingScreenContent(
                 if (state.isLoading) {
                     CircularProgressIndicator(color = Color.White)
                 } else {
-                    Text("I Have Verified my Email")
+                    Text(stringResource(R.string.i_have_verified_my_email))
                 }
             }
 
@@ -114,7 +119,7 @@ fun PendingScreenContent(
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    Text("Resend Verification Email")
+                    Text(stringResource(R.string.resend_verification_email))
                 }
             }
 
