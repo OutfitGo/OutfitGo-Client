@@ -29,22 +29,13 @@ class AddressViewModel @Inject constructor(
     private val deleteAddressUseCase: DeleteAddressUseCase,
     private val addAddressUseCase: CreateAddressUseCase,
     private val updateAddressUseCase: UpdateAddressUseCase,
-    private val setDefaultAddressUseCase: UpdateDefaultAddressUseCase,
-    private val getSavedUserTokenUseCase: GetSavedUserTokenUseCase
+    private val setDefaultAddressUseCase: UpdateDefaultAddressUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(AddressState())
     val state = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<AddressEffect>()
     val effect = _effect.asSharedFlow()
-
-    private lateinit var userToken: String
-
-    init {
-        viewModelScope.launch {
-            userToken = getSavedUserTokenUseCase.execute() ?: ""
-        }
-    }
 
     fun processIntent(intent: AddressIntent) {
         when (intent) {
@@ -79,8 +70,8 @@ class AddressViewModel @Inject constructor(
     private fun loadAddressesWithDefault() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { it.copy(isLoading = true) }
-            val addresses = getAddressesUseCase(userToken)
-            val defaultAddress = getDefaultAddressUseCase(userToken)
+            val addresses = getAddressesUseCase()
+            val defaultAddress = getDefaultAddressUseCase()
 
             val updatedList = addresses.map {
                 it.copy(isDefault = getPureId(it.id) == getPureId(defaultAddress.id))
@@ -97,7 +88,7 @@ class AddressViewModel @Inject constructor(
     private fun deleteAddress(id: String) {
         viewModelScope.launch {
             try {
-                deleteAddressUseCase(token = userToken, addressId = id)
+                deleteAddressUseCase(addressId = id)
                 _state.update { it.copy(addresses = it.addresses.filter { it.id != id }) }
                 _effect.emit(AddressEffect.onAddressRemoved)
             } catch (e: Exception) {
@@ -109,7 +100,7 @@ class AddressViewModel @Inject constructor(
     private fun addAddress(address: Address) {
         viewModelScope.launch {
             try {
-                addAddressUseCase(token = userToken, address = address)
+                addAddressUseCase(address = address)
                 _effect.emit(AddressEffect.onAddAddress)
             } catch (e: Exception) {
                 Log.d("``TAG``", "addAddress: ${e.message}")
@@ -120,8 +111,8 @@ class AddressViewModel @Inject constructor(
     private fun updateAddress(updatedAddress: Address) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                updateAddressUseCase(token = userToken, updatedAddress)
-                if (updatedAddress.isDefault){
+                updateAddressUseCase(updatedAddress)
+                if (updatedAddress.isDefault) {
                     updateDefaultAddress(updatedAddress.id)
                 }
                 _effect.emit(AddressEffect.onAddressUpdated)
@@ -138,7 +129,7 @@ class AddressViewModel @Inject constructor(
     private fun updateDefaultAddress(addressId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                setDefaultAddressUseCase(userToken, addressId = addressId)
+                setDefaultAddressUseCase(addressId = addressId)
             } catch (e: Exception) {
                 _effect.emit(
                     AddressEffect.onAddressUpdateError(
