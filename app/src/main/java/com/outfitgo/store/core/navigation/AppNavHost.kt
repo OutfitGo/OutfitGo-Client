@@ -274,7 +274,7 @@ fun AppNavHost(
                 },
                 onNavigateUp = {
                     navController.popBackStack()
-
+                }
                 
             )
         }
