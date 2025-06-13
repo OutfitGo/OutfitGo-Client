@@ -24,6 +24,8 @@ class UsersRepositoryImpl @Inject constructor(
         val loginResponse = remoteDataSource.loginByEmailAndPassword(email = email, password = password)
         localDataSource.saveUserToken(loginResponse.token)
 
+        localDataSource.saveUserEmail(email)
+
         val user = getUserByToken(loginResponse.token)
         localDataSource.saveUserId(user?.id ?: "NOT-FOUND")
         return user
@@ -51,6 +53,8 @@ class UsersRepositoryImpl @Inject constructor(
 
                 val loginResponse = remoteDataSource.loginByEmailAndPassword(email, password)
                 localDataSource.saveUserToken(loginResponse.token)
+
+                localDataSource.saveUserEmail(email)
 
                 Log.i(TAG, "registerUser: user created successfully")
                 return newUser
@@ -87,6 +91,10 @@ class UsersRepositoryImpl @Inject constructor(
 
     override suspend fun isLoggedIn(): Boolean {
         return localDataSource.isLoggedIn()
+    }
+
+    override suspend fun getSavedUserEmail(): String? {
+        return localDataSource.getSavedUserId()
     }
 
     override suspend fun getSavedUserId(): String? {
