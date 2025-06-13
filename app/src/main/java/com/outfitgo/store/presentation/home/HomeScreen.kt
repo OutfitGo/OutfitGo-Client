@@ -59,8 +59,7 @@ private fun HomeScreenContent(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.secondary)
-            .padding(top = 42.dp, bottom = 24.dp)
-            .padding(horizontal = 24.dp)
+            .padding(all = 24.dp)
             .verticalScroll(rememberScrollState())
     ) {
         HomeHeaderBar(
@@ -70,13 +69,13 @@ private fun HomeScreenContent(
         )
 
         Spacer(
-            modifier = Modifier.height(24.dp)
+            modifier = Modifier.height(16.dp)
         )
 
         CouponAdsSection(coupons = homeState.coupons)
 
         Spacer(
-            modifier = Modifier.height(24.dp)
+            modifier = Modifier.height(16.dp)
         )
 
         BrandsSection(
@@ -88,7 +87,7 @@ private fun HomeScreenContent(
         )
 
         Spacer(
-            modifier = Modifier.height(24.dp)
+            modifier = Modifier.height(16.dp)
         )
 
         NewArrivalSection(
