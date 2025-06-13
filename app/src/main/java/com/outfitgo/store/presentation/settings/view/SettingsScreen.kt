@@ -25,7 +25,11 @@ import androidx.compose.ui.unit.dp
 import com.outfitgo.store.R
 
 @Composable
-fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: () -> Unit) {
+fun SettingsScreen(
+    onNavToCurrencySettings: () -> Unit,
+    onNavToWishlistScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -38,7 +42,8 @@ fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: (
         Text(stringResource(R.string.settings), style = MaterialTheme.typography.titleLarge)
         SettingsScreenContent(
             onNavToCurrencySettings = onNavToCurrencySettings,
-            onNavToWishlistScreen = onNavToWishlistScreen
+            onNavToWishlistScreen = onNavToWishlistScreen,
+            onNavToOrdersScreen = onNavToOrdersScreen
         )
     }
 }
@@ -47,6 +52,7 @@ fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: (
 fun SettingsScreenContent(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -60,6 +66,12 @@ fun SettingsScreenContent(
             title = "Wishlist",
             icon = R.drawable.wishlist_icon,
             onClick = onNavToWishlistScreen
+        )
+
+        SettingRow(
+            title = "Orders",
+            icon = R.drawable.orders_icon,
+            onClick = onNavToOrdersScreen
         )
     }
 }
