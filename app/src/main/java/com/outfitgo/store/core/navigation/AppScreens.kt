@@ -10,11 +10,13 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.Collection
 import kotlinx.serialization.Serializable
 
 sealed class AppScreens {
 }
+
 @Serializable
 data object LoginRoute
 
@@ -51,6 +53,33 @@ data class CategoryProductsRoute(val categoryHandle: String, val categoryName: S
 @Serializable
 object SplashRoute
 
+@Serializable
+object AddressRoute
+
+@Serializable
+data class AddAddressRoute(val first:String?,val last:String?,val line: String?, val city: String?)
+
+@Serializable
+data class UpdateAddressRoute(
+    val addressId: String,
+    val addressFirstName: String,
+    val addressLastName: String,
+    val addressLine: String,
+    val addressCity: String,
+    val addressIsDefault: Boolean,
+    val line: String?, val city: String?
+)
+
+@Serializable
+data class MapPickRoute(
+    val source: String,
+    val addressId: String,
+    val addressFirstName: String,
+    val addressLastName: String,
+    val addressLine: String,
+    val addressCity: String,
+    val addressIsDefault: Boolean,
+)
 
 @Serializable
 object SearchRoute
