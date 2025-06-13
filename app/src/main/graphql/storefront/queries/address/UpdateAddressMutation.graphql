@@ -1,0 +1,33 @@
+mutation UpdateAddress(
+    $token: String!,
+    $addressId: ID!,
+    $firstName: String!
+    $lastName: String!
+    $address1: String!
+    $city: String!
+    $country: String
+    $phone: String) {
+    customerAddressUpdate(
+        customerAccessToken: $token,
+        id: $addressId,
+        address: {
+            firstName: $firstName
+            lastName: $lastName
+            address1: $address1
+            city: $city
+            country: $country
+            phone: $phone
+        }
+    ) {
+        customerAddress {
+            id
+            address1
+            city
+            country
+        }
+        customerUserErrors {
+            field
+            message
+        }
+    }
+}

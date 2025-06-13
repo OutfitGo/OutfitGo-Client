@@ -17,7 +17,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.ReviewUtils
+import com.outfitgo.store.presentation.address.AddAddressScreen
 import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
@@ -33,6 +35,9 @@ import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
 import com.outfitgo.store.presentation.register.RegisterScreen
 import com.outfitgo.store.presentation.search.SearchScreen
+import com.outfitgo.store.presentation.address.AddressScreen
+import com.outfitgo.store.presentation.address.UpdateAddressScreen
+import com.outfitgo.store.presentation.mappiker.MapPickerScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
@@ -156,9 +161,121 @@ fun AppNavHost(
                 onNavToWishlistScreen = {
                     navController.navigate(WishlistRoute)
                 },
-                onNavToOrdersScreen = {
+              onNavToOrdersScreen = {
                     navController.navigate(OrdersRoute)
+                },
+
+                onNavToAddressScreen = {
+                    navController.navigate(AddressRoute)
                 }
+            )
+        }
+
+        composable<AddressRoute> {
+            AddressScreen(
+                onEditAddress = { address ->
+                    navController.navigate(
+                        UpdateAddressRoute(
+                            address.id,
+                            address.firstName,
+                            address.lastName,
+                            address.line,
+                            address.city,
+                            address.isDefault,
+                            null,
+                            null
+                        )
+                    )
+                },
+                onNavToAddAddressScreen = {
+                    navController.navigate(AddAddressRoute(null, null, null, null))
+                }
+            )
+        }
+
+        composable<AddAddressRoute> {
+            val entry = it.toRoute<AddAddressRoute>()
+            AddAddressScreen(
+                first=entry.first,
+                last=entry.last,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onPickFromMap = { first, last ->
+                    navController.navigate(MapPickRoute(
+                        "add",
+                        "",
+                        first, last,
+                        "", "", false
+                    ))
+                },
+                lineFromMap = entry.line,
+                cityFromMap = entry.city
+            )
+        }
+        composable<UpdateAddressRoute> {
+            val entry = it.toRoute<UpdateAddressRoute>()
+            UpdateAddressScreen(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onPickFromMap = {
+                    navController.navigate(
+                        MapPickRoute(
+                            "update",
+                            addressId = entry.addressId,
+                            addressFirstName = entry.addressFirstName,
+                            addressLastName = entry.addressLastName,
+                            addressLine = entry.addressLine,
+                            addressCity = entry.addressCity,
+                            addressIsDefault = entry.addressIsDefault
+                        )
+                    )
+                },
+                lineFromMap = entry.line,
+                cityFromMap = entry.city,
+                addressId = entry.addressId,
+                addressFirstName = entry.addressFirstName,
+                addressLastName = entry.addressLastName,
+                addressLine = entry.addressLine,
+                addressCity = entry.addressCity,
+                addressIsDefault = entry.addressIsDefault,
+            )
+        }
+        composable<MapPickRoute> {
+            val entry = it.toRoute<MapPickRoute>()
+            MapPickerScreen(
+                viewModel = hiltViewModel(),
+                initialLat = 30.071941,
+                initialLong = 31.018529,
+                onSaveClicked = { line, city ->
+                    if (entry.source == "add") {
+                        navController.navigate(AddAddressRoute(entry.addressFirstName,entry.addressLastName,line, city)) {
+                            popUpTo(AddressRoute) {
+                                inclusive = false
+                            }
+                        }
+                    } else {
+                        navController.navigate(UpdateAddressRoute(
+                            addressLine = entry.addressLine,
+                            addressCity = entry.addressCity,
+                            addressIsDefault = entry.addressIsDefault,
+                            line = line,
+                            city = city,
+                            addressId = entry.addressId,
+                            addressFirstName = entry.addressFirstName,
+                            addressLastName = entry.addressLastName
+                        )) {
+                            popUpTo(AddressRoute) {
+                                inclusive = false
+                            }
+                        }
+                    }
+                },
+                onNavigateUp = {
+                    navController.popBackStack()
+
+                
             )
         }
 

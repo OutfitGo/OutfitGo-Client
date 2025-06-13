@@ -31,7 +31,8 @@ private const val TAG = "SettingsScreen"
 fun SettingsScreen(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
-    onNavToOrdersScreen: () -> Unit,
+    onNavToAddressScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -46,6 +47,8 @@ fun SettingsScreen(
         SettingsScreenContent(
             onNavToCurrencySettings = onNavToCurrencySettings,
             onNavToWishlistScreen = onNavToWishlistScreen,
+
+            onNavToAddressScreen = onNavToAddressScreen,
             onNavToOrdersScreen = onNavToOrdersScreen,
             onLogoutClicked = {
                 Log.i(TAG, "SettingsScreen: logout clicked")
@@ -58,6 +61,7 @@ fun SettingsScreen(
 fun SettingsScreenContent(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
+    onNavToAddressScreen: () -> Unit,
     onNavToOrdersScreen: () -> Unit,
     onLogoutClicked: () -> Unit,
     modifier: Modifier = Modifier
@@ -74,6 +78,12 @@ fun SettingsScreenContent(
             icon = R.drawable.wishlist_icon,
             onClick = onNavToWishlistScreen
         )
+
+        SettingRow(
+            title = "Address",
+            icon = R.drawable.ic_address,
+            onClick = onNavToAddressScreen
+          )
 
         SettingRow(
             title = "Orders",

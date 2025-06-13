@@ -1,0 +1,32 @@
+mutation CreateAddressMutation(
+    $token: String!
+    $firstName: String!
+    $lastName: String!
+    $address1: String!
+    $city: String!
+    $country: String!
+    $phone: String
+) {
+    customerAddressCreate(
+        customerAccessToken: $token
+        address: {
+            firstName: $firstName
+            lastName: $lastName
+            address1: $address1
+            city: $city
+            country: $country
+            phone: $phone
+        }
+    ) {
+        customerAddress {
+            id
+            address1
+            city
+            country
+        }
+        customerUserErrors {
+            field
+            message
+        }
+    }
+}
