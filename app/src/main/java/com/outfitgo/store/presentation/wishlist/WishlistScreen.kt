@@ -46,7 +46,7 @@ fun WishlistScreen(
     modifier: Modifier = Modifier,
     viewModel: WishlistViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit,
-    onGoToProductDetails: (productId: String) -> Unit
+    onGoToProductDetails: (productId: String) -> Unit,
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
@@ -78,7 +78,6 @@ fun WishlistScreenContent(
     val snackbarHostState = remember { SnackbarHostState() }
     var showConfirmationDialog by remember { mutableStateOf(false) }
     var selectedProductToDelete: Product? by remember { mutableStateOf(null) }
-    var isRefreshing by remember { mutableStateOf(false) }
 
 
     // effects

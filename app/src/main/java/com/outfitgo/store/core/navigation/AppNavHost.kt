@@ -1,6 +1,7 @@
 package com.outfitgo.store.core.navigation
 
 import ProductDetailsScreen
+import android.content.Intent
 import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,12 +12,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
@@ -34,6 +37,8 @@ import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 import com.outfitgo.store.presentation.wishlist.WishlistScreen
+
+private const val TAG = "AppNavHost"
 
 @Composable
 fun AppNavHost(
@@ -217,9 +222,9 @@ fun AppNavHost(
                 onNavigateUp = {
                     navController.navigateUp()
                 },
-                onGoToProductDetails = {productId ->
+                onGoToProductDetails = { productId ->
                     navController.navigate(ProductDetailsRoute(productId))
-                }
+                },
             )
         }
 

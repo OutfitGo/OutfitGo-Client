@@ -16,7 +16,6 @@ sealed interface WishlistIntent {
     data class AddProductToCart(val product: Product): WishlistIntent
     data class GoToProductDetails(val product: Product): WishlistIntent
     object NavigateUp: WishlistIntent
-
 }
 
 sealed interface WishlistEffect {

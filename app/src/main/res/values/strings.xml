@@ -20,4 +20,5 @@
     <string name="wishlist">Wishlist</string>
     <string name="back">Back</string>
     <string name="delete_item_from_wishlist">Delete Item from wishlist</string>
+    <string name="share_from_wishlist">share %1$s from wishlist</string>
 </resources>
