@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -35,7 +36,8 @@ fun UnAuthenticatedScreen(modifier: Modifier = Modifier, onClickLogin: () -> Uni
         Spacer(Modifier.height(8.dp))
         Text(
             "you can't access this feature in guest mode, please login to your account to use it or create a new account",
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center
         )
 
         Spacer(Modifier.height(8.dp))

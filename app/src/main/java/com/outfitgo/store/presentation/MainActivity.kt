@@ -1,11 +1,8 @@
 package com.outfitgo.store.presentation
 
-
-import ProductDetailsScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -24,8 +21,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,14 +28,11 @@ import androidx.navigation.compose.rememberNavController
 import com.outfitgo.store.core.navigation.AppNavHost
 import com.outfitgo.store.core.navigation.HomeRoute
 import com.outfitgo.store.core.navigation.topLevelRoutes
-import com.outfitgo.store.presentation.cart.CartScreen
-import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -49,6 +41,7 @@ class MainActivity : ComponentActivity() {
             val currentDestination = backStackEntry?.destination
             val topLevelRouteNames = topLevelRoutes.map {  it.route::class.qualifiedName }
             val shouldShowBottomBar = currentDestination?.route in topLevelRouteNames
+
             OutfitGoTheme {
                 Scaffold(
                     bottomBar = {

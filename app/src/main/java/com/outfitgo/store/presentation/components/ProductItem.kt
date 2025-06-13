@@ -30,13 +30,16 @@ import com.outfitgo.store.domain.model.product.Product
 fun ProductItem(
     modifier: Modifier = Modifier,
     product: Product,
-    onProductClicked: (Product) -> Unit
+    onProductClicked: (Product) -> Unit,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .height(256.dp)
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(
+                color = MaterialTheme.colorScheme.secondary,
+                shape = RoundedCornerShape(16.dp)
+            )
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.primary,

@@ -17,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.address.AddAddressScreen
 import com.outfitgo.store.domain.model.order.Order
@@ -45,7 +44,6 @@ import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 import com.outfitgo.store.presentation.wishlist.WishlistScreen
 import kotlinx.serialization.json.Json
-
 
 @Composable
 fun AppNavHost(
@@ -90,6 +88,9 @@ fun AppNavHost(
                     navController.navigate(ProductDetailsRoute(it.id))
                 }, onNavigateToSearchScreen = {
                     navController.navigate(SearchRoute)
+                },
+                onNavigateToSettingsScreen = {
+                    navController.navigate(SettingsRoute)
                 }
             )
         }
@@ -159,16 +160,6 @@ fun AppNavHost(
             SettingsScreen(
                 onNavToCurrencySettings = {
                     navController.navigate(CurrencySettingsRoute)
-                },
-                onNavToWishlistScreen = {
-                    navController.navigate(WishlistRoute)
-                },
-              onNavToOrdersScreen = {
-                    navController.navigate(OrdersRoute)
-                },
-
-                onNavToAddressScreen = {
-                    navController.navigate(AddressRoute)
                 }
             )
         }
@@ -286,6 +277,9 @@ fun AppNavHost(
                 onNavigateUp = {
                     navController.navigateUp()
                 },
+                onNavigateToLogin = {
+                    navController.navigate(LoginRoute)
+                },
                 onNavigateToOrderDetails = { order ->
                     val orderJson = Json.encodeToString(order)
                     navController.navigate(OrderDetailsRoute(orderJson = orderJson))
@@ -393,7 +387,7 @@ fun AppNavHost(
                     navController.navigate(AboutUsRoute)
                 },
                 onAddressesClicked = {
-
+                    navController.navigate(AddressRoute)
                 },
                 onOrdersClicked = {
                     navController.navigate(OrdersRoute)
@@ -410,9 +404,7 @@ fun AppNavHost(
                     }
                 },
                 onLoginClicked = {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(HomeRoute) { inclusive = true }
-                    }
+                    navController.navigate(LoginRoute)
                 }
             )
         }
