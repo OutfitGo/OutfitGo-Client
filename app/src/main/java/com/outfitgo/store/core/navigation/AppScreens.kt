@@ -68,6 +68,14 @@ object RegisterRoute
 @Serializable
 object WishlistRoute
 
+@Serializable
+data class PendingRoute(
+    val email: String,
+    val password: String,
+    val firstName: String,
+    val lastName: String
+)
+
 data class TopLevelRoute<T : Any>(
     val title: String,
     val route: T,

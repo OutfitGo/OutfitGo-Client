@@ -1,5 +1,6 @@
 package com.outfitgo.store.presentation.settings.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.outfitgo.store.R
 
+private const val TAG = "SettingsScreen"
+
 @Composable
 fun SettingsScreen(
     onNavToCurrencySettings: () -> Unit,
@@ -44,6 +47,9 @@ fun SettingsScreen(
             onNavToCurrencySettings = onNavToCurrencySettings,
             onNavToWishlistScreen = onNavToWishlistScreen,
             onNavToOrdersScreen = onNavToOrdersScreen
+            onLogoutClicked = {
+                Log.i(TAG, "SettingsScreen: logout clicked")
+            }
         )
     }
 }
@@ -53,6 +59,7 @@ fun SettingsScreenContent(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
     onNavToOrdersScreen: () -> Unit,
+    onLogoutClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column {
@@ -72,6 +79,14 @@ fun SettingsScreenContent(
             title = "Orders",
             icon = R.drawable.orders_icon,
             onClick = onNavToOrdersScreen
+        )
+        
+        SettingRow(
+            title = "Logout",
+            icon = R.drawable.ic_launcher_foreground,
+            onClick = {
+                onLogoutClicked()
+            }
         )
     }
 }

@@ -27,6 +27,7 @@ import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
 import com.outfitgo.store.presentation.orderdetails.OrderDetailsScreen
 import com.outfitgo.store.presentation.orders.OrdersScreen
+import com.outfitgo.store.presentation.pending.PendingScreen
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
 import com.outfitgo.store.presentation.register.RegisterScreen
@@ -225,6 +226,16 @@ fun AppNavHost(
                 },
                 onGoToHome = {
                     navController.navigate(HomeRoute)
+                },
+                onGoToPending = { email, password, firstname, lastname ->
+                    navController.navigate(
+                        PendingRoute(
+                            email = email,
+                            password = password,
+                            firstName = firstname,
+                            lastName = lastname
+                        )
+                    )
                 }
             )
         }
@@ -238,6 +249,18 @@ fun AppNavHost(
                 onGoToProductDetails = { productId ->
                     navController.navigate(ProductDetailsRoute(productId))
                 }
+            )
+        }
+
+        composable<PendingRoute> {
+            val route = it.toRoute<PendingRoute>()
+            PendingScreen(
+                email = route.email,
+                password = route.password,
+                firstName = route.firstName,
+                lastName = route.lastName,
+                onGoToHome = { navController.navigate(HomeRoute) },
+                modifier = Modifier.fillMaxSize(),
             )
         }
 
