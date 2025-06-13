@@ -18,6 +18,8 @@ query CustomerOrdersQuery($customerAccessToken:String!, $first: Int!, $after: St
                     }
                     shippingAddress {
                         name
+                        firstName
+                        lastName
                         address1
                         address2
                         city

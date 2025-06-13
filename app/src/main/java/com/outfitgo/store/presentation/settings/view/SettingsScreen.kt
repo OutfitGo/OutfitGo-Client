@@ -46,7 +46,7 @@ fun SettingsScreen(
         SettingsScreenContent(
             onNavToCurrencySettings = onNavToCurrencySettings,
             onNavToWishlistScreen = onNavToWishlistScreen,
-            onNavToOrdersScreen = onNavToOrdersScreen
+            onNavToOrdersScreen = onNavToOrdersScreen,
             onLogoutClicked = {
                 Log.i(TAG, "SettingsScreen: logout clicked")
             }
