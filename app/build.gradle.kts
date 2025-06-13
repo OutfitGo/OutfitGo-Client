@@ -165,6 +165,7 @@ dependencies {
 
     //hilt
     implementation(libs.hilt.android)
+    debugImplementation(libs.ui.tooling)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -196,6 +197,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
     // firestore
     implementation("com.google.firebase:firebase-firestore")
+    // firebase auth
+    implementation("com.google.firebase:firebase-auth")
 
     //Google Maps
     implementation (libs.maps.compose)

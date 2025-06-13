@@ -5,10 +5,11 @@ import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -19,6 +20,7 @@ import androidx.navigation.toRoute
 import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.address.AddAddressScreen
+import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.categories.CategoriesScreen
@@ -26,6 +28,9 @@ import com.outfitgo.store.presentation.categoryproducts.CategoryProductsScreen
 import com.outfitgo.store.presentation.home.HomeScreen
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
+import com.outfitgo.store.presentation.orderdetails.OrderDetailsScreen
+import com.outfitgo.store.presentation.orders.OrdersScreen
+import com.outfitgo.store.presentation.pending.PendingScreen
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
 import com.outfitgo.store.presentation.register.RegisterScreen
@@ -37,6 +42,8 @@ import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 import com.outfitgo.store.presentation.wishlist.WishlistScreen
+import kotlinx.serialization.json.Json
+
 
 @Composable
 fun AppNavHost(
@@ -48,11 +55,11 @@ fun AppNavHost(
         navController = navController,
         startDestination = SplashRoute,
         modifier = modifier,
-        enterTransition = { fadeIn(tween(600)) + slideInVertically(tween(600)) },
+        enterTransition = { fadeIn(tween(600)) + slideInHorizontally(tween(600)) },
         exitTransition = {
-            fadeOut(tween(600)) + slideOutVertically(
+            fadeOut(tween(600)) + slideOutHorizontally(
                 tween(600),
-                targetOffsetY = { it / 2 })
+                targetOffsetX = { it / 2 })
         }
     ) {
 
@@ -128,6 +135,7 @@ fun AppNavHost(
         composable<CartRoute> {
             CartScreen()
         }
+
         composable<ProductDetailsRoute> {
             val entry = it.toRoute<ProductDetailsRoute>()
             val viewModel: ProductDetailsViewModel = hiltViewModel()
@@ -153,6 +161,10 @@ fun AppNavHost(
                 onNavToWishlistScreen = {
                     navController.navigate(WishlistRoute)
                 },
+              onNavToOrdersScreen = {
+                    navController.navigate(OrdersRoute)
+                },
+
                 onNavToAddressScreen = {
                     navController.navigate(AddressRoute)
                 }
@@ -262,6 +274,31 @@ fun AppNavHost(
                 },
                 onNavigateUp = {
                     navController.popBackStack()
+
+                
+            )
+        }
+
+        composable<OrdersRoute> {
+            OrdersScreen(
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onNavigateToOrderDetails = { order ->
+                    val orderJson = Json.encodeToString(order)
+                    navController.navigate(OrderDetailsRoute(orderJson = orderJson))
+                }
+            )
+        }
+
+        composable<OrderDetailsRoute> {
+            val entry = it.toRoute<OrderDetailsRoute>()
+            val order = Json.decodeFromString<Order>(entry.orderJson)
+            OrderDetailsScreen(
+                order = order,
+                onNavigateUp = { navController.navigateUp() },
+                onNavigateToProductDetails = { productId ->
+                    navController.navigate(ProductDetailsRoute(productId))
                 }
             )
         }
@@ -271,7 +308,7 @@ fun AppNavHost(
         }
 
         composable<ReviewsRoute> {
-            val reviews = ReviewUtils.generateRandomReviews(6)
+            val reviews = remember { ReviewUtils.generateRandomReviews() }
             ReviewsScreen(
                 reviews = reviews,
                 onNavigateUp = { navController.navigateUp() },
@@ -309,6 +346,16 @@ fun AppNavHost(
                 },
                 onGoToHome = {
                     navController.navigate(HomeRoute)
+                },
+                onGoToPending = { email, password, firstname, lastname ->
+                    navController.navigate(
+                        PendingRoute(
+                            email = email,
+                            password = password,
+                            firstName = firstname,
+                            lastName = lastname
+                        )
+                    )
                 }
             )
         }
@@ -321,7 +368,19 @@ fun AppNavHost(
                 },
                 onGoToProductDetails = { productId ->
                     navController.navigate(ProductDetailsRoute(productId))
-                }
+                },
+            )
+        }
+
+        composable<PendingRoute> {
+            val route = it.toRoute<PendingRoute>()
+            PendingScreen(
+                email = route.email,
+                password = route.password,
+                firstName = route.firstName,
+                lastName = route.lastName,
+                onGoToHome = { navController.navigate(HomeRoute) },
+                modifier = Modifier.fillMaxSize(),
             )
         }
 
