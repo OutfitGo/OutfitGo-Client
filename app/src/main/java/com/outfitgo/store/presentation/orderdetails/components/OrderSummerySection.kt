@@ -2,7 +2,6 @@ package com.outfitgo.store.presentation.orderdetails.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.outfitgo.store.R
 import com.outfitgo.store.core.util.convertISODateToReadableDate
+import com.outfitgo.store.domain.model.FinancialStatus
 
 @Composable
 fun OrderSummerySection(
@@ -106,7 +106,11 @@ fun OrderSummerySection(
                     Text(
                         modifier = Modifier
                             .background(
-                                color = Color(0x403CFF00),
+                                color = when (paymentStatus) {
+                                    FinancialStatus.PAID.name -> Color(0x403CFF00)
+                                    FinancialStatus.PENDING.name -> Color(0x40E1D848)
+                                    else -> Color(0x403CFF00)
+                                },
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .padding(vertical = 4.dp, horizontal = 16.dp),

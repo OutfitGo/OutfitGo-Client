@@ -84,15 +84,9 @@ fun OrderDetailsScreenContent(
                 )
             }
 
-            //TODO Remove this default value when the data is available
             item {
                 ShippingAddressSection(
-                    shippingAddress = order.shippingAddress ?: OrderShippingAddress(
-                        name = "John Doe",
-                        addressLine1 = "123 Main Street",
-                        addressLine2 = "New York, NY 10001",
-                        city = "United States"
-                    )
+                    shippingAddress = order.shippingAddress ?: return@item
                 )
             }
 

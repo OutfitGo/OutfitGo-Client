@@ -1,6 +1,6 @@
 package com.outfitgo.store.domain.model.order
 
-import com.outfitgo.store.domain.model.product.OrderProduct
+import com.outfitgo.store.domain.model.order.OrderProduct
 import kotlinx.serialization.Serializable
 
 @Serializable

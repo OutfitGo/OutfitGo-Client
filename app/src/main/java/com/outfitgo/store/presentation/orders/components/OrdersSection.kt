@@ -40,7 +40,7 @@ import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.convertISODateToReadableDate
 import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.domain.model.order.Order
-import com.outfitgo.store.domain.model.product.OrderProduct
+import com.outfitgo.store.domain.model.order.OrderProduct
 import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.presentation.brandproducts.components.ProductsPageLoadingState
 import com.outfitgo.store.presentation.components.EmptyState

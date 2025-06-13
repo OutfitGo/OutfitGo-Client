@@ -6,4 +6,5 @@ sealed interface CartIntent {
     data class RemoveItem(val id: String) : CartIntent
     data class UpdateCouponCode(val code: String) : CartIntent
     object ApplyCoupon : CartIntent
+    object Checkout : CartIntent
 }

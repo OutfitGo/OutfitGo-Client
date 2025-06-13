@@ -31,6 +31,8 @@ android {
         val apiKey = properties.getProperty("SHOPIFY_STORE_FRONT_ACCESS_TOKEN") ?: ""
         val adminApiKey = properties.getProperty("SHOPIFY_ADMIN_ACCESS_TOKEN") ?: ""
         val currencyApiKey = properties.getProperty("CURRENCY_API_KEY") ?: ""
+        val mapsApiKey = properties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+        manifestPlaceholders["MAPS_API_KEY"] = properties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
 
         buildConfigField(
             type = "String",
@@ -49,6 +51,13 @@ android {
             name = "CURRENCY_API_KEY",
             value = currencyApiKey
         )
+
+        buildConfigField(
+            type = "String",
+            name = "GOOGLE_MAPS_API_KEY",
+            value = mapsApiKey
+        )
+
     }
 
     buildTypes {
@@ -135,6 +144,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.places)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -142,7 +152,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
+    implementation("com.google.android.material:material:1.2.0")
     //Splash
     implementation(libs.androidx.core.splashscreen)
 
@@ -189,5 +199,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     // firebase auth
     implementation("com.google.firebase:firebase-auth")
+
+    //Google Maps
+    implementation (libs.maps.compose)
 
 }

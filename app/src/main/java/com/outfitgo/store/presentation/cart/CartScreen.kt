@@ -134,7 +134,7 @@ fun CartScreen(
                 couponMessage = cartState.value.couponMessage,
                 onCouponCodeChange = { viewModel.processIntent(CartIntent.UpdateCouponCode(it)) },
                 onApplyCouponClick = { viewModel.processIntent(CartIntent.ApplyCoupon) },
-                onContinueClick = { /* handle */ },
+                onContinueClick = { viewModel.processIntent(CartIntent.Checkout) },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
@@ -173,99 +173,6 @@ fun CartHeaderSection(modifier: Modifier = Modifier) {
     )
 }
 
-/*
-@Composable
-fun CartItemsListSection(
-    cartItems: List<CartItem>,
-    onIncreaseQuantity: (String, Int) -> Unit,
-    onDecreaseQuantity: (String, Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-
-        if (cartItems.isNotEmpty()) {
-            items(cartItems) { item ->
-                CartItemRow(
-                    item,
-                    addQuantityAction = onIncreaseQuantity,
-                    removeItemAction = onDecreaseQuantity
-                )
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                )
-            }
-        } else {
-            item {
-                Text("Add Some items to cart")
-            }
-        }
-    }
-
-    /*if (cartItems.isNotEmpty()) {
-        items(cartItems, key = { it.id }) { item ->
-            val dismissState = rememberDismissState(
-                confirmValueChange = {
-                    if (it == DismissValue.DismissedToStart) {
-                        onDecreaseQuantity(item.id, item.quantity)
-                        true
-                    } else false
-                }
-            )
-
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(DismissDirection.EndToStart),
-                background = {
-                    val color =
-                        if (dismissState.dismissDirection == DismissDirection.EndToStart) {
-                            Color.Red
-                        } else {
-                            Color.Transparent
-                        }
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color)
-                            .padding(horizontal = 20.dp),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete",
-                            tint = Color.White
-                        )
-                    }
-                },
-                dismissContent = {
-                    Column {
-                        CartItemRow(
-                            cartItem = item,
-                            addQuantityAction = onIncreaseQuantity,
-                            removeItemAction = onDecreaseQuantity
-                        )
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                        )
-                    }
-                }
-            )
-        }
-    } else {
-        item {
-            Text("Add Some items to cart")
-        }
-    }
-}*/
-}
-*/
 @Composable
 fun CartItemsListSection(
     cartItems: List<CartItem>,

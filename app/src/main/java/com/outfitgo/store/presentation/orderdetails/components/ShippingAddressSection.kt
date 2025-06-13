@@ -60,7 +60,7 @@ fun ShippingAddressSection(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = shippingAddress.name,
+                text = "${shippingAddress.firstName} ${shippingAddress.secondName}",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 14.sp
@@ -71,15 +71,7 @@ fun ShippingAddressSection(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = shippingAddress.addressLine1,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = shippingAddress.addressLine2,
+                text = shippingAddress.addressLine,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.outlineVariant
             )

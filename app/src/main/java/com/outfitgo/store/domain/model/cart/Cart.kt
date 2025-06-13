@@ -27,7 +27,8 @@ data class CartItem(
 data class Merchandise(
     val title: String,
     val price: String,
-    val img: String
+    val img: String,
+    val variantId:String,
 )
 
 data class DiscountCode(

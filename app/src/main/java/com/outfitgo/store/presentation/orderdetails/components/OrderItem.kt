@@ -30,7 +30,7 @@ import coil3.compose.AsyncImage
 import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.toCurrency
-import com.outfitgo.store.domain.model.product.OrderProduct
+import com.outfitgo.store.domain.model.order.OrderProduct
 
 @Composable
 fun OrderItem(
