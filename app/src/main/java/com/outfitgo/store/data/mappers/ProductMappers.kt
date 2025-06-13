@@ -3,7 +3,9 @@ package com.outfitgo.store.data.mappers
 import com.google.firebase.firestore.DocumentSnapshot
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.domain.model.ReviewUtils
+import com.outfitgo.store.domain.model.product.OrderProduct
 import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.storefront.CustomerOrdersQuery
 import com.outfitgo.store.domain.model.product.ProductVariant
 import com.outfitgo.store.storefront.GetProductByIdQuery
 import com.outfitgo.store.storefront.LatestProductsQuery
@@ -21,7 +23,6 @@ fun LatestProductsQuery.Edge.toProduct(): Product {
 }
 
 fun GetProductByIdQuery.Product.toDetailedProduct(): DetailedProduct {
-
     return DetailedProduct(
         id = this.id,
         title = this.title,
@@ -66,4 +67,15 @@ fun DocumentSnapshot.toProduct(): Product? {
         println("Error deserializing product: ${e.message} for document ${this.id}")
         null
     }
+}
+
+fun CustomerOrdersQuery.Edge1.toOrderProduct(): OrderProduct{
+    return OrderProduct(
+        id = node.variant?.product?.id ?: throw IllegalArgumentException("Product 'id' cannot be null"),
+        name = node.title,
+        price = node.variant.product.priceRange.minVariantPrice.amount as String,
+        imageUrl = node.variant.product.images.nodes.first().url.toString(),
+        quantity = node.quantity,
+        variantTitle = node.variant.title
+    )
 }

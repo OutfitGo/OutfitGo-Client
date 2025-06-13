@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.outfitgo.store.domain.model.ReviewUtils
+import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.categories.CategoriesScreen
@@ -25,6 +26,8 @@ import com.outfitgo.store.presentation.categoryproducts.CategoryProductsScreen
 import com.outfitgo.store.presentation.home.HomeScreen
 import com.outfitgo.store.presentation.login.LoginScreen
 import com.outfitgo.store.presentation.login.LoginViewModel
+import com.outfitgo.store.presentation.orderdetails.OrderDetailsScreen
+import com.outfitgo.store.presentation.orders.OrdersScreen
 import com.outfitgo.store.presentation.pending.PendingScreen
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
@@ -34,6 +37,7 @@ import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 import com.outfitgo.store.presentation.wishlist.WishlistScreen
+import kotlinx.serialization.json.Json
 
 
 @Composable
@@ -151,6 +155,33 @@ fun AppNavHost(
                 },
                 onNavToWishlistScreen = {
                     navController.navigate(WishlistRoute)
+                },
+                onNavToOrdersScreen = {
+                    navController.navigate(OrdersRoute)
+                }
+            )
+        }
+
+        composable<OrdersRoute> {
+            OrdersScreen(
+                onNavigateUp = {
+                    navController.navigateUp()
+                },
+                onNavigateToOrderDetails = { order ->
+                    val orderJson = Json.encodeToString(order)
+                    navController.navigate(OrderDetailsRoute(orderJson = orderJson))
+                }
+            )
+        }
+
+        composable<OrderDetailsRoute> {
+            val entry = it.toRoute<OrderDetailsRoute>()
+            val order = Json.decodeFromString<Order>(entry.orderJson)
+            OrderDetailsScreen(
+                order = order,
+                onNavigateUp = { navController.navigateUp() },
+                onNavigateToProductDetails = { productId ->
+                    navController.navigate(ProductDetailsRoute(productId))
                 }
             )
         }

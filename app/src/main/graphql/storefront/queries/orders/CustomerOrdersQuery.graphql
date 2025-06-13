@@ -1,0 +1,60 @@
+query CustomerOrdersQuery($customerAccessToken:String!, $first: Int!, $after: String) {
+    customer(customerAccessToken: $customerAccessToken) {
+        displayName
+        email
+        orders(first: $first, after: $after, reverse: true) {
+            totalCount
+            edges {
+                cursor
+                node {
+                    id
+                    name
+                    statusUrl
+                    orderNumber
+                    processedAt
+                    financialStatus
+                    currentTotalPrice {
+                        amount
+                    }
+                    shippingAddress {
+                        name
+                        address1
+                        address2
+                        city
+                        province
+                        country
+                        formatted
+                    }
+                    lineItems(first: 100) {
+                        edges {
+                            cursor
+                            node {
+                                title
+                                quantity
+                                variant {
+                                    title
+                                    product {
+                                        id
+                                        title
+                                        productType
+                                        vendor
+                                        images(first: 1) {
+                                            nodes {
+                                                url
+                                            }
+                                        }
+                                        priceRange {
+                                            minVariantPrice {
+                                                amount
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

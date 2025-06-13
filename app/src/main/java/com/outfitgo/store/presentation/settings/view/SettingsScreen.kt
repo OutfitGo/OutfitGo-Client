@@ -28,7 +28,11 @@ import com.outfitgo.store.R
 private const val TAG = "SettingsScreen"
 
 @Composable
-fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: () -> Unit) {
+fun SettingsScreen(
+    onNavToCurrencySettings: () -> Unit,
+    onNavToWishlistScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -42,6 +46,7 @@ fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: (
         SettingsScreenContent(
             onNavToCurrencySettings = onNavToCurrencySettings,
             onNavToWishlistScreen = onNavToWishlistScreen,
+            onNavToOrdersScreen = onNavToOrdersScreen
             onLogoutClicked = {
                 Log.i(TAG, "SettingsScreen: logout clicked")
             }
@@ -53,6 +58,7 @@ fun SettingsScreen(onNavToCurrencySettings: () -> Unit, onNavToWishlistScreen: (
 fun SettingsScreenContent(
     onNavToCurrencySettings: () -> Unit,
     onNavToWishlistScreen: () -> Unit,
+    onNavToOrdersScreen: () -> Unit,
     onLogoutClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -69,6 +75,12 @@ fun SettingsScreenContent(
             onClick = onNavToWishlistScreen
         )
 
+        SettingRow(
+            title = "Orders",
+            icon = R.drawable.orders_icon,
+            onClick = onNavToOrdersScreen
+        )
+        
         SettingRow(
             title = "Logout",
             icon = R.drawable.ic_launcher_foreground,
