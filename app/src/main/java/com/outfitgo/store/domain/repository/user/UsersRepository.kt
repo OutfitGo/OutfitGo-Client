@@ -15,6 +15,7 @@ interface UsersRepository {
 
     suspend fun sendVerificationEmail(email: String, password: String)
 
+
     // local
     suspend fun getSavedUserToken(): String?
     suspend fun getSavedUserId(): String?
@@ -22,5 +23,7 @@ interface UsersRepository {
     suspend fun saveToken(token: String)
     suspend fun logout()
     suspend fun isLoggedIn(): Boolean
+
+    suspend fun getSavedUserEmail(): String?
 
 }

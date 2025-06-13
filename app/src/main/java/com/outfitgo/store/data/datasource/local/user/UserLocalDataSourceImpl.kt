@@ -1,11 +1,9 @@
 package com.outfitgo.store.data.datasource.local.user
 
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -22,6 +20,7 @@ class UserLocalDataSourceImpl @Inject constructor(
     companion object {
         private const val ACCESS_TOKEN_KEY = "ACCESS_TOKEN_KEY"
         private const val USER_ID_KEY = "USER_ID_KEY"
+        private const val EMAIL_KEY = "EMAIL_KEY"
     }
 
     override suspend fun saveUserToken(token: String) {
@@ -61,6 +60,20 @@ class UserLocalDataSourceImpl @Inject constructor(
             }.first()
         }
 
+    override suspend fun saveUserEmail(email: String) {
+        withContext(dispatcher) {
+            dataStore.edit { settings ->
+                settings[stringPreferencesKey(EMAIL_KEY)] = email
+            }
+        }
+    }
+
+    override suspend fun getSavedUserEmail(): String? =
+        withContext(dispatcher) {
+            dataStore.data.map { settings ->
+                settings[stringPreferencesKey(EMAIL_KEY)]
+            }.first()
+        }
 
     override suspend fun isLoggedIn(): Boolean {
         val token = this.getSavedUserToken()

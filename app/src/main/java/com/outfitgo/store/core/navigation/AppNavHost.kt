@@ -21,6 +21,7 @@ import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.address.AddAddressScreen
 import com.outfitgo.store.domain.model.order.Order
+import com.outfitgo.store.presentation.aboutus.AboutUsScreen
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.categories.CategoriesScreen
@@ -33,6 +34,7 @@ import com.outfitgo.store.presentation.orders.OrdersScreen
 import com.outfitgo.store.presentation.pending.PendingScreen
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
+import com.outfitgo.store.presentation.profile.ProfileScreen
 import com.outfitgo.store.presentation.register.RegisterScreen
 import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.address.AddressScreen
@@ -384,7 +386,41 @@ fun AppNavHost(
             )
         }
 
+        composable<ProfileRoute> {
+            ProfileScreen(
+                modifier = Modifier.fillMaxSize(),
+                onAboutUsClicked = {
+                    navController.navigate(AboutUsRoute)
+                },
+                onAddressesClicked = {
+
+                },
+                onOrdersClicked = {
+                    navController.navigate(OrdersRoute)
+                },
+                onSettingsClicked = {
+                    navController.navigate(SettingsRoute)
+                },
+                onWishlistClicked = {
+                    navController.navigate(WishlistRoute)
+                },
+                onLogoutSuccess = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(HomeRoute) { inclusive = true }
+                    }
+                },
+                onLoginClicked = {
+                    navController.navigate(LoginRoute) {
+                        popUpTo(HomeRoute) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable<AboutUsRoute> {
+            AboutUsScreen(
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
-
-
 }

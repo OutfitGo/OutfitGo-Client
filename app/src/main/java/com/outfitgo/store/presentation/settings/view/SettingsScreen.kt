@@ -47,7 +47,6 @@ fun SettingsScreen(
         SettingsScreenContent(
             onNavToCurrencySettings = onNavToCurrencySettings,
             onNavToWishlistScreen = onNavToWishlistScreen,
-
             onNavToAddressScreen = onNavToAddressScreen,
             onNavToOrdersScreen = onNavToOrdersScreen,
             onLogoutClicked = {
