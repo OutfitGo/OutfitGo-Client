@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RatingBar(rating: Double, maxRating: Int = 5, starSize: Dp = 20.dp) {
+fun RatingBar(rating: Int, maxRating: Int = 5, starSize: Dp = 20.dp) {
     Row {
         for (i in 1..maxRating) {
             Icon(

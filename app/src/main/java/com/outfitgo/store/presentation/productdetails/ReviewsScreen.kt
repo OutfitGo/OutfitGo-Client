@@ -15,6 +15,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.outfitgo.store.domain.model.Review
 import com.outfitgo.store.presentation.components.ReviewCard
 
@@ -40,7 +41,7 @@ fun ReviewsScreen(
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding), ) {
             items(reviews) {
-                ReviewCard(it)
+                ReviewCard(it, modifier = Modifier.padding(8.dp))
             }
         }
     }
