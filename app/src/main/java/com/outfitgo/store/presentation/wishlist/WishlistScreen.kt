@@ -136,8 +136,8 @@ fun WishlistScreenContent(
                         .fillMaxSize()
                         .padding(innerPadding),
                     imgRes = R.drawable.wishlist_empty,
-                    mainText = "Empty Wishlist",
-                    description = "start browsing and add items to wishlist"
+                    mainText = stringResource(R.string.empty_wishlist),
+                    description = stringResource(R.string.start_browsing_and_add_items_to_wishlist)
                 )
             } else {
                 LazyColumn(
@@ -176,19 +176,19 @@ fun WishlistScreenContent(
                         onIntent(WishlistIntent.RemoveProduct(selectedProductToDelete!!))
                         showConfirmationDialog = false
                         selectedProductToDelete = null
-                    }) { Text("Remove") }
+                    }) { Text(stringResource(R.string.remove)) }
                 },
                 dismissButton = {
                     TextButton(onClick = {
                         showConfirmationDialog = false
                         selectedProductToDelete = null
-                    }) { Text("Cancel") }
+                    }) { Text(stringResource(R.string.cancel)) }
                 },
                 title = {
-                    Text("Remove Item From wishlist?")
+                    Text(stringResource(R.string.remove_item_from_wishlist))
                 },
                 text = {
-                    Text("you are about to remove item from wishlist, are you sure?")
+                    Text(stringResource(R.string.you_are_about_to_remove_item_from_wishlist_are_you_sure))
                 }
             )
         }

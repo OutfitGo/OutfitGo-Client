@@ -150,7 +150,7 @@ fun ProfileScreenContent(
 
                     ProfileItem(
                         icon = Icons.Outlined.LocationOn,
-                        title = "Addresses",
+                        title = stringResource(R.string.addresses),
                         onClick = {
                             onEvent(ProfileIntent.GoToAddresses)
                         },
@@ -179,7 +179,7 @@ fun ProfileScreenContent(
 
                     ProfileItem(
                         icon = Icons.Outlined.Settings,
-                        title = "Settings",
+                        title = stringResource(R.string.settings),
                         onClick = {
                             onEvent(ProfileIntent.GoToSettings)
                         },
@@ -189,7 +189,7 @@ fun ProfileScreenContent(
 
                     ProfileItem(
                         icon = Icons.Outlined.Info,
-                        title = "About Us",
+                        title = stringResource(R.string.about_us),
                         onClick = {
                             onEvent(ProfileIntent.GoToAboutUs)
                         },
@@ -198,7 +198,7 @@ fun ProfileScreenContent(
 
                     ProfileItem(
                         icon = Icons.AutoMirrored.Outlined.Logout,
-                        title = "Logout",
+                        title = stringResource(R.string.logout),
                         onClick = {
                             showConfirmationDialog = true
                         },
@@ -229,18 +229,18 @@ fun ProfileScreenContent(
                         showConfirmationDialog = false
                         onEvent(ProfileIntent.Logout)
                     },
-                ) { Text("Logout", color = MaterialTheme.colorScheme.error) }
+                ) { Text(stringResource(R.string.logout), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
                 Button(onClick = {
                     showConfirmationDialog = false
-                }) { Text("Cancel") }
+                }) { Text(stringResource(R.string.cancel)) }
             },
             title = {
                 Text("Logout!")
             },
             text = {
-                Text("you are about to Logout, are you sure?")
+                Text(stringResource(R.string.you_are_about_to_logout_are_you_sure))
             }
         )
     }
