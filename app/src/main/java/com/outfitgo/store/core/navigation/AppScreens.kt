@@ -76,6 +76,12 @@ data class PendingRoute(
     val lastName: String
 )
 
+@Serializable
+object ProfileRoute
+
+@Serializable
+object AboutUsRoute
+
 data class TopLevelRoute<T : Any>(
     val title: String,
     val route: T,
@@ -104,7 +110,7 @@ val topLevelRoutes = listOf(
     ),
     TopLevelRoute(
         title = "Profile",
-        route = SettingsRoute,
+        route = ProfileRoute,
         selectedIcon = Icons.Filled.Person,
         unSelectedIcon = Icons.Outlined.Person
     ),

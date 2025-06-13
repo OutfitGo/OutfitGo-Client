@@ -44,7 +44,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.User
 import com.outfitgo.store.presentation.profile.components.ProfileItem
-import com.outfitgo.store.presentation.profile.components.UnAuthorizedScreen
+import com.outfitgo.store.presentation.profile.components.UnAuthenticatedScreen
 import com.outfitgo.store.presentation.profile.components.UserCard
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -206,7 +206,7 @@ fun ProfileScreenContent(
                     )
                 }
             } else {
-                UnAuthorizedScreen(
+                UnAuthenticatedScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
