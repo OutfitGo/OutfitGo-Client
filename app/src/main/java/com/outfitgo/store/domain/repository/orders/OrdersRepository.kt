@@ -1,8 +1,8 @@
-package com.outfitgo.store.data.datasource.remote.order
+package com.outfitgo.store.domain.repository.orders
 
 import com.outfitgo.store.domain.model.order.OrdersResponse
 
-interface OrdersRemoteDataSource {
+interface OrdersRepository {
     suspend fun getCustomerOrders(
         customerToken: String,
         first: Int,
