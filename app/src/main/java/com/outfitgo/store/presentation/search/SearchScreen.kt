@@ -3,6 +3,7 @@ package com.outfitgo.store.presentation.search
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -13,14 +14,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,7 +60,7 @@ fun SearchScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreenContents(
+private fun SearchScreenContents(
     state: SearchScreenUiState,
     searchState: SearchUiState,
     onEvent: (SearchScreenIntent) -> Unit,
@@ -68,7 +70,7 @@ fun SearchScreenContents(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Search OutfitGo", fontWeight = FontWeight.Bold) },
+                title = { Text("Search", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = {
                         onEvent(SearchScreenIntent.GoBack)
@@ -80,16 +82,19 @@ fun SearchScreenContents(
             )
         },
     ) { innerPadding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
             ProductsSearchBar(
                 onQueryChanged = { query ->
                     onEvent(SearchScreenIntent.SearchTitleChanged(query))
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Slider(
+            /*Slider(
                 value = searchState.currentPrice,
                 valueRange = searchState.minPrice.toFloat()..searchState.maxPrice.toFloat(),
                 onValueChange = {
@@ -97,8 +102,34 @@ fun SearchScreenContents(
                     onEvent(SearchScreenIntent.FilterProductsByPrice(it.toDouble()))
                 },
                 steps = 5
+            )*/
+
+            RangeSlider(
+                value = searchState.range,
+                onValueChange = {
+                    onEvent(SearchScreenIntent.SearchRangeChanged(it))
+                    onEvent(SearchScreenIntent.FilterProductsByRange(it))
+                },
+                valueRange = searchState.maxRange
             )
-            Text("From ${searchState.currentPrice} ${CurrencyExchange.currentCurrencyUnit} To ${searchState.maxPrice} ${CurrencyExchange.currentCurrencyUnit}")
+
+            Text(
+                "From ${
+                    String.format(
+                        "%.2f",
+                        searchState.range.start
+                    )
+                } ${CurrencyExchange.currentCurrencyUnit} To ${
+                    String.format(
+                        "%.2f",
+                        searchState.range.endInclusive
+                    )
+                } ${CurrencyExchange.currentCurrencyUnit}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                textAlign = TextAlign.Center
+            )
 
             if (state.products.isEmpty() && !state.isLoading) {
                 EmptyState(
@@ -113,14 +144,15 @@ fun SearchScreenContents(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     itemsIndexed(
-                        items = state.products
+                        items = state.products, key = { index, product -> product.id }
                     ) { index, product ->
 
                         ProductItem(
                             product = product,
                             onProductClicked = {
                                 onEvent(SearchScreenIntent.GoToProductDetails(product.id))
-                            }
+                            },
+                            modifier = Modifier.animateItem()
                         )
                     }
 

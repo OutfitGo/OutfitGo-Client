@@ -12,7 +12,7 @@ data class DetailedProduct(
     val tags: List<String>,
     val vendor: String,
     val category: String,
-    val rating: Double,
+    val rating: Int,
     val reviews: List<Review>,
     val currencyCode: String,
     val variants: List<ProductVariant>

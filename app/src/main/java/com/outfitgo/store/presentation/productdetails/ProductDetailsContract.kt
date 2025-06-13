@@ -14,7 +14,7 @@ data class ProductDetailsState(
         tags = listOf(),
         vendor = "BOODY",
         category = "BOODY",
-        rating = 2.9,
+        rating = 2,
         reviews = listOf(),
         currencyCode = "EGP",
         variants = emptyList()

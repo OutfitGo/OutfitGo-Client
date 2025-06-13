@@ -8,17 +8,18 @@ data class SearchScreenUiState(
     val isLoading: Boolean = false,
 )
 data class SearchUiState(
-    val searchTitle: String = "",
-    val minPrice: Double = 0.0,
-    val maxPrice: Double = 100.0,
-    val currentPrice: Float = 0f
+    val range: ClosedFloatingPointRange<Float> = (0f..100f),
+    val maxRange: ClosedFloatingPointRange<Float> = (0f..100f),
 )
 
 sealed interface SearchScreenIntent {
     data class SearchTitleChanged(val newTitle: String): SearchScreenIntent
-    data class MaxPriceChanged(val newMax: Double): SearchScreenIntent
-    data class FilterProductsByPrice(val price: Double): SearchScreenIntent
     data object GoBack: SearchScreenIntent
     data class GoToProductDetails(val productId: String): SearchScreenIntent
-    data class ChangeCurrentPrice(val currentPrice: Float) : SearchScreenIntent
+
+    data class SearchRangeChanged(val newRange: ClosedFloatingPointRange<Float>) :
+        SearchScreenIntent
+
+    data class FilterProductsByRange(val range: ClosedFloatingPointRange<Float>) :
+        SearchScreenIntent
 }

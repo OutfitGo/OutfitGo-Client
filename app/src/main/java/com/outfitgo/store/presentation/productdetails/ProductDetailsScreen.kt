@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -117,6 +118,21 @@ fun ProductDetailsScreen(
                     }) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
                     }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        if (state.isFavorite) {
+                            showConfirmationDialog = true
+                        } else {
+                            onIntent(ProductDetailsIntent.AddToWishlist(state.product.toProduct()))
+                        }
+                    }) {
+                        Icon(
+                            imageVector = if (state.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Add to Wishlist",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             )
         },
@@ -165,7 +181,7 @@ fun ProductDetailsScreen(
                         }
 
                     }
-                    // Page indicator (optional)
+                    // Page indicator
                     Row(
                         Modifier
                             .height(20.dp)
@@ -208,12 +224,31 @@ fun ProductDetailsScreen(
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
-                        Text(
-                            state.product.tags.joinToString(" | "),
-                            modifier = Modifier.alpha(0.8f)
-                        )
+                        // review
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            RatingBar(rating = state.product.rating)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "${state.product.rating} / ${ReviewUtils.MAX_RATING}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Spacer(Modifier.weight(1f))
 
-                        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(top = 8.dp))
+                            Text(
+                                text = "${state.product.price.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
+                                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                        }
+
+                        HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+
                         Text(
                             text = "Product Description",
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
@@ -227,32 +262,11 @@ fun ProductDetailsScreen(
                                 .padding(bottom = 8.dp)
                                 .alpha(0.8f)
                         )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        ) {
-                            RatingBar(rating = state.product.rating)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "${
-                                    String.format(
-                                        "%.2f",
-                                        state.product.rating
-                                    )
-                                } / ${ReviewUtils.MAX_RATING}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                        Text(
-                            text = "${state.product.price.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
+
                     }
                 }
 
+                // variants section
                 item {
                     Text(
                         text = "Available Variants",
@@ -306,39 +320,26 @@ fun ProductDetailsScreen(
                 item {
                     LazyRow(modifier = Modifier.padding(bottom = 8.dp)) {
                         items(state.product.reviews.take(2) ) { review ->
-                            ReviewCard(review)
+                            ReviewCard(review, modifier = Modifier
+                                .width(300.dp)
+                                .padding(8.dp))
                         }
                     }
                 }
 
-                // Buttons (add to cart and add to favorites)
+                // add to Cart
                 item {
-                    Row(
-                        modifier = Modifier
+                    Button(
+                        onClick = {
+                            onIntent(ProductDetailsIntent.AddToCart(state.selectedVariantId))
+                        }, modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 16.dp)
                     ) {
-                        IconButton(onClick = {
-                            if(state.isFavorite) {
-                                showConfirmationDialog = true
-                            } else {
-                                onIntent(ProductDetailsIntent.AddToWishlist(state.product.toProduct()))
-                            }
-                        }) {
-                            Icon(
-                                imageVector = if (state.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = "Add to Wishlist"
-                            )
-                        }
-
-                        Button(onClick = {
-                            onIntent(ProductDetailsIntent.AddToCart(state.selectedVariantId))
-                        }, modifier = Modifier.weight(1f)) {
-                            if (state.isAddedToCart) {
-                                Text("Already In Cart")
-                            } else {
-                                Text("Add To Cart")
-                            }
+                        if (state.isAddedToCart) {
+                            Text("Already In Cart")
+                        } else {
+                            Text("Add To Cart")
                         }
                     }
                 }
@@ -391,19 +392,19 @@ fun PreviewProductDetailsScreen() {
             tags = listOf("wearable", "electronics", "fitness", "smartwatch"),
             vendor = "TechGadgets Inc.",
             category = "Electronics",
-            rating = 4.7,
+            rating = 4,
             reviews = listOf(
                 Review(
                     id = "rev_001",
                     reviewerName = "Alice Smith",
-                    rating = 5.0,
+                    rating = 5,
                     comment = "Amazing product! The battery life is incredible and it's super accurate.",
                     dateString = "2024-05-15"
                 ),
                 Review(
                     id = "rev_002",
                     reviewerName = "Bob Johnson",
-                    rating = 4.5,
+                    rating = 4,
                     comment = "Great smartwatch for the price. The app could be a bit more user-friendly.",
                     dateString = "2024-05-20"
                 )

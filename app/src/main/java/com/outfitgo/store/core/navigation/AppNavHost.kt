@@ -5,10 +5,11 @@ import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +39,7 @@ import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 import com.outfitgo.store.presentation.wishlist.WishlistScreen
 import kotlinx.serialization.json.Json
 
+
 @Composable
 fun AppNavHost(
     navController: NavHostController,
@@ -48,11 +50,11 @@ fun AppNavHost(
         navController = navController,
         startDestination = SplashRoute,
         modifier = modifier,
-        enterTransition = { fadeIn(tween(600)) + slideInVertically(tween(600)) },
+        enterTransition = { fadeIn(tween(600)) + slideInHorizontally(tween(600)) },
         exitTransition = {
-            fadeOut(tween(600)) + slideOutVertically(
+            fadeOut(tween(600)) + slideOutHorizontally(
                 tween(600),
-                targetOffsetY = { it / 2 })
+                targetOffsetX = { it / 2 })
         }
     ) {
 
@@ -128,6 +130,7 @@ fun AppNavHost(
         composable<CartRoute> {
             CartScreen()
         }
+
         composable<ProductDetailsRoute> {
             val entry = it.toRoute<ProductDetailsRoute>()
             val viewModel: ProductDetailsViewModel = hiltViewModel()
@@ -188,7 +191,7 @@ fun AppNavHost(
         }
 
         composable<ReviewsRoute> {
-            val reviews = ReviewUtils.generateRandomReviews(6)
+            val reviews = remember { ReviewUtils.generateRandomReviews() }
             ReviewsScreen(
                 reviews = reviews,
                 onNavigateUp = { navController.navigateUp() },
@@ -248,7 +251,7 @@ fun AppNavHost(
                 },
                 onGoToProductDetails = { productId ->
                     navController.navigate(ProductDetailsRoute(productId))
-                }
+                },
             )
         }
 
