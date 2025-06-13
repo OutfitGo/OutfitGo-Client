@@ -33,7 +33,7 @@ fun NewArrivalSection(
     onRequestNextProducts: () -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = stringResource(R.string.new_arrival),
