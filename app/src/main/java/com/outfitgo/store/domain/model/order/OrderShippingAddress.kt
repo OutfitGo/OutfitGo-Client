@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OrderShippingAddress(
-    val name:String,
+    val firstName:String,
+    val secondName: String,
     val city:String,
-    val addressLine1:String,
-    val addressLine2:String,
+    val addressLine:String
 )

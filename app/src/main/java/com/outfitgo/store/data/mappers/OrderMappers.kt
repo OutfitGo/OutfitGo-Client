@@ -22,10 +22,10 @@ fun CustomerOrdersQuery.Customer.toOrderResponse(): OrdersResponse {
 
 fun CustomerOrdersQuery.ShippingAddress.toOrderShippingAddress(): OrderShippingAddress {
     return OrderShippingAddress(
-        name = name.toString(),
+        firstName = firstName.toString(),
+        secondName = lastName.toString(),
         city = city.toString(),
-        addressLine1 = address1.toString(),
-        addressLine2 = address2.toString()
+        addressLine = address1.toString()
     )
 }
 

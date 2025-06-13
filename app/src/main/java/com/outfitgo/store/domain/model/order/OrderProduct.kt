@@ -1,4 +1,4 @@
-package com.outfitgo.store.domain.model.product
+package com.outfitgo.store.domain.model.order
 
 import kotlinx.serialization.Serializable
 

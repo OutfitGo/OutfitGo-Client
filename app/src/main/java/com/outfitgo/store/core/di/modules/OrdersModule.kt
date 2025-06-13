@@ -1,6 +1,7 @@
 package com.outfitgo.store.core.di.modules
 
 import com.apollographql.apollo.ApolloClient
+import com.outfitgo.store.core.di.qualifiers.AdminApollo
 import com.outfitgo.store.core.di.qualifiers.StorefrontApollo
 import com.outfitgo.store.data.datasource.remote.order.OrdersRemoteDataSource
 import com.outfitgo.store.data.datasource.remote.order.OrdersRemoteDataSourceImpl
@@ -17,8 +18,14 @@ import javax.inject.Singleton
 object OrdersModule {
     @Provides
     @Singleton
-    fun provideOrdersRemoteDataSource(@StorefrontApollo remoteClient: ApolloClient): OrdersRemoteDataSource {
-        return OrdersRemoteDataSourceImpl(remoteClient = remoteClient)
+    fun provideOrdersRemoteDataSource(
+        @StorefrontApollo storeFrontClient: ApolloClient,
+        @AdminApollo adminClient: ApolloClient
+    ): OrdersRemoteDataSource {
+        return OrdersRemoteDataSourceImpl(
+            storefrontClient = storeFrontClient,
+            adminClient = adminClient
+        )
     }
 
     @Provides

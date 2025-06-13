@@ -1,0 +1,29 @@
+mutation OrderCreationMutation(
+    $email: String!
+    $financialStatus: OrderCreateFinancialStatus!
+    $lineItems: [OrderCreateLineItemInput!]!
+    $shippingAddress: MailingAddressInput!
+) {
+    orderCreate(
+        order: {
+            email: $email
+            financialStatus: $financialStatus
+            lineItems: $lineItems
+            shippingAddress: $shippingAddress
+        }
+        options: {
+            sendReceipt: true
+            sendFulfillmentReceipt: true
+            inventoryBehaviour: DECREMENT_IGNORING_POLICY
+        }
+    ) {
+        order {
+            id
+            name
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}

@@ -3,7 +3,7 @@ package com.outfitgo.store.data.mappers
 import com.google.firebase.firestore.DocumentSnapshot
 import com.outfitgo.store.domain.model.product.DetailedProduct
 import com.outfitgo.store.domain.model.ReviewUtils
-import com.outfitgo.store.domain.model.product.OrderProduct
+import com.outfitgo.store.domain.model.order.OrderProduct
 import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.storefront.CustomerOrdersQuery
 import com.outfitgo.store.domain.model.product.ProductVariant
