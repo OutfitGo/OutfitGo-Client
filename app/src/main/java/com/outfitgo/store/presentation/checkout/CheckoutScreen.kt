@@ -27,11 +27,12 @@ fun CheckoutScreen(checkoutUrl:String,onOrderConfirm:()->Unit,modifier: Modifier
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
                     Log.d("``TAG``", "onPageFinished: $url")
+
                     if (url?.contains("thank-you", ignoreCase = true) == true) {
                         Log.d("``TAG``", "onPageFinished: true")
                         onOrderConfirm()
-                    }else{
-                        Log.d("``TAG``", "onPageFinished: false")
+                    }else if (url?.contains("/password") == false && !url.contains("checkout")) {
+                        view?.loadUrl(checkoutUrl)
                     }
                 }
 

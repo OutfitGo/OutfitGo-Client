@@ -129,6 +129,7 @@ fun CartScreen(
             )
 
             CartCostSection(
+                isCartEmpty = cartState.value.cartItems.isEmpty(),
                 cost = cartState.value.cartCost,
                 couponCode = cartState.value.coupon,
                 isCouponApplied = cartState.value.isCouponApplied,
@@ -363,6 +364,7 @@ fun CartItemQuantity(
 
 @Composable
 fun CartCostSection(
+    isCartEmpty:Boolean,
     cost: Cost,
     couponCode: String,
     isCouponApplied: Boolean,
@@ -388,6 +390,7 @@ fun CartCostSection(
             .padding(16.dp)
     ) {
         PromoCodeInput(
+            isCartEmpty=isCartEmpty,
             promoCode = couponCode,
             onCodeChange = onCouponCodeChange,
             onApply = onApplyCouponClick
@@ -416,6 +419,7 @@ fun CartCostSection(
 
         Button(
             onClick = onContinueClick,
+            enabled =  !isCartEmpty ,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Continue to Purchase")
