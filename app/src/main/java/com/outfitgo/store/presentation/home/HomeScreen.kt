@@ -73,7 +73,10 @@ private fun HomeScreenContent(
             modifier = Modifier.height(24.dp)
         )
 
-        CouponAdsSection(coupons = homeState.coupons)
+        CouponAdsSection(
+            isLoading = homeState.isCouponsLoading,
+            coupons = homeState.coupons
+        )
 
         Spacer(
             modifier = Modifier.height(24.dp)

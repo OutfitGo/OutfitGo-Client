@@ -393,7 +393,7 @@ fun CartCostSection(
             onApply = onApplyCouponClick
         )
 
-        if (!couponMessage.isNullOrBlank()) {
+        if (!couponMessage.isNullOrBlank()&& couponCode.isNotBlank()) {
             Text(
                 text = couponMessage,
                 color = if (isCouponApplied)
