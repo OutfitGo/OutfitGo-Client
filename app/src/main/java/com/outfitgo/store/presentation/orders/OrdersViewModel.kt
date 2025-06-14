@@ -1,5 +1,6 @@
 package com.outfitgo.store.presentation.orders
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const.PAGE_SIZE
@@ -35,7 +36,9 @@ class OrdersViewModel @Inject constructor(
         },
         onRequest = { nextKey ->
             val response = getCustomerOrdersUseCase.execute(first = 10, after = nextKey)
-            _uiState.update { it.copy(totalOrdersCount = response.ordersCount) }
+            if(uiState.value.totalOrdersCount == null){
+                _uiState.update { it.copy(totalOrdersCount = response.ordersCount) }
+            }
             response.orders
         },
         onLoadUpdated = { isLoading ->

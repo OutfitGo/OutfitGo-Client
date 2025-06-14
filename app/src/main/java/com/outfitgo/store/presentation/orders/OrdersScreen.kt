@@ -64,7 +64,7 @@ private fun OrdersScreenContent(
 
         if(state.isUserLoggedIn){
             Text(
-                text = stringResource(R.string.total_orders, state.totalOrdersCount)
+                text = stringResource(R.string.total_orders, state.totalOrdersCount ?: 0)
             )
 
             Spacer(Modifier.height(16.dp))
