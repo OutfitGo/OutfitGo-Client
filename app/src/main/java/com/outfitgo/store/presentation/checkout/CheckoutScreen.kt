@@ -24,24 +24,19 @@ fun CheckoutScreen(checkoutUrl:String,onOrderConfirm:()->Unit,modifier: Modifier
 
             webViewClient = object : WebViewClient() {
 
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
-                    val url = request?.url.toString()
-                    Log.d("``t``", "shouldOverrideUrlLoading: $url")
-                    if (url.contains("thank_you", ignoreCase = true)) {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    Log.d("``TAG``", "onPageFinished: $url")
+                    if (url?.contains("thank-you", ignoreCase = true) == true) {
+                        Log.d("``TAG``", "onPageFinished: true")
                         onOrderConfirm()
-                        return true
+                    }else{
+                        Log.d("``TAG``", "onPageFinished: false")
                     }
-                    return false
                 }
+
             }
 
-            clearCache(true)
-            clearHistory()
-            CookieManager.getInstance().removeSessionCookies(null)
-            CookieManager.getInstance().flush()
             loadUrl(checkoutUrl)
         }
     }, modifier = Modifier.fillMaxSize())
