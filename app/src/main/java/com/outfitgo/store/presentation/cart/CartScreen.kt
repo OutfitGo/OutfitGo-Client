@@ -60,6 +60,7 @@ import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 @Composable
 fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
+    onCheckout: (String)->Unit,
     modifier: Modifier = Modifier
 ) {
     val cartState = viewModel.cartState.collectAsStateWithLifecycle()
@@ -134,7 +135,7 @@ fun CartScreen(
                 couponMessage = cartState.value.couponMessage,
                 onCouponCodeChange = { viewModel.processIntent(CartIntent.UpdateCouponCode(it)) },
                 onApplyCouponClick = { viewModel.processIntent(CartIntent.ApplyCoupon) },
-                onContinueClick = { viewModel.processIntent(CartIntent.Checkout) },
+                onContinueClick = { onCheckout(cartState.value.checkoutUrl) },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
@@ -426,6 +427,6 @@ fun CartCostSection(
 @Composable
 private fun CartScreenPreview() {
     OutfitGoTheme {
-        CartScreen()
+        CartScreen(onCheckout = {})
     }
 }
