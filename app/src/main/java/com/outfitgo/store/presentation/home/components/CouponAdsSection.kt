@@ -21,11 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.Coupon
+import com.outfitgo.store.presentation.components.shimmerBrush
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun CouponAdsSection(coupons: List<Coupon>) {
+fun CouponAdsSection(isLoading: Boolean, coupons: List<Coupon>) {
     val pagerState = rememberPagerState(pageCount = { coupons.size })
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
@@ -46,41 +47,50 @@ fun CouponAdsSection(coupons: List<Coupon>) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(175.dp)
-                .padding(bottom = 16.dp)
-                .clip(RoundedCornerShape(12.dp))
-        ) { page ->
-            val coupon = coupons[page]
-            Box(
+        if (isLoading) {
+            LoadingState()
+        } else {
+            HorizontalPager(
+                state = pagerState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        clipboardManager.setText(AnnotatedString(coupon.code))
-                        Toast.makeText(context, "Copied: ${coupon.code}", Toast.LENGTH_SHORT)
-                            .show()
-                    }) {
+                    .fillMaxWidth()
+                    .height(175.dp)
+                    .padding(bottom = 16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            ) { page ->
+                val coupon = coupons[page]
 
-                Image(
-                    painter = painterResource(R.drawable.ad),
-                    contentDescription = "Coupon Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-                Text(
-                    text = "Use Code: ${coupon.code}",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(end = 8.dp)
-                )
+                        .fillMaxSize()
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(coupon.code))
+                            Toast.makeText(context, "Copied: ${coupon.code}", Toast.LENGTH_SHORT)
+                                .show()
+                        }) {
+
+                    Image(
+                        painter = painterResource(R.drawable.ad),
+                        contentDescription = "Coupon Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Text(
+                        text = "Use Code: ${coupon.code}",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(end = 8.dp)
+                    )
+                }
+
+
             }
+
         }
+
 
         Row(
             Modifier
@@ -89,17 +99,47 @@ fun CouponAdsSection(coupons: List<Coupon>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(pagerState.pageCount) { iteration ->
-                val color =
-                    if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else Color.LightGray
-                Box(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(color)
-                        .size(8.dp)
-                )
+            if (isLoading) {
+                RowLoadingState()
+            } else {
+                repeat(pagerState.pageCount) { iteration ->
+                    val color =
+                        if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else Color.LightGray
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(color)
+                            .size(8.dp)
+                    )
+                }
+
             }
         }
+
+
     }
+}
+
+@Composable
+private fun LoadingState() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(175.dp)
+            .padding(bottom = 16.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(brush = shimmerBrush(), shape = RoundedCornerShape(8.dp))
+    )
+}
+
+@Composable
+private fun RowLoadingState() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height(10.dp)
+            .width(32.dp)
+            .background(brush = shimmerBrush(), shape = RoundedCornerShape(8.dp))
+    ) {}
 }
