@@ -166,16 +166,6 @@ fun AppNavHost(
             SettingsScreen(
                 onNavToCurrencySettings = {
                     navController.navigate(CurrencySettingsRoute)
-                },
-                onNavToWishlistScreen = {
-                    navController.navigate(WishlistRoute)
-                },
-                onNavToOrdersScreen = {
-                    navController.navigate(OrdersRoute)
-                },
-
-                onNavToAddressScreen = {
-                    navController.navigate(AddressRoute)
                 }
             )
         }
