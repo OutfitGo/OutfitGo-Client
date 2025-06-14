@@ -13,6 +13,8 @@ interface UsersRepository {
         password: String
     ): User?
 
+    suspend fun sendVerificationEmail(email: String, password: String)
+
 
     // local
     suspend fun getSavedUserToken(): String?
@@ -21,5 +23,7 @@ interface UsersRepository {
     suspend fun saveToken(token: String)
     suspend fun logout()
     suspend fun isLoggedIn(): Boolean
+
+    suspend fun getSavedUserEmail(): String?
 
 }

@@ -1,0 +1,12 @@
+mutation DeleteAddress($token: String!, $addressId: ID!) {
+    customerAddressDelete(
+        customerAccessToken: $token,
+        id: $addressId
+    ) {
+        deletedCustomerAddressId
+        customerUserErrors {
+            field
+            message
+        }
+    }
+}

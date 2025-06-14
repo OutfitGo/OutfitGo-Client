@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,9 +23,12 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.NavigateNext
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,15 +52,19 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.toCurrency
+import com.outfitgo.store.data.mappers.toProduct
 import com.outfitgo.store.domain.model.Review
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.domain.model.product.DetailedProduct
+import com.outfitgo.store.domain.model.product.ProductVariant
 import com.outfitgo.store.presentation.components.RatingBar
 import com.outfitgo.store.presentation.components.ReviewCard
 import com.outfitgo.store.presentation.productdetails.ProductDetailsEffect
@@ -80,8 +88,8 @@ fun ProductDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(pageCount = { state.product.imageUrls.size })
-    var showAllReviews by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+    var showConfirmationDialog by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -102,7 +110,7 @@ fun ProductDetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Product Details") },
+                title = { Text(stringResource(R.string.product_details)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                 ),
@@ -111,6 +119,21 @@ fun ProductDetailsScreen(
                         onNavigateUp()
                     }) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        if (state.isFavorite) {
+                            showConfirmationDialog = true
+                        } else {
+                            onIntent(ProductDetailsIntent.AddToWishlist(state.product.toProduct()))
+                        }
+                    }) {
+                        Icon(
+                            imageVector = if (state.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Add to Wishlist",
+                            tint = MaterialTheme.colorScheme.error
+                        )
                     }
                 }
             )
@@ -135,6 +158,7 @@ fun ProductDetailsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .padding(horizontal = 16.dp)
                     .background(MaterialTheme.colorScheme.background)
             ) {
 
@@ -145,7 +169,7 @@ fun ProductDetailsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)
-                            .padding(16.dp)
+                            .padding(vertical = 16.dp)
                             .clip(RoundedCornerShape(12.dp))
                     ) { page ->
                         // Use AsyncImage to load images from URLs
@@ -159,7 +183,7 @@ fun ProductDetailsScreen(
                         }
 
                     }
-                    // Page indicator (optional)
+                    // Page indicator
                     Row(
                         Modifier
                             .height(20.dp)
@@ -186,7 +210,7 @@ fun ProductDetailsScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(vertical = 16.dp)
                     ) {
                         Text(state.product.category, modifier = Modifier.alpha(0.8f))
                         Text(
@@ -197,19 +221,38 @@ fun ProductDetailsScreen(
                         )
 
                         Text(
-                            "Brand: ${state.product.vendor}",
+                            stringResource(R.string.brand, state.product.vendor),
                             fontWeight = Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
 
-                        Text(
-                            state.product.tags.joinToString(" | "),
-                            modifier = Modifier.alpha(0.8f)
-                        )
+                        // review
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        ) {
+                            RatingBar(rating = state.product.rating)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "${state.product.rating} / ${ReviewUtils.MAX_RATING}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Spacer(Modifier.weight(1f))
 
-                        HorizontalDivider(thickness = 2.dp, modifier = Modifier.padding(top = 8.dp))
+                            Text(
+                                text = "${state.product.price.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
+                                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                        }
+
+                        HorizontalDivider(modifier = Modifier.padding(top = 8.dp))
+
                         Text(
-                            text = "Product Description",
+                            text = stringResource(R.string.product_description),
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
                             modifier = Modifier.padding(top = 16.dp)
                         )
@@ -221,29 +264,32 @@ fun ProductDetailsScreen(
                                 .padding(bottom = 8.dp)
                                 .alpha(0.8f)
                         )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        ) {
-                            RatingBar(rating = state.product.rating)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "${
-                                    String.format(
-                                        "%.2f",
-                                        state.product.rating
+
+                    }
+                }
+
+                // variants section
+                item {
+                    Text(
+                        text = stringResource(R.string.available_variants),
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    LazyRow(modifier = Modifier.padding(bottom = 8.dp)) {
+                        items(state.product.variants) {
+                            FilterChip(
+                                selected = it.id == state.selectedVariantId,
+                                onClick = { onIntent(ProductDetailsIntent.SelectProductVariant(it)) },
+                                label = { Text(it.title) },
+                                leadingIcon = {
+                                    if (it.id == state.selectedVariantId) Icon(
+                                        Icons.Outlined.Check,
+                                        contentDescription = null
                                     )
-                                } / ${ReviewUtils.MAX_RATING}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onBackground
+                                },
+                                modifier = Modifier.padding(8.dp)
                             )
                         }
-                        Text(
-                            text = "${CurrencyExchange.currentCurrencyUnit} ${state.product.price.toCurrency()}",
-                            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
                     }
                 }
 
@@ -252,21 +298,19 @@ fun ProductDetailsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Customer Reviews",
+                            text = stringResource(R.string.customer_reviews),
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = Bold),
-                            modifier = Modifier.padding(bottom = 16.dp)
                         )
 
                         TextButton(onClick = {
                             onShowMoreReviewsClicked(state.product.reviews)
                         }) {
-                            Text("More")
+                            Text(stringResource(R.string.more))
                             Icon(
                                 Icons.AutoMirrored.Outlined.NavigateNext,
                                 contentDescription = "more reviews"
@@ -275,40 +319,29 @@ fun ProductDetailsScreen(
                     }
                 }
 
-                val reviewsToShow =
-                    if (showAllReviews) state.product.reviews else state.product.reviews.take(2) // Show first 2 reviews initially
                 item {
-                    LazyRow {
-                        items(reviewsToShow) { review ->
-                            ReviewCard(review)
+                    LazyRow(modifier = Modifier.padding(bottom = 8.dp)) {
+                        items(state.product.reviews.take(2) ) { review ->
+                            ReviewCard(review, modifier = Modifier
+                                .width(300.dp)
+                                .padding(8.dp))
                         }
                     }
                 }
 
-                // Buttons (add to cart and add to favorites)
+                // add to Cart
                 item {
-                    Row(
-                        modifier = Modifier
+                    Button(
+                        onClick = {
+                            onIntent(ProductDetailsIntent.AddToCart(state.selectedVariantId))
+                        }, modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
+                            .padding(vertical = 16.dp)
                     ) {
-                        IconButton(onClick = {
-                            onIntent(ProductDetailsIntent.AddToWishlist(productId))
-                        }) {
-                            Icon(
-                                imageVector = if (state.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = "Add to Wishlist"
-                            )
-                        }
-
-                        Button(onClick = {
-                            onIntent(ProductDetailsIntent.AddToCart(productId))
-                        }, modifier = Modifier.weight(1f), enabled = !state.isAddedToCart) {
-                            if (state.isAddedToCart) {
-                                Text("Already In Cart")
-                            } else {
-                                Text("Add To Cart")
-                            }
+                        if (state.isAddedToCart) {
+                            Text(stringResource(R.string.already_in_cart))
+                        } else {
+                            Text(stringResource(R.string.add_to_cart))
                         }
                     }
                 }
@@ -316,7 +349,31 @@ fun ProductDetailsScreen(
         }
 
 
+        if(showConfirmationDialog) {
+            AlertDialog(
+                onDismissRequest = { showConfirmationDialog = false },
+                title = { Text(stringResource(R.string.remove_title, state.product.title)) },
+                text = { Text(stringResource(R.string.are_you_sure_you_want_to_remove_this_item_from_your_wishlist)) },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showConfirmationDialog = false
+                            onIntent(ProductDetailsIntent.RemoveFromWishList(state.product.id))
+                        }
+                    ) {
+                        Text(stringResource(R.string.remove))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showConfirmationDialog = false }) {
+                        Text(stringResource(R.string.cancel))
+                    }
+                }
+            )
+        }
     }
+
+
 }
 
 
@@ -337,24 +394,30 @@ fun PreviewProductDetailsScreen() {
             tags = listOf("wearable", "electronics", "fitness", "smartwatch"),
             vendor = "TechGadgets Inc.",
             category = "Electronics",
-            rating = 4.7,
+            rating = 4,
             reviews = listOf(
                 Review(
                     id = "rev_001",
                     reviewerName = "Alice Smith",
-                    rating = 5.0,
+                    rating = 5,
                     comment = "Amazing product! The battery life is incredible and it's super accurate.",
                     dateString = "2024-05-15"
                 ),
                 Review(
                     id = "rev_002",
                     reviewerName = "Bob Johnson",
-                    rating = 4.5,
+                    rating = 4,
                     comment = "Great smartwatch for the price. The app could be a bit more user-friendly.",
                     dateString = "2024-05-20"
                 )
             ),
-            currencyCode = "USD"
+            currencyCode = "USD",
+            variants = listOf(
+                ProductVariant(id = "sdlfkjsdl", title = "4 / burgandy"),
+                ProductVariant(id = "sdlfkjsdl", title = "5 / burgandy"),
+                ProductVariant(id = "sdlfkjsdl", title = "10 / burgandy"),
+                ProductVariant(id = "sdlfkjsdl", title = "8 / burgandy"),
+            )
         )
 
         ProductDetailsScreen(

@@ -6,5 +6,5 @@ import javax.inject.Inject
 class GetSavedUserIdUseCase @Inject constructor(
     private val usersRepository: UsersRepository
 ) {
-    suspend fun execute() = usersRepository.getSavedUserId()
+    suspend fun execute(): String? = usersRepository.getSavedUserId()
 }

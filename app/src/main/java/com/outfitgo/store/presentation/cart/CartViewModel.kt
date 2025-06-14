@@ -1,14 +1,18 @@
 package com.outfitgo.store.presentation.cart
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
+import com.outfitgo.store.domain.model.FinancialStatus
 import com.outfitgo.store.domain.model.cart.Cost
+import com.outfitgo.store.domain.model.order.OrderShippingAddress
 import com.outfitgo.store.domain.usecase.cart.ApplyCouponToCartUseCase
 import com.outfitgo.store.domain.usecase.cart.GetCartUseCase
 import com.outfitgo.store.domain.usecase.cart.RemoveItemFromCartUseCase
 import com.outfitgo.store.domain.usecase.cart.UpdateCartLineQuantityUseCase
+import com.outfitgo.store.domain.usecase.orders.CreateOrderUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +28,8 @@ class CartViewModel @Inject constructor(
     private val getCartUseCase: GetCartUseCase,
     private val applyCouponToCartUseCase: ApplyCouponToCartUseCase,
     private val removeItemFromCartUseCase: RemoveItemFromCartUseCase,
-    private val updateCartLineQuantityUseCase: UpdateCartLineQuantityUseCase
+    private val updateCartLineQuantityUseCase: UpdateCartLineQuantityUseCase,
+    private val createOrderUseCase: CreateOrderUseCase
 ) : ViewModel() {
     private val _cartState: MutableStateFlow<CartState> = MutableStateFlow(CartState())
     val cartState = _cartState.asStateFlow()
@@ -48,7 +53,8 @@ class CartViewModel @Inject constructor(
                             "Invalid Coupon"
                         },
                         cartCost = response.cost ?: Cost("0.0"),
-                        isLoading = false
+                        isLoading = false,
+                        checkoutUrl = response.checkoutUrl
                     )
                 }
             } catch (e: Exception) {
@@ -69,6 +75,7 @@ class CartViewModel @Inject constructor(
             is CartIntent.IncreaseItemQuantity -> increaseItemQuantity(intent.id, intent.quantity)
             is CartIntent.RemoveItem -> removeItem(intent.id)
             is CartIntent.UpdateCouponCode -> updateCoupon(intent.code)
+            is CartIntent.Checkout -> createOrder()
         }
     }
 
@@ -147,6 +154,21 @@ class CartViewModel @Inject constructor(
                     cartCost = response
                 )
             }
+        }
+    }
+
+    private fun createOrder(){
+        viewModelScope.launch(Dispatchers.IO){
+            val isOrderCreated = createOrderUseCase.execute(
+                cartItems = _cartState.value.cartItems,
+                shippingAddress = OrderShippingAddress( //TODO change this to the real address
+                    firstName = "Work",
+                    secondName = "Address",
+                    city = "Smart Village",
+                    addressLine = "Egypt, Giza"
+                ),
+                financialStatus = FinancialStatus.PAID
+            )
         }
     }
 

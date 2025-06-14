@@ -1,5 +1,6 @@
 package com.outfitgo.store.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
@@ -11,6 +12,7 @@ import com.outfitgo.store.core.util.Const.PAGE_SIZE
 import com.outfitgo.store.core.util.CurrencyExchange
 import com.outfitgo.store.core.util.CurrencyUnit
 import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.domain.usecase.auth.IsUserLoggedInUseCase
 import com.outfitgo.store.domain.usecase.collections.GetBrandsUseCase
 import com.outfitgo.store.domain.usecase.coupon.GetCouponsUseCase
 import com.outfitgo.store.domain.usecase.products.GetLatestProductsUseCase
@@ -38,7 +40,8 @@ class HomeViewModel @Inject constructor(
     private val createCartUseCase: CreateCartUseCase,
     private val addBuyerToCartUseCase: AddBuyerToCartUseCase,
     private val getCartIdUseCase: GetCartIdUseCase,
-    private val saveCartIdUseCase: SaveCartIdUseCase
+    private val saveCartIdUseCase: SaveCartIdUseCase,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomeState>(HomeState())
@@ -46,22 +49,25 @@ class HomeViewModel @Inject constructor(
 
     private fun cartInit(){
         viewModelScope.launch(Dispatchers.IO){
-            getCartIdUseCase.execute().collect{
-                if (it.isBlank()){
-                    val cartId = createCartUseCase.execute()
-                    Const.cartId =cartId
-                    saveCartIdUseCase.execute(cartId)
-                    /*if (Const.isLoggedIn){
-                      //TODO addCart to buyer
-                    }*/
-                }else{
-                    Const.cartId=it
+            try {
+                getCartIdUseCase.execute().collect{
+                    if (it.isBlank()){
+                        val cartId = createCartUseCase.execute()
+                        Const.cartId =cartId
+                        saveCartIdUseCase.execute(cartId)
+                        if (isUserLoggedInUseCase.execute()){
+                            addBuyerToCartUseCase.execute(cartId)
+                        }
+                    }else{
+                        Const.cartId=it
+                    }
                 }
+
+            }catch (e:Exception){
+                Log.d("```TAG```", "cartInit: ${e.message}")
             }
         }
     }
-
-    
 
     private fun observeCurrencyAndRate() {
         viewModelScope.launch {
@@ -140,8 +146,13 @@ class HomeViewModel @Inject constructor(
 
     private fun getCoupons() {
         viewModelScope.launch(Dispatchers.IO) {
-            val coupons = getCouponsUseCase.execute()
-            _uiState.update { it.copy(coupons = coupons) }
+            try {
+                _uiState.update { it.copy(isCouponsLoading = true) }
+                val coupons = getCouponsUseCase.execute()
+                _uiState.update { it.copy(coupons = coupons, isCouponsLoading = false) }
+            }catch (e:Exception){
+                Log.d("TAG", "getCoupons: ${e.message}")
+            }
         }
     }
 

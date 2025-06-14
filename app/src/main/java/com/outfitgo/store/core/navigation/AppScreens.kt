@@ -10,11 +10,14 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.Collection
+import com.outfitgo.store.domain.model.order.Order
 import kotlinx.serialization.Serializable
 
 sealed class AppScreens {
 }
+
 @Serializable
 data object LoginRoute
 
@@ -34,6 +37,12 @@ data object CartRoute
 data object SettingsRoute
 
 @Serializable
+data object OrdersRoute
+
+@Serializable
+data class OrderDetailsRoute(val orderJson: String)
+
+@Serializable
 data object CurrencySettingsRoute
 
 @Serializable
@@ -51,12 +60,62 @@ data class CategoryProductsRoute(val categoryHandle: String, val categoryName: S
 @Serializable
 object SplashRoute
 
+@Serializable
+object AddressRoute
+
+@Serializable
+data class AddAddressRoute(val first:String?,val last:String?,val line: String?, val city: String?)
+
+@Serializable
+data class UpdateAddressRoute(
+    val addressId: String,
+    val addressFirstName: String,
+    val addressLastName: String,
+    val addressLine: String,
+    val addressCity: String,
+    val addressIsDefault: Boolean,
+    val line: String?, val city: String?
+)
+
+@Serializable
+data class MapPickRoute(
+    val source: String,
+    val addressId: String,
+    val addressFirstName: String,
+    val addressLastName: String,
+    val addressLine: String,
+    val addressCity: String,
+    val addressIsDefault: Boolean,
+)
+
+@Serializable
+data class CheckoutRoute(val checkoutUrl: String)
+
+@Serializable
+object ConfirmOrderRoute
 
 @Serializable
 object SearchRoute
 
 @Serializable
 object RegisterRoute
+
+@Serializable
+object WishlistRoute
+
+@Serializable
+data class PendingRoute(
+    val email: String,
+    val password: String,
+    val firstName: String,
+    val lastName: String
+)
+
+@Serializable
+object ProfileRoute
+
+@Serializable
+object AboutUsRoute
 
 data class TopLevelRoute<T : Any>(
     val title: String,
@@ -86,7 +145,7 @@ val topLevelRoutes = listOf(
     ),
     TopLevelRoute(
         title = "Profile",
-        route = SettingsRoute,
+        route = ProfileRoute,
         selectedIcon = Icons.Filled.Person,
         unSelectedIcon = Icons.Outlined.Person
     ),

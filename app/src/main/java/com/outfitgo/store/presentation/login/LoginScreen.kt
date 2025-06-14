@@ -14,11 +14,15 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -38,12 +42,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.outfitgo.store.R
+import com.outfitgo.store.presentation.register.RegisterIntent
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -67,13 +74,10 @@ fun LoginScreen(
         effectFlow.collect { effect ->
             when (effect) {
                 is LoginScreenEffect.DisplaySnack -> {
-                    Log.d(TAG, "LoginScreen: ${effect.msg}")
                     snackbarHostState.showSnackbar(effect.msg)
                 }
 
                 LoginScreenEffect.GoToHomeScreen -> {
-                    // navigation
-                    Log.i(TAG, "LoginScreen: Navigating")
                     onGoToHome()
                 }
             }
@@ -89,14 +93,14 @@ fun LoginScreen(
             TopAppBar(
                 actions = {
                     OutlinedButton(onClick = { onIntent(LoginScreenIntent.LoginAsGuestClicked) }) {
-                        Text("Login As Guest")
+                        Text(stringResource(R.string.continue_as_guest))
                         Icon(
                             Icons.AutoMirrored.Outlined.Login,
-                            contentDescription = "Login As Guest"
+                            contentDescription = stringResource(R.string.continue_as_guest)
                         )
                     }
                 },
-                title = { Text("OutfitGo", fontWeight = FontWeight.ExtraBold) },
+                title = { Text(stringResource(R.string.app_name), fontWeight = FontWeight.ExtraBold) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         }
@@ -109,15 +113,15 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
 
-            Text("Login", style = MaterialTheme.typography.headlineLarge)
-            Text("Hi! Welcome back, you have been missed", modifier = Modifier.alpha(0.7f))
+            Text(stringResource(R.string.login), style = MaterialTheme.typography.headlineLarge)
+            Text(stringResource(R.string.hi_welcome_back_you_have_been_missed), modifier = Modifier.alpha(0.7f))
 
 
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { onIntent(LoginScreenIntent.EmailChanged(it)) },
-                label = { Text("Email") },
-                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
+                label = { Text(stringResource(R.string.email)) },
+                leadingIcon = { Icon(Icons.Default.Email, contentDescription = stringResource(R.string.email)) },
                 singleLine = true,
                 supportingText = {
                     Text(
@@ -131,43 +135,40 @@ fun LoginScreen(
             OutlinedTextField(
                 value = state.password,
                 onValueChange = { onIntent(LoginScreenIntent.PasswordChanged(it)) },
-                label = { Text("Password") },
-                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
                 singleLine = true,
-                trailingIcon = {
-                    if (showPassword) Icon(Icons.Default.Settings, contentDescription = null)
-                    else Icon(Icons.Outlined.AccountCircle, contentDescription = null)
-                },
+                label = { Text(stringResource(R.string.password)) },
+                modifier = Modifier
+                    .fillMaxWidth(),
                 supportingText = {
                     Text(
                         state.passwordErrorMsg,
                         color = MaterialTheme.colorScheme.error
                     )
                 },
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = stringResource(R.string.password)) },
+                trailingIcon = {
+                    IconButton(onClick = { showPassword = !showPassword }) {
+                        Icon(
+                            imageVector = if (showPassword) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                            contentDescription = "toggle password visibility"
+                        )
+                    }
+                },
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
             )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Checkbox(checked = showPassword, onCheckedChange = { showPassword = it })
-                Text("Show Password")
-            }
 
             Button(
                 onClick = { onIntent(LoginScreenIntent.LoginClicked) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isLoading
             ) {
-                if (state.isLoading) CircularProgressIndicator() else Text("Login")
+                if (state.isLoading) CircularProgressIndicator() else Text(stringResource(R.string.login))
             }
 
             Row {
-                Text("Don't Have an Account? ")
+                Text(stringResource(R.string.don_t_have_an_account))
                 Text(
-                    "Sign in", color = Color.Blue,
+                    stringResource(R.string.sign_in), color = Color.Blue,
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable(onClick = onGoToSignup)
                 )

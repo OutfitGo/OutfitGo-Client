@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 
 @Composable
 fun PromoCodeInput(
+    isCartEmpty:Boolean,
     promoCode: String,
     onCodeChange: (String) -> Unit,
     onApply: () -> Unit
@@ -54,6 +55,7 @@ fun PromoCodeInput(
             )
 
             Button(
+                enabled = !isCartEmpty,
                 onClick = onApply,
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
