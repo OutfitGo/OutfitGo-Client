@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -50,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.outfitgo.store.R
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -116,13 +118,13 @@ fun RegisterScreenContent(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("OutfitGo", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.app_name), fontWeight = FontWeight.Bold) },
                 actions = {
                     OutlinedButton(onClick = { onEvent(RegisterIntent.ContinueAsGuest) }) {
-                        Text("Continue As Guest")
+                        Text(stringResource(R.string.continue_as_guest))
                         Icon(
                             Icons.AutoMirrored.Outlined.Login,
-                            contentDescription = "Continue As Guest"
+                            contentDescription = stringResource(R.string.continue_as_guest)
                         )
                     }
                 },
@@ -145,7 +147,7 @@ fun RegisterScreenContent(
             Text("Create Account", style = MaterialTheme.typography.headlineLarge)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Fill Information below to Register as a New User",
+                stringResource(R.string.fill_information_below_to_register_as_a_new_user),
                 modifier = Modifier
                     .alpha(0.7f)
                     .fillMaxWidth(0.7f),
@@ -158,7 +160,7 @@ fun RegisterScreenContent(
                 value = state.firstName,
                 onValueChange = { onEvent(RegisterIntent.FirstNameChanged(it)) },
                 singleLine = true,
-                label = { Text("First Name") },
+                label = { Text(stringResource(R.string.first_name)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -168,14 +170,14 @@ fun RegisterScreenContent(
                         color = MaterialTheme.colorScheme.error
                     )
                 },
-                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = "first name") }
+                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.first_name)) }
             )
 
             OutlinedTextField(
                 value = state.lastName,
                 onValueChange = { onEvent(RegisterIntent.LastNameChanged(it)) },
                 singleLine = true,
-                label = { Text("Last Name") },
+                label = { Text(stringResource(R.string.last_name)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -185,14 +187,14 @@ fun RegisterScreenContent(
                         color = MaterialTheme.colorScheme.error
                     )
                 },
-                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = "last name") }
+                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.last_name)) }
             )
 
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { onEvent(RegisterIntent.EmailChanged(it)) },
                 singleLine = true,
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.email)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -202,14 +204,14 @@ fun RegisterScreenContent(
                         color = MaterialTheme.colorScheme.error
                     )
                 },
-                leadingIcon = { Icon(Icons.Outlined.Mail, contentDescription = "email") }
+                leadingIcon = { Icon(Icons.Outlined.Mail, contentDescription = stringResource(R.string.email)) }
             )
 
             OutlinedTextField(
                 value = state.password,
                 onValueChange = { onEvent(RegisterIntent.PasswordChanged(it)) },
                 singleLine = true,
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.password)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
@@ -219,12 +221,12 @@ fun RegisterScreenContent(
                         color = MaterialTheme.colorScheme.error
                     )
                 },
-                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = "email") },
+                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = stringResource(R.string.password)) },
                 trailingIcon = {
                     IconButton(onClick = { showPassword = !showPassword }) {
                         Icon(
                             imageVector = if (showPassword) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                            contentDescription = "toggle password visibility"
+                            contentDescription = stringResource(R.string.toggle_password_visibility)
                         )
                     }
                 },
@@ -241,14 +243,14 @@ fun RegisterScreenContent(
                 if (state.isLoading) {
                     CircularProgressIndicator()
                 } else {
-                    Text("Register Now")
+                    Text(stringResource(R.string.register_now))
                 }
             }
 
             Row {
-                Text("Already Have an Account? ")
+                Text(stringResource(R.string.already_have_an_account))
                 Text(
-                    "Log in", color = Color.Blue,
+                    stringResource(R.string.login), color = Color.Blue,
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable(onClick = { onEvent(RegisterIntent.GoToLogin) })
                 )

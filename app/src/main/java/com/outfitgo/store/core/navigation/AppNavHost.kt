@@ -38,6 +38,8 @@ import com.outfitgo.store.presentation.register.RegisterScreen
 import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.address.AddressScreen
 import com.outfitgo.store.presentation.address.UpdateAddressScreen
+import com.outfitgo.store.presentation.checkout.CheckoutScreen
+import com.outfitgo.store.presentation.checkout.OrderConformationScreen
 import com.outfitgo.store.presentation.mappiker.MapPickerScreen
 import com.outfitgo.store.presentation.settings.view.CurrencyScreen
 import com.outfitgo.store.presentation.settings.view.SettingsScreen
@@ -136,7 +138,11 @@ fun AppNavHost(
             )
         }
         composable<CartRoute> {
-            CartScreen()
+            CartScreen(
+                onCheckout = {
+                    navController.navigate(CheckoutRoute(it))
+                }
+            )
         }
 
         composable<ProductDetailsRoute> {
@@ -189,18 +195,20 @@ fun AppNavHost(
         composable<AddAddressRoute> {
             val entry = it.toRoute<AddAddressRoute>()
             AddAddressScreen(
-                first=entry.first,
-                last=entry.last,
+                first = entry.first,
+                last = entry.last,
                 onBack = {
                     navController.popBackStack()
                 },
                 onPickFromMap = { first, last ->
-                    navController.navigate(MapPickRoute(
-                        "add",
-                        "",
-                        first, last,
-                        "", "", false
-                    ))
+                    navController.navigate(
+                        MapPickRoute(
+                            "add",
+                            "",
+                            first, last,
+                            "", "", false
+                        )
+                    )
                 },
                 lineFromMap = entry.line,
                 cityFromMap = entry.city
@@ -243,22 +251,31 @@ fun AppNavHost(
                 initialLong = 31.018529,
                 onSaveClicked = { line, city ->
                     if (entry.source == "add") {
-                        navController.navigate(AddAddressRoute(entry.addressFirstName,entry.addressLastName,line, city)) {
+                        navController.navigate(
+                            AddAddressRoute(
+                                entry.addressFirstName,
+                                entry.addressLastName,
+                                line,
+                                city
+                            )
+                        ) {
                             popUpTo(AddressRoute) {
                                 inclusive = false
                             }
                         }
                     } else {
-                        navController.navigate(UpdateAddressRoute(
-                            addressLine = entry.addressLine,
-                            addressCity = entry.addressCity,
-                            addressIsDefault = entry.addressIsDefault,
-                            line = line,
-                            city = city,
-                            addressId = entry.addressId,
-                            addressFirstName = entry.addressFirstName,
-                            addressLastName = entry.addressLastName
-                        )) {
+                        navController.navigate(
+                            UpdateAddressRoute(
+                                addressLine = entry.addressLine,
+                                addressCity = entry.addressCity,
+                                addressIsDefault = entry.addressIsDefault,
+                                line = line,
+                                city = city,
+                                addressId = entry.addressId,
+                                addressFirstName = entry.addressFirstName,
+                                addressLastName = entry.addressLastName
+                            )
+                        ) {
                             popUpTo(AddressRoute) {
                                 inclusive = false
                             }
@@ -268,7 +285,6 @@ fun AppNavHost(
                 onNavigateUp = {
                     navController.popBackStack()
                 }
-                
             )
         }
 
@@ -295,6 +311,39 @@ fun AppNavHost(
                 onNavigateUp = { navController.navigateUp() },
                 onNavigateToProductDetails = { productId ->
                     navController.navigate(ProductDetailsRoute(productId))
+                }
+            )
+        }
+
+        composable<CheckoutRoute> {
+            val entry = it.toRoute<CheckoutRoute>()
+            CheckoutScreen(
+                checkoutUrl = entry.checkoutUrl,
+                onOrderConfirm = {
+                    navController.navigate(ConfirmOrderRoute){
+                        popUpTo(HomeRoute) {
+                            inclusive = false
+                        }
+                    }
+                }
+            )
+        }
+
+        composable<ConfirmOrderRoute> {
+            OrderConformationScreen(
+                onBack = {
+                    navController.navigate(HomeRoute){
+                        popUpTo(HomeRoute) {
+                            inclusive = false
+                        }
+                    }
+                },
+                onNavToOrders = {
+                    navController.navigate(OrdersRoute){
+                        popUpTo(OrdersRoute) {
+                            inclusive = false
+                        }
+                    }
                 }
             )
         }

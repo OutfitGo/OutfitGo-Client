@@ -85,6 +85,7 @@ class UserLocalDataSourceImpl @Inject constructor(
             dataStore.edit { settings ->
                 settings.remove(stringPreferencesKey(ACCESS_TOKEN_KEY))
                 settings.remove(stringPreferencesKey(USER_ID_KEY))
+                settings.remove(stringPreferencesKey(EMAIL_KEY))
             }
         }
     }
