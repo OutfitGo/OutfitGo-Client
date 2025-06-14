@@ -96,14 +96,13 @@ fun OrderConformationScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { onNavToOrders },
+                onClick = { onNavToOrders() },
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .padding(vertical = 16.dp)
             ) {
-                Text("View Order", color = Color.White)
+                Text("View Orders", color = Color.White)
             }
 
 
