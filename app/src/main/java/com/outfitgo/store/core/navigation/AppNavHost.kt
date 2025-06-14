@@ -11,16 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.address.AddAddressScreen
 import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.presentation.aboutus.AboutUsScreen
+import com.outfitgo.store.presentation.aboutus.TeamMember
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.categories.CategoriesScreen
@@ -469,8 +472,44 @@ fun AppNavHost(
         }
 
         composable<AboutUsRoute> {
+            val uriHandler = LocalUriHandler.current
             AboutUsScreen(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                team = listOf(
+                    TeamMember(
+                        name = "Mahmoud Ewiida",
+                        imgRes = R.drawable.boody,
+                        linkedIn = "https://www.linkedin.com/in/mahmoudewida/",
+                        github = "https://github.com/3wiida"
+                    ),
+                    TeamMember(
+                        name = "Ziad Ayman",
+                        imgRes = R.drawable.zoz,
+                        linkedIn = "https://www.linkedin.com/in/ziad-helaly-028a4b232?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+                        github = "https://github.com/ziadHelaly"
+                    ),
+                    TeamMember(
+                        name = "Abdelrahman Ahmed",
+                        imgRes = R.drawable.boody,
+                        linkedIn = "https://www.linkedin.com/in/abdelrahman-ahmed-hamdy/",
+                        github = "https://github.com/Boodyahmedhamdy"
+                    ),
+                    TeamMember(
+                        name = "Mustafa Hussien",
+                        imgRes = R.drawable.desha,
+                        linkedIn = "https://www.linkedin.com/in/mustafahussain11/",
+                        github = "https://github.com/Mustafaa-Hussain/"
+                    ),
+                    TeamMember(
+                        name = "Mohammed Galal",
+                        imgRes = R.drawable.galal,
+                        linkedIn = "https://www.linkedin.com/in/mohamed-galal-/",
+                        github = "https://github.com/mohgalal"
+                    ),
+                ),
+                onLinkedInClicked = { uriHandler.openUri(it) },
+                onGithubClicked = { uriHandler.openUri(it) },
+                onNavigateUp = { navController.navigateUp() }
             )
         }
     }
