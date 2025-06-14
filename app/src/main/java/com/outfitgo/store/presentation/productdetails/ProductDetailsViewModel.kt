@@ -121,7 +121,7 @@ class ProductDetailsViewModel @Inject constructor(
                                 _state.value.selectedVariantId
                             )
                             _state.update { it.copy(isAddedToCart = true) }
-                            _effect.emit(ProductDetailsEffect.SendSnackBar("added $productId to Cart"))
+                            _effect.emit(ProductDetailsEffect.SendSnackBar("added ${_state.value.product.title} to Cart"))
                         }
                     } catch (e: Exception) {
                         Log.d("``TAG``", "addToCart: ${e.message} id is $productId ")

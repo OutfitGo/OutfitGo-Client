@@ -74,7 +74,9 @@ fun AppNavHost(
                 effectFlow = viewmodel.effect,
                 modifier = Modifier.fillMaxSize(),
                 onGoToHome = {
-                    navController.navigate(HomeRoute)
+                    navController.navigate(HomeRoute) {
+                        popUpTo(LoginRoute) { inclusive = true }
+                    }
                 },
                 onGoToSignup = {
                     navController.navigate(RegisterRoute)
@@ -365,8 +367,12 @@ fun AppNavHost(
             OutfitGoSplashScreen(
                 viewModel = hiltViewModel(),
                 modifier = Modifier.fillMaxSize(),
-                onGoToHome = { navController.navigate(HomeRoute) },
-                onGoToLogin = { navController.navigate(LoginRoute) }
+                onGoToHome = { navController.navigate(HomeRoute) {
+                    popUpTo(SplashRoute) { inclusive = true }
+                } },
+                onGoToLogin = { navController.navigate(LoginRoute){
+                    popUpTo(SplashRoute) { inclusive = true }
+                } }
             )
         }
 
@@ -384,13 +390,17 @@ fun AppNavHost(
             RegisterScreen(
                 modifier = Modifier.fillMaxSize(),
                 onContinueAsGuestClicked = {
-                    navController.navigate(HomeRoute)
+                    navController.navigate(HomeRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
                 },
                 onGoToLoginClicked = {
                     navController.navigate(LoginRoute)
                 },
                 onGoToHome = {
-                    navController.navigate(HomeRoute)
+                    navController.navigate(HomeRoute) {
+                        popUpTo(SplashRoute) { inclusive = true }
+                    }
                 },
                 onGoToPending = { email, password, firstname, lastname ->
                     navController.navigate(
