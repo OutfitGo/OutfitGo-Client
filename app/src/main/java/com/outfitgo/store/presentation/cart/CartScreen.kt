@@ -60,6 +60,7 @@ import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 @Composable
 fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
+    onCheckout: (String)->Unit,
     modifier: Modifier = Modifier
 ) {
     val cartState = viewModel.cartState.collectAsStateWithLifecycle()
@@ -128,13 +129,14 @@ fun CartScreen(
             )
 
             CartCostSection(
+                isCartEmpty = cartState.value.cartItems.isEmpty(),
                 cost = cartState.value.cartCost,
                 couponCode = cartState.value.coupon,
                 isCouponApplied = cartState.value.isCouponApplied,
                 couponMessage = cartState.value.couponMessage,
                 onCouponCodeChange = { viewModel.processIntent(CartIntent.UpdateCouponCode(it)) },
                 onApplyCouponClick = { viewModel.processIntent(CartIntent.ApplyCoupon) },
-                onContinueClick = { viewModel.processIntent(CartIntent.Checkout) },
+                onContinueClick = { onCheckout(cartState.value.checkoutUrl) },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
@@ -362,6 +364,7 @@ fun CartItemQuantity(
 
 @Composable
 fun CartCostSection(
+    isCartEmpty:Boolean,
     cost: Cost,
     couponCode: String,
     isCouponApplied: Boolean,
@@ -387,12 +390,13 @@ fun CartCostSection(
             .padding(16.dp)
     ) {
         PromoCodeInput(
+            isCartEmpty=isCartEmpty,
             promoCode = couponCode,
             onCodeChange = onCouponCodeChange,
             onApply = onApplyCouponClick
         )
 
-        if (!couponMessage.isNullOrBlank()) {
+        if (!couponMessage.isNullOrBlank()&& couponCode.isNotBlank()) {
             Text(
                 text = couponMessage,
                 color = if (isCouponApplied)
@@ -415,6 +419,7 @@ fun CartCostSection(
 
         Button(
             onClick = onContinueClick,
+            enabled =  !isCartEmpty ,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Continue to Purchase")
@@ -426,6 +431,6 @@ fun CartCostSection(
 @Composable
 private fun CartScreenPreview() {
     OutfitGoTheme {
-        CartScreen()
+        CartScreen(onCheckout = {})
     }
 }

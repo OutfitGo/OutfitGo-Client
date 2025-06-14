@@ -5,7 +5,6 @@ mutation CreateAddressMutation(
     $address1: String!
     $city: String!
     $country: String!
-    $phone: String
 ) {
     customerAddressCreate(
         customerAccessToken: $token
@@ -13,9 +12,12 @@ mutation CreateAddressMutation(
             firstName: $firstName
             lastName: $lastName
             address1: $address1
+            address2: "egypt"
             city: $city
             country: $country
-            phone: $phone
+            phone: "0100000"
+            province: $city
+            zip: "123"
         }
     ) {
         customerAddress {

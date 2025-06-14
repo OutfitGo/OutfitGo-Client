@@ -6,7 +6,7 @@ mutation UpdateAddress(
     $address1: String!
     $city: String!
     $country: String
-    $phone: String) {
+    ) {
     customerAddressUpdate(
         customerAccessToken: $token,
         id: $addressId,
@@ -14,9 +14,12 @@ mutation UpdateAddress(
             firstName: $firstName
             lastName: $lastName
             address1: $address1
+            address2: "egypt"
             city: $city
             country: $country
-            phone: $phone
+            phone: "010000"
+            province: $city
+            zip: "123"
         }
     ) {
         customerAddress {

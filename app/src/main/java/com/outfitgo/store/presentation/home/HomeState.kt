@@ -13,5 +13,6 @@ data class HomeState(
     val latestProductsLoadingError: String? = null,
     val latestProductsEndReached: Boolean = false,
     val latestProducts:List<Product> = emptyList<Product>(),
-    val coupons:List<Coupon> = emptyList()
+    val coupons:List<Coupon> = emptyList(),
+    val isCouponsLoading:Boolean = false
 )

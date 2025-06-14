@@ -68,8 +68,7 @@ class AddressRemoteDataSourceImpl @Inject constructor(private val client: Apollo
                 address.lastName,
                 address.line,
                 address.city,
-                Optional.present(""),
-                Optional.present("")
+                Optional.present("egypt")
             )
         ).execute()
         if (response.hasErrors()) {
