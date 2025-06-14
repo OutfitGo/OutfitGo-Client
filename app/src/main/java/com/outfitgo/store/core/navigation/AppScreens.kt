@@ -89,6 +89,12 @@ data class MapPickRoute(
 )
 
 @Serializable
+data class CheckoutRoute(val checkoutUrl: String)
+
+@Serializable
+object ConfirmOrderRoute
+
+@Serializable
 object SearchRoute
 
 @Serializable
