@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Login
 import androidx.compose.material.icons.filled.Email
@@ -44,6 +45,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
@@ -124,12 +127,15 @@ fun LoginScreen(
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = stringResource(R.string.email)) },
                 singleLine = true,
                 supportingText = {
-                    Text(
-                        state.emailErrorMsg,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if(state.emailErrorMsg.isNotBlank()) {
+                        Text(
+                            state.emailErrorMsg,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
             )
 
             OutlinedTextField(
@@ -140,10 +146,12 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 supportingText = {
-                    Text(
-                        state.passwordErrorMsg,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if (state.passwordErrorMsg.isNotBlank()) {
+                        Text(
+                            state.passwordErrorMsg,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 },
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = stringResource(R.string.password)) },
                 trailingIcon = {
@@ -154,7 +162,8 @@ fun LoginScreen(
                         )
                     }
                 },
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done)
             )
 
             Button(
