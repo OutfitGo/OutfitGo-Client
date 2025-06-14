@@ -53,7 +53,8 @@ class CartViewModel @Inject constructor(
                             "Invalid Coupon"
                         },
                         cartCost = response.cost ?: Cost("0.0"),
-                        isLoading = false
+                        isLoading = false,
+                        checkoutUrl = response.checkoutUrl
                     )
                 }
             } catch (e: Exception) {

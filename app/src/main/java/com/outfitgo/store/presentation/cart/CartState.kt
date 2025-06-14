@@ -5,6 +5,7 @@ import com.outfitgo.store.domain.model.cart.Cost
 
 data class CartState(
     val cartItems: List<CartItem> = emptyList(),
+    val checkoutUrl: String="",
     val isLoading: Boolean = false,
     val coupon: String = "",
     val couponMessage: String? = null,

@@ -23,7 +23,8 @@ fun GetCartQuery.Cart.toDomain(): Cart {
         buyerIdentity = buyerIdentity.toDomain(),
         items = lines.edges.map { it.node.toDomain() },
         discountCode = discountCodes?.firstOrNull()?.toDomain() ?: DiscountCode("", false),
-        cost = cost?.totalAmount?.toDomain() ?: Cost("")
+        cost = cost?.totalAmount?.toDomain() ?: Cost(""),
+        checkoutUrl = checkoutUrl.toString()
     )
 }
 
@@ -74,7 +75,7 @@ fun AddBuyerToCartMutation.BuyerIdentity.toDomain(): BuyerIdentity {
 }
 
 fun ApplyCouponToCartMutation.Cart.toDomain(): Cart {
-    return Cart(id, null, null, null, this.discountCodes[0].toDomain(), this.cost.toDomain())
+    return Cart(id, null, null, null, this.discountCodes[0].toDomain(), this.cost.toDomain(),"")
 }
 
 fun ApplyCouponToCartMutation.Cost.toDomain(): Cost {
@@ -86,7 +87,7 @@ fun ApplyCouponToCartMutation.DiscountCode.toDomain(): DiscountCode {
 }
 
 fun UpdateCartLineQuantityMutation.Cart.toDomain(): Cart {
-    return Cart(id, null, null, null, null, this.cost.toDomain())
+    return Cart(id, null, null, null, null, this.cost.toDomain(),"")
 }
 
 fun UpdateCartLineQuantityMutation.Cost.toDomain(): Cost {
@@ -94,7 +95,7 @@ fun UpdateCartLineQuantityMutation.Cost.toDomain(): Cost {
 }
 
 fun AddItemToCartMutation.Cart.toDomain(): Cart {
-    return Cart(null, null, null, null, null, this.cost.toDomain())
+    return Cart(null, null, null, null, null, this.cost.toDomain(),"")
 }
 
 fun AddItemToCartMutation.Cost.toDomain(): Cost {
@@ -102,7 +103,7 @@ fun AddItemToCartMutation.Cost.toDomain(): Cost {
 }
 
 fun RemoveItemFromCartMutation.Cart.toDomain():Cart {
-    return Cart(null, null, null, null, null, this.cost.toDomain())
+    return Cart(null, null, null, null, null, this.cost.toDomain(),"")
 }
 fun RemoveItemFromCartMutation.Cost.toDomain():Cost{
     return Cost("${this.totalAmount.amount}")

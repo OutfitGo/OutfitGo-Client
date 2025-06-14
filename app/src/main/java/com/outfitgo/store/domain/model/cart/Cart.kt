@@ -6,8 +6,8 @@ data class Cart(
     val buyerIdentity: BuyerIdentity?,
     val items: List<CartItem>?,
     val discountCode: DiscountCode?,
-    val cost: Cost?
-
+    val cost: Cost?,
+    val checkoutUrl:String
 )
 
 data class BuyerIdentity(
