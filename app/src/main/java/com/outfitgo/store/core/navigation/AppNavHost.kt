@@ -17,10 +17,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.outfitgo.store.domain.model.Address
 import com.outfitgo.store.domain.model.ReviewUtils
 import com.outfitgo.store.presentation.address.AddAddressScreen
 import com.outfitgo.store.domain.model.order.Order
+import com.outfitgo.store.presentation.aboutus.AboutUsScreen
 import com.outfitgo.store.presentation.brandproducts.BrandProductsScreen
 import com.outfitgo.store.presentation.cart.CartScreen
 import com.outfitgo.store.presentation.categories.CategoriesScreen
@@ -33,6 +33,7 @@ import com.outfitgo.store.presentation.orders.OrdersScreen
 import com.outfitgo.store.presentation.pending.PendingScreen
 import com.outfitgo.store.presentation.productdetails.ProductDetailsViewModel
 import com.outfitgo.store.presentation.productdetails.ReviewsScreen
+import com.outfitgo.store.presentation.profile.ProfileScreen
 import com.outfitgo.store.presentation.register.RegisterScreen
 import com.outfitgo.store.presentation.search.SearchScreen
 import com.outfitgo.store.presentation.address.AddressScreen
@@ -45,7 +46,6 @@ import com.outfitgo.store.presentation.settings.view.SettingsScreen
 import com.outfitgo.store.presentation.splash.OutfitGoSplashScreen
 import com.outfitgo.store.presentation.wishlist.WishlistScreen
 import kotlinx.serialization.json.Json
-
 
 @Composable
 fun AppNavHost(
@@ -90,6 +90,9 @@ fun AppNavHost(
                     navController.navigate(ProductDetailsRoute(it.id))
                 }, onNavigateToSearchScreen = {
                     navController.navigate(SearchRoute)
+                },
+                onNavigateToSettingsScreen = {
+                    navController.navigate(SettingsRoute)
                 }
             )
         }
@@ -291,7 +294,6 @@ fun AppNavHost(
                 },
                 onNavigateUp = {
                     navController.popBackStack()
-
                 }
             )
         }
@@ -300,6 +302,9 @@ fun AppNavHost(
             OrdersScreen(
                 onNavigateUp = {
                     navController.navigateUp()
+                },
+                onNavigateToLogin = {
+                    navController.navigate(LoginRoute)
                 },
                 onNavigateToOrderDetails = { order ->
                     val orderJson = Json.encodeToString(order)
@@ -434,7 +439,39 @@ fun AppNavHost(
             )
         }
 
+        composable<ProfileRoute> {
+            ProfileScreen(
+                modifier = Modifier.fillMaxSize(),
+                onAboutUsClicked = {
+                    navController.navigate(AboutUsRoute)
+                },
+                onAddressesClicked = {
+                    navController.navigate(AddressRoute)
+                },
+                onOrdersClicked = {
+                    navController.navigate(OrdersRoute)
+                },
+                onSettingsClicked = {
+                    navController.navigate(SettingsRoute)
+                },
+                onWishlistClicked = {
+                    navController.navigate(WishlistRoute)
+                },
+                onLogoutSuccess = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(HomeRoute) { inclusive = true }
+                    }
+                },
+                onLoginClicked = {
+                    navController.navigate(LoginRoute)
+                }
+            )
+        }
+
+        composable<AboutUsRoute> {
+            AboutUsScreen(
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
-
-
 }

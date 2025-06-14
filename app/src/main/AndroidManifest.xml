@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OutfitGo"
         tools:targetApi="31">
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
@@ -22,7 +23,6 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.OutfitGo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
