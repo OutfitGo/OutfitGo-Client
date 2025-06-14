@@ -4,6 +4,7 @@ query GetCouponsQuery {
             node {
                 discount {
                     ... on DiscountCodeBasic {
+                        summary
                         codes(first: 5) {
                             edges {
                                 node {

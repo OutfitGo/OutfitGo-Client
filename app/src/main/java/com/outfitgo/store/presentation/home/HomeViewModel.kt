@@ -146,9 +146,13 @@ class HomeViewModel @Inject constructor(
 
     private fun getCoupons() {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isCouponsLoading = true) }
-            val coupons = getCouponsUseCase.execute()
-            _uiState.update { it.copy(coupons = coupons, isCouponsLoading = false) }
+            try {
+                _uiState.update { it.copy(isCouponsLoading = true) }
+                val coupons = getCouponsUseCase.execute()
+                _uiState.update { it.copy(coupons = coupons, isCouponsLoading = false) }
+            }catch (e:Exception){
+                Log.d("TAG", "getCoupons: ${e.message}")
+            }
         }
     }
 

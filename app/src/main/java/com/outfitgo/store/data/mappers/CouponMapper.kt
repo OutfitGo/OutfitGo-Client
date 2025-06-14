@@ -4,8 +4,9 @@ import com.outfitgo.store.admin.GetCouponsQuery
 import com.outfitgo.store.domain.model.Coupon
 
 fun GetCouponsQuery.Edge.toCoupons(): List<Coupon> {
+    val summary= this.node.discount.onDiscountCodeBasic?.summary?:""
     val discount = this.node.discount.onDiscountCodeBasic ?: return emptyList()
     return discount.codes.edges
         .map { it.node.code }
-        .map { Coupon(code = it) }
+        .map { Coupon(code = it, summary = summary) }
 }
