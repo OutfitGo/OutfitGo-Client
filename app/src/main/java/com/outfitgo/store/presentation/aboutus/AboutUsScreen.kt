@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,7 +71,10 @@ fun AboutUsScreen(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(8.dp)
         ) {
-            items(team) { member ->
+            item(span = {GridItemSpan(2)}) {
+                Text("OutfitGo Team", Modifier.fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.displaySmall)
+            }
+            items(team.take(team.size-1)) { member ->
                 TeamMemberCard(
                     teamMember = member,
                     modifier = Modifier
@@ -80,6 +84,22 @@ fun AboutUsScreen(
                     onLinkedInClicked = onLinkedInClicked
                 )
             }
+
+            item(span = {GridItemSpan(2)}) {
+                Text("With Our Supervisor", Modifier.fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.displaySmall)
+            }
+
+            items(listOf(team.last())) {
+                TeamMemberCard(
+                    teamMember = it,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    onGithubClicked = onGithubClicked,
+                    onLinkedInClicked = onLinkedInClicked
+                )
+            }
+
         }
     }
 

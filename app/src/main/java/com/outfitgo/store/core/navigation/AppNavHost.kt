@@ -478,7 +478,7 @@ fun AppNavHost(
                 team = listOf(
                     TeamMember(
                         name = "Mahmoud Ewiida",
-                        imgRes = R.drawable.boody,
+                        imgRes = R.drawable.ewida,
                         linkedIn = "https://www.linkedin.com/in/mahmoudewida/",
                         github = "https://github.com/3wiida"
                     ),
