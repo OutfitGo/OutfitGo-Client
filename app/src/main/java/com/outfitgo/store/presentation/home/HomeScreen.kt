@@ -1,25 +1,32 @@
 package com.outfitgo.store.presentation.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.outfitgo.store.R
 import com.outfitgo.store.domain.model.product.Product
+import com.outfitgo.store.presentation.components.ProductItem
 import com.outfitgo.store.presentation.home.components.BrandsSection
 import com.outfitgo.store.presentation.home.components.CouponAdsSection
 import com.outfitgo.store.presentation.home.components.HomeHeaderBar
-import com.outfitgo.store.presentation.home.components.NewArrivalSection
+import com.outfitgo.store.presentation.home.components.ProductsPageLoadingState
 
 @Composable
 fun HomeScreen(
@@ -61,8 +68,9 @@ private fun HomeScreenContent(
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.background)
             .padding(all = 24.dp)
-            .verticalScroll(rememberScrollState())
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
         HomeHeaderBar(
             onSearchClicked = {
                 onEvent(HomeIntent.GoToSearch)
@@ -72,47 +80,63 @@ private fun HomeScreenContent(
             }
         )
 
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        CouponAdsSection(
-            isLoading = homeState.isCouponsLoading,
-            coupons = homeState.coupons
-        )
-
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        BrandsSection(
-            brands = homeState.brands,
-            isLoading = homeState.isBrandsLoading,
-            onBrandClicked = { brand ->
-                onEvent(HomeIntent.GoToBrandProducts(brand.name))
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item(
+                span = { GridItemSpan(2) }
+            ) {
+                CouponAdsSection(
+                    isLoading = homeState.isCouponsLoading,
+                    coupons = homeState.coupons
+                )
             }
-        )
 
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        NewArrivalSection(
-            products = homeState.latestProducts,
-            isLoading = homeState.isLatestProductsLoading,
-            isEndReached = homeState.latestProductsEndReached,
-            onRequestNextProducts = {
-                onEvent(HomeIntent.GetNextLatestProducts)
-            },
-            onProductClicked = {
-                onEvent(HomeIntent.GoToProductDetails(it))
+            item(
+                span = { GridItemSpan(2) }
+            ) {
+                BrandsSection(
+                    brands = homeState.brands,
+                    isLoading = homeState.isBrandsLoading,
+                    onBrandClicked = { brand ->
+                        onEvent(HomeIntent.GoToBrandProducts(brand.name))
+                    }
+                )
             }
-        )
+
+            item(
+                span = { GridItemSpan(2) }
+            ){
+                Text(
+                    text = stringResource(R.string.new_arrival),
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            }
+
+            itemsIndexed(
+                items = homeState.latestProducts
+            ) { index, product ->
+                if (index >= homeState.latestProducts.size - 1 && !homeState.latestProductsEndReached && !homeState.isLatestProductsLoading) {
+                    onEvent(HomeIntent.GetNextLatestProducts)
+                }
+
+                ProductItem(
+                    product = product,
+                    onProductClicked = {
+                        onEvent(HomeIntent.GoToProductDetails(it))
+                    }
+                )
+            }
+
+            if (homeState.isLatestProductsLoading) {
+                items(count = 4) {
+                    ProductsPageLoadingState()
+                }
+            }
+        }
     }
-}
-
-@Preview
-@Composable
-private fun HomeScreenPreview() {
-    //HomeScreenContent()
 }

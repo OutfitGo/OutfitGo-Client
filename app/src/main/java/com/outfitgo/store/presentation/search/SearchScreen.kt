@@ -29,10 +29,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
-import com.outfitgo.store.presentation.brandproducts.components.ProductsPageLoadingState
 import com.outfitgo.store.presentation.brandproducts.components.ProductsSearchBar
 import com.outfitgo.store.presentation.components.EmptyState
 import com.outfitgo.store.presentation.components.ProductItem
+import com.outfitgo.store.presentation.home.components.ProductsPageLoadingState
 
 private const val TAG = "SearchScreen"
 @Composable
@@ -56,7 +56,6 @@ fun SearchScreen(
         searchState = searchState.value,
         modifier = modifier.padding(horizontal = 16.dp)
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
