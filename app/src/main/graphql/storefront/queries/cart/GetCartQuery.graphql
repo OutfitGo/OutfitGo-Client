@@ -37,9 +37,18 @@ query GetCartQuery($cartId:ID!){
             applicable
         }
         cost {
+            subtotalAmount {
+                amount
+            }
+
             totalAmount {
                 amount
                 currencyCode
+            }
+        }
+        discountAllocations {
+            discountedAmount {
+                amount
             }
         }
     }

@@ -8,7 +8,15 @@ mutation RemoveItemFromCartMutation($cartId:ID!,$lineId:ID!){
         cart {
             id
             cost {
+                subtotalAmount {
+                    amount
+                }
                 totalAmount {
+                    amount
+                }
+            }
+            discountAllocations {
+                discountedAmount {
                     amount
                 }
             }

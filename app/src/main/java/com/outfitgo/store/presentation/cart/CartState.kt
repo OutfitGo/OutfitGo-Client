@@ -10,6 +10,6 @@ data class CartState(
     val coupon: String = "",
     val couponMessage: String? = null,
     val isCouponApplied: Boolean = false,
-    val cartCost: Cost = Cost("0.0"),
+    val cartCost: Cost = Cost("0.0","0.0","0.0"),
     val error:String? = null
 )
