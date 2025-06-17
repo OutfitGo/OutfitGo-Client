@@ -1,5 +1,6 @@
 package com.outfitgo.store.data.datasource.remote.cart
 
+import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.outfitgo.store.data.mappers.toDomain
 import com.outfitgo.store.domain.model.cart.Cart
@@ -64,6 +65,7 @@ class CartRemoteDataSourceImpl @Inject constructor(
         val response =
             remoteClient.mutation(AddItemToCartMutation(cartId, quantity, productVariantId))
                 .execute()
+        Log.d("``TAG``", "addItemToCartResponse :${response.errors?.get(0)?.message} ")
         if (response.hasErrors()) {
             throw Exception(response.errors?.first()?.message)
         }
@@ -72,7 +74,7 @@ class CartRemoteDataSourceImpl @Inject constructor(
             throw Exception("Failed to Get Cart")
         }
 
-        return data.cartLinesAdd.cart.cost.toDomain()
+        return data.cartLinesAdd.cart.toDomain()
     }
 
     override suspend fun removeItemFromCart(cartId: String, lineId: String): Cost {
@@ -87,7 +89,7 @@ class CartRemoteDataSourceImpl @Inject constructor(
             throw Exception("Failed to Get Cart")
         }
 
-        return data.cartLinesRemove.cart.cost.toDomain()
+        return data.cartLinesRemove.cart.toDomain()
     }
 
     override suspend fun updateCartLineQuantity(
@@ -106,7 +108,7 @@ class CartRemoteDataSourceImpl @Inject constructor(
             throw Exception("Failed to Get Cart")
         }
         // only it will update the cost
-        return data.cartLinesUpdate.cart.cost.toDomain()
+        return data.cartLinesUpdate.cart.toDomain()
     }
 
     override suspend fun applyCouponToCart(cartId: String, coupon: String): Cart {

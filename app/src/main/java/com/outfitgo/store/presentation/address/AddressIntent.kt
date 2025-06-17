@@ -9,4 +9,5 @@ sealed interface AddressIntent {
     data class deleteAddress(val id:String): AddressIntent
     data class updateAddress(val address: Address):AddressIntent
     data class updateDefaultAddress(val addressId:String):AddressIntent
+    object getCities:AddressIntent
 }
