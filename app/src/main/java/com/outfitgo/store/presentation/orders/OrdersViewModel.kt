@@ -1,6 +1,5 @@
 package com.outfitgo.store.presentation.orders
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const.PAGE_SIZE
@@ -11,9 +10,7 @@ import com.outfitgo.store.presentation.util.paging.DefaultPaginator
 import com.outfitgo.store.presentation.util.paging.Paginator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
