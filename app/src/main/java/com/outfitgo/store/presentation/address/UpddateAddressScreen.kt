@@ -31,9 +31,15 @@ fun UpdateAddressScreen(
     var firstName by remember { mutableStateOf(addressFirstName) }
     var lastName by remember { mutableStateOf(addressLastName) }
     var addressLine by remember { mutableStateOf(lineFromMap ?: addressLine) }
-    var city by remember { mutableStateOf(cityFromMap ?: addressCity) }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCity by remember { mutableStateOf(cityFromMap ?: "Cairo") }
+    val state by viewModel.state.collectAsState()
     var isDefault by remember { mutableStateOf(addressIsDefault) }
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.processIntent(AddressIntent.getCities)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
@@ -97,12 +103,40 @@ fun UpdateAddressScreen(
                 label = { Text("Address Line") },
                 modifier = Modifier.fillMaxWidth()
             )
-            OutlinedTextField(
-                value = city,
-                onValueChange = { city = it },
-                label = { Text("City") },
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded },
                 modifier = Modifier.fillMaxWidth()
-            )
+            ) {
+                OutlinedTextField(
+                    value = selectedCity,
+                    onValueChange = { selectedCity = it },
+                    readOnly = true,
+                    label = { Text("City") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                    },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    containerColor = MaterialTheme.colorScheme.background,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    state.cities.forEach { cityOption ->
+                        DropdownMenuItem(
+                            text = { Text(cityOption) },
+                            onClick = {
+                                selectedCity = cityOption
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
 
             TextButton(
                 onClick = onPickFromMap,
@@ -125,7 +159,7 @@ fun UpdateAddressScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             val isFormValid = firstName.isNotBlank() && lastName.isNotBlank() &&
-                    addressLine.isNotBlank() && city.isNotBlank()
+                    addressLine.isNotBlank() && selectedCity.isNotBlank()
             Button(
                 onClick = {
                     viewModel.processIntent(
@@ -135,7 +169,7 @@ fun UpdateAddressScreen(
                                 firstName,
                                 lastName,
                                 addressLine,
-                                city,
+                                selectedCity,
                                 isDefault
                             )
                         )
