@@ -6,7 +6,6 @@ import com.outfitgo.store.domain.model.product.Product
 import com.outfitgo.store.domain.repository.wishilst.WishlistRepository
 import javax.inject.Inject
 
-private const val TAG = "WishlistRepositoryImpl"
 
 class WishlistRepositoryImpl @Inject constructor (
     private val remoteDataSource: WishlistRemoteDataSource
@@ -15,7 +14,7 @@ class WishlistRepositoryImpl @Inject constructor (
         userId: String,
         product: Product
     ) {
-        Log.i(TAG, "addProduct: Started")
+
         remoteDataSource.addProduct(userId, product)
     }
 
