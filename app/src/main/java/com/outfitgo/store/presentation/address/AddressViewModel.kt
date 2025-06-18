@@ -64,6 +64,8 @@ class AddressViewModel @Inject constructor(
             is AddressIntent.updateDefaultAddress -> {
                 updateDefaultAddress(intent.addressId)
             }
+
+            AddressIntent.getCities -> getCities()
         }
     }
 
@@ -138,5 +140,42 @@ class AddressViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun getCities() {
+        val cityList = listOf(
+            "Cairo",
+            "Giza",
+            "Alexandria",
+            "Shubra El-Kheima",
+            "Port Said",
+            "Suez",
+            "Luxor",
+            "Asyut",
+            "Mansoura",
+            "Tanta",
+            "Ismailia",
+            "Faiyum",
+            "Zagazig",
+            "Aswan",
+            "Damietta",
+            "Damanhur",
+            "Beni Suef",
+            "Hurghada",
+            "Qena",
+            "Sohag",
+            "Minya",
+            "Mallawi",
+            "Kafr El Sheikh",
+            "Arish",
+            "Banha",
+            "October 6 City",
+            "Obour City",
+            "New Cairo",
+            "Nasr City",
+            "Helwan"
+        )
+
+        _state.update { it.copy(cities = cityList) }
     }
 }

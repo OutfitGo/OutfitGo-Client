@@ -3,6 +3,7 @@ package com.outfitgo.store.presentation.mappiker.commponets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,6 +11,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -23,33 +27,51 @@ import com.outfitgo.store.core.util.MapUtil
 fun PickingMap(
     markerState: MarkerState,
     cameraPositionState: CameraPositionState,
-    onMapClick: (String,String) -> Unit
+    onMapClick: (String, String) -> Unit
 ) {
     var placeName by remember { mutableStateOf("") }
     var cityName by remember { mutableStateOf("") }
     val context = LocalContext.current
 
+    val egyptBounds = LatLngBounds(
+        LatLng(22.0, 24.7),
+        LatLng(31.7, 36.9)
+    )
+
+    LaunchedEffect(Unit) {
+        cameraPositionState.move(
+            CameraUpdateFactory.newLatLngZoom(
+                LatLng(26.8206, 30.8025),
+                5.8f
+            )
+        )
+    }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
-        properties = MapProperties(mapType = MapType.HYBRID),
+        properties = MapProperties(
+            mapType = MapType.HYBRID,
+            latLngBoundsForCameraTarget = egyptBounds
+        ),
         uiSettings = MapUiSettings().copy(zoomControlsEnabled = false),
         onMapClick = { newPosition ->
-            markerState.position = newPosition
-            placeName = MapUtil.getLocationAddressLine(
-                context = context,
-                latitude = markerState.position.latitude,
-                longitude = markerState.position.longitude
-            )?.getAddressLine(0) ?: "Unknown Place"
+            if (egyptBounds.contains(newPosition)) {
+                markerState.position = newPosition
+                placeName = MapUtil.getLocationAddressLine(
+                    context = context,
+                    latitude = markerState.position.latitude,
+                    longitude = markerState.position.longitude
+                )?.getAddressLine(0) ?: "Unknown Place"
 
-            cityName = MapUtil.getLocationAddressLine(
-                context = context,
-                latitude = markerState.position.latitude,
-                longitude = markerState.position.longitude
-            )?.locality ?: "Unknown Place"
+                cityName = MapUtil.getLocationAddressLine(
+                    context = context,
+                    latitude = markerState.position.latitude,
+                    longitude = markerState.position.longitude
+                )?.locality ?: "Unknown Place"
 
-            markerState.showInfoWindow()
-            onMapClick(placeName,cityName)
+                markerState.showInfoWindow()
+                onMapClick(placeName, cityName)
+            }
         }
     ) {
         MarkerInfoWindowContent(

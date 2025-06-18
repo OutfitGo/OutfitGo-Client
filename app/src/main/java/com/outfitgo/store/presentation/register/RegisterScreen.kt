@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Login
@@ -43,6 +44,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -165,12 +169,15 @@ fun RegisterScreenContent(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
-                    Text(
-                        state.firstNameErrorMsg,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if(state.firstNameErrorMsg.isNotBlank()) {
+                        Text(
+                            state.firstNameErrorMsg,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 },
-                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.first_name)) }
+                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.first_name)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             )
 
             OutlinedTextField(
@@ -182,12 +189,15 @@ fun RegisterScreenContent(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
-                    Text(
-                        state.lastNameErrorMsg,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if (state.lastNameErrorMsg.isNotBlank()) {
+                        Text(
+                            state.lastNameErrorMsg,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 },
-                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.last_name)) }
+                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = stringResource(R.string.last_name)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next)
             )
 
             OutlinedTextField(
@@ -199,12 +209,15 @@ fun RegisterScreenContent(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
-                    Text(
-                        state.emailErrorMsg,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if(state.emailErrorMsg.isNotBlank()) {
+                        Text(
+                            state.emailErrorMsg,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 },
-                leadingIcon = { Icon(Icons.Outlined.Mail, contentDescription = stringResource(R.string.email)) }
+                leadingIcon = { Icon(Icons.Outlined.Mail, contentDescription = stringResource(R.string.email)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
             )
 
             OutlinedTextField(
@@ -216,10 +229,12 @@ fun RegisterScreenContent(
                     .fillMaxWidth()
                     .padding(vertical = 8.dp, horizontal = 16.dp),
                 supportingText = {
-                    Text(
-                        state.passwordErrorMsg,
-                        color = MaterialTheme.colorScheme.error
-                    )
+                    if(state.passwordErrorMsg.isNotBlank()) {
+                        Text(
+                            state.passwordErrorMsg,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                 },
                 leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = stringResource(R.string.password)) },
                 trailingIcon = {
@@ -230,7 +245,8 @@ fun RegisterScreenContent(
                         )
                     }
                 },
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation()
+                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Done)
             )
 
             Button(

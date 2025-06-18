@@ -22,8 +22,13 @@ fun GetCartQuery.Cart.toDomain(): Cart {
         totalQuantity = totalQuantity,
         buyerIdentity = buyerIdentity.toDomain(),
         items = lines.edges.map { it.node.toDomain() },
-        discountCode = discountCodes?.firstOrNull()?.toDomain() ?: DiscountCode("", false),
-        cost = cost?.totalAmount?.toDomain() ?: Cost(""),
+        discountCode = discountCodes.firstOrNull()?.toDomain() ?: DiscountCode("", false),
+        cost = Cost(
+            totalAmount = cost.totalAmount.amount.toString(),
+            subtotalAmount = cost.subtotalAmount.amount.toString(),
+            discountedAmount = discountAllocations.sumOf { it.discountedAmount.amount.toString().toDouble() }.toString() ?: "0"
+
+        ),
         checkoutUrl = checkoutUrl.toString()
     )
 }
@@ -44,7 +49,12 @@ fun GetCartQuery.Node.toDomain(): CartItem {
     return CartItem(
         id = id,
         quantity = quantity,
-        merchandise = (merchandise as? GetCartQuery.Merchandise)?.toDomain() ?: Merchandise("", "","","")
+        merchandise = (merchandise as? GetCartQuery.Merchandise)?.toDomain() ?: Merchandise(
+            "",
+            "",
+            "",
+            ""
+        )
     )
 }
 
@@ -52,8 +62,8 @@ fun GetCartQuery.Merchandise.toDomain(): Merchandise {
     return Merchandise(
         title = onProductVariant?.title ?: "",
         price = "${onProductVariant?.price?.amount ?: "0.0"}",
-        img = "${onProductVariant?.product?.featuredImage?.url?: ""}",
-        variantId = onProductVariant?.id?: ""
+        img = "${onProductVariant?.product?.featuredImage?.url ?: ""}",
+        variantId = onProductVariant?.id ?: ""
     )
 }
 
@@ -64,47 +74,54 @@ fun GetCartQuery.DiscountCode.toDomain(): DiscountCode {
     )
 }
 
-fun GetCartQuery.TotalAmount.toDomain(): Cost {
-    return Cost(
-        totalAmount = "$amount"
-    )
-}
 
 fun AddBuyerToCartMutation.BuyerIdentity.toDomain(): BuyerIdentity {
     return BuyerIdentity(Customer(this.customer?.email ?: ""))
 }
 
 fun ApplyCouponToCartMutation.Cart.toDomain(): Cart {
-    return Cart(id, null, null, null, this.discountCodes[0].toDomain(), this.cost.toDomain(),"")
+    return Cart(
+        id,
+        null,
+        null,
+        null,
+        this.discountCodes[0].toDomain(),
+        Cost(
+            "${this.cost.totalAmount.amount}",
+            "${this.cost.subtotalAmount.amount}",
+            "${this.discountAllocations.firstOrNull()?.discountedAmount?.amount?:0.00}"
+        ),
+        ""
+    )
 }
 
-fun ApplyCouponToCartMutation.Cost.toDomain(): Cost {
-    return Cost("${this.totalAmount.amount}")
-}
 
 fun ApplyCouponToCartMutation.DiscountCode.toDomain(): DiscountCode {
     return DiscountCode(this.code, this.applicable)
 }
 
-fun UpdateCartLineQuantityMutation.Cart.toDomain(): Cart {
-    return Cart(id, null, null, null, null, this.cost.toDomain(),"")
+
+fun UpdateCartLineQuantityMutation.Cart.toDomain(): Cost {
+    return Cost(
+        "${this.cost.totalAmount.amount}",
+        "${this.cost.subtotalAmount.amount}",
+        "${this.discountAllocations.firstOrNull()?.discountedAmount?.amount?:0.00}"
+    )
 }
 
-fun UpdateCartLineQuantityMutation.Cost.toDomain(): Cost {
-    return Cost("${this.totalAmount.amount}")
+
+fun AddItemToCartMutation.Cart.toDomain(): Cost {
+    return Cost(
+        "${this.cost.totalAmount.amount}",
+        "${this.cost.subtotalAmount.amount}",
+        "${this.discountAllocations.firstOrNull()?.discountedAmount?.amount?:0.00}"
+    )
 }
 
-fun AddItemToCartMutation.Cart.toDomain(): Cart {
-    return Cart(null, null, null, null, null, this.cost.toDomain(),"")
-}
-
-fun AddItemToCartMutation.Cost.toDomain(): Cost {
-    return Cost("${this.totalAmount.amount}")
-}
-
-fun RemoveItemFromCartMutation.Cart.toDomain():Cart {
-    return Cart(null, null, null, null, null, this.cost.toDomain(),"")
-}
-fun RemoveItemFromCartMutation.Cost.toDomain():Cost{
-    return Cost("${this.totalAmount.amount}")
+fun RemoveItemFromCartMutation.Cart.toDomain(): Cost {
+    return Cost(
+        "${this.cost.totalAmount.amount}",
+        "${this.cost.subtotalAmount.amount}",
+        "${this.discountAllocations.firstOrNull()?.discountedAmount?.amount?:0.00}"
+    )
 }

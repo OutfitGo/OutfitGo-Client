@@ -10,7 +10,15 @@ mutation ApplyCouponToCartMutation($cartId:ID!,$coupon:String!) {
                 applicable
             }
             cost{
+                subtotalAmount {
+                    amount
+                }
                 totalAmount{
+                    amount
+                }
+            }
+            discountAllocations {
+                discountedAmount {
                     amount
                 }
             }

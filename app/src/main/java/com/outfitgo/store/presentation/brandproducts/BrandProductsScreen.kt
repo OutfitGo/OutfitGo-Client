@@ -62,7 +62,7 @@ private fun BrandProductsScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.secondary)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(vertical = 24.dp, horizontal = 24.dp)
     ) {
         BrandProductsHeaderBar(
@@ -107,14 +107,4 @@ private fun BrandProductsScreenContent(
             )
         }
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun BrandProductsScreenPreview() {
-    BrandProductsScreenContent(
-        brand = "Nike",
-        state = BrandProductsState(),
-        onEvent = {}
-    )
 }

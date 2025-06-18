@@ -37,5 +37,7 @@ data class DiscountCode(
 )
 
 data class Cost(
-    val totalAmount: String
+    val totalAmount: String,
+    val subtotalAmount: String,
+    val discountedAmount: String
 )

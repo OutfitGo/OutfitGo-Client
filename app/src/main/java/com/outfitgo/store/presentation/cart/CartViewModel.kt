@@ -52,7 +52,7 @@ class CartViewModel @Inject constructor(
                         } else {
                             "Invalid Coupon"
                         },
-                        cartCost = response.cost ?: Cost("0.0"),
+                        cartCost = response.cost ?: Cost("0.0", "0.0", "0.0"),
                         isLoading = false,
                         checkoutUrl = response.checkoutUrl
                     )
@@ -130,7 +130,7 @@ class CartViewModel @Inject constructor(
                     it.copy(
                         couponMessage = "Coupon Applied",
                         isCouponApplied = true,
-                        cartCost = response.cost ?: Cost("0.0")
+                        cartCost = response.cost ?: Cost("0.0", "0.0", "0.0")
                     )
                 }
             } else {
@@ -144,8 +144,8 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    private fun removeItem(lineId: String){
-        viewModelScope.launch(Dispatchers.IO){
+    private fun removeItem(lineId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             val response = removeItemFromCartUseCase.execute(cartId, lineId)
             val updatedItems = _cartState.value.cartItems.filter { it.id != lineId }
             _cartState.update {
@@ -157,8 +157,8 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    private fun createOrder(){
-        viewModelScope.launch(Dispatchers.IO){
+    private fun createOrder() {
+        viewModelScope.launch(Dispatchers.IO) {
             val isOrderCreated = createOrderUseCase.execute(
                 cartItems = _cartState.value.cartItems,
                 shippingAddress = OrderShippingAddress( //TODO change this to the real address

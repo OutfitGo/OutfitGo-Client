@@ -9,19 +9,30 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.WifiOff
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -29,11 +40,17 @@ import androidx.navigation.compose.rememberNavController
 import com.outfitgo.store.core.navigation.AppNavHost
 import com.outfitgo.store.core.navigation.HomeRoute
 import com.outfitgo.store.core.navigation.topLevelRoutes
+import com.outfitgo.store.core.util.NetworkObserver
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var networkObserver: NetworkObserver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -43,53 +60,75 @@ class MainActivity : ComponentActivity() {
             val topLevelRouteNames = topLevelRoutes.map {  it.route::class.qualifiedName }
             val shouldShowBottomBar = currentDestination?.route in topLevelRouteNames
 
+            val isOnline by networkObserver.isOnline.collectAsStateWithLifecycle()
+
             OutfitGoTheme {
-                Scaffold(
-                    bottomBar = {
-                        var selectedIndex by remember { mutableIntStateOf(0) }
-                        AnimatedVisibility(
-                            visible = shouldShowBottomBar,
-                            enter = fadeIn(tween(600)) + slideInVertically(tween(600)),
-                            exit = fadeOut(tween(600)) + slideOutVertically(tween(600), targetOffsetY = {it/2})
-                        ) {
-                            BottomAppBar(
-                                containerColor = MaterialTheme.colorScheme.background,
+
+                if (isOnline) {
+                    Scaffold(
+                        bottomBar = {
+                            var selectedIndex by remember { mutableIntStateOf(0) }
+                            AnimatedVisibility(
+                                visible = shouldShowBottomBar,
+                                enter = fadeIn(tween(600)) + slideInVertically(tween(600)),
+                                exit = fadeOut(tween(600)) + slideOutVertically(
+                                    tween(600),
+                                    targetOffsetY = { it / 2 })
                             ) {
-                                topLevelRoutes.forEachIndexed { index,  topLevelRoute ->
-                                    NavigationBarItem(
-                                        selected = currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true,
-                                        icon = {
-                                            if(index == selectedIndex) {
-                                                Icon(imageVector = topLevelRoute.selectedIcon, contentDescription = topLevelRoute.title)
-                                            } else {
-                                                Icon(imageVector = topLevelRoute.unSelectedIcon, contentDescription = topLevelRoute.title)
-                                            }
-                                        },
-                                        onClick = {
-                                            selectedIndex = index
-                                            navController.navigate(topLevelRoute.route) {
-                                                popUpTo(HomeRoute)
-                                                launchSingleTop = true
-                                                restoreState = true
-                                            }
-                                        },
-                                        label = { Text(text = topLevelRoute.title) },
-                                        alwaysShowLabel = false
-                                    )
+                                BottomAppBar(
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                ) {
+                                    topLevelRoutes.forEachIndexed { index, topLevelRoute ->
+                                        NavigationBarItem(
+                                            selected = currentDestination?.hierarchy?.any {
+                                                it.hasRoute(
+                                                    topLevelRoute.route::class
+                                                )
+                                            } == true,
+                                            icon = {
+                                                if (index == selectedIndex) {
+                                                    Icon(
+                                                        imageVector = topLevelRoute.selectedIcon,
+                                                        contentDescription = topLevelRoute.title
+                                                    )
+                                                } else {
+                                                    Icon(
+                                                        imageVector = topLevelRoute.unSelectedIcon,
+                                                        contentDescription = topLevelRoute.title
+                                                    )
+                                                }
+                                            },
+                                            onClick = {
+                                                selectedIndex = index
+                                                navController.navigate(topLevelRoute.route) {
+                                                    popUpTo(HomeRoute)
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
+                                            },
+                                            label = { Text(text = topLevelRoute.title) },
+                                            alwaysShowLabel = false
+                                        )
+                                    }
                                 }
                             }
+
                         }
-
-
+                    ) { innerPadding ->
+                        AppNavHost(
+                            navController = navController,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                        )
                     }
-                ) { innerPadding ->
-                    AppNavHost(
-                        navController = navController,
-                        modifier = Modifier.fillMaxSize().padding(innerPadding)
-                    )
+                } else {
+                    NoNetworkScreen(Modifier.fillMaxSize())
                 }
             }
         }
 
     }
 }
+
+

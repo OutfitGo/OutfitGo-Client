@@ -203,4 +203,12 @@ dependencies {
     //Google Maps
     implementation (libs.maps.compose)
 
+    //MockK
+    testImplementation ("io.mockk:mockk-android:1.13.17")
+    testImplementation ("io.mockk:mockk-agent:1.13.17")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+    implementation ("org.jetbrains.kotlin:kotlin-test:2.0.0")
+
+    //Coroutine Test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 }

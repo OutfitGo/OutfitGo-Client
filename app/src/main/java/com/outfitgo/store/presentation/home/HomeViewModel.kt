@@ -61,6 +61,7 @@ class HomeViewModel @Inject constructor(
                     }else{
                         Const.cartId=it
                     }
+                    Log.d("``TAG``", "cartInit: Success ${Const.cartId}")
                 }
 
             }catch (e:Exception){

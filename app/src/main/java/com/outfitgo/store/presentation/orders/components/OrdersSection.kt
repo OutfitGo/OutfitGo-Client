@@ -29,9 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -41,12 +39,8 @@ import com.outfitgo.store.core.util.convertISODateToReadableDate
 import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.domain.model.order.OrderProduct
-import com.outfitgo.store.domain.model.product.Product
-import com.outfitgo.store.presentation.brandproducts.components.ProductsPageLoadingState
 import com.outfitgo.store.presentation.components.EmptyState
 import com.outfitgo.store.presentation.ui.theme.DottedShape
-import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
-import java.util.Locale
 
 @Composable
 fun OrdersSection(

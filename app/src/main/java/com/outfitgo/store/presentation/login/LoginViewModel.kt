@@ -57,7 +57,6 @@ class LoginViewModel @Inject constructor(
                     val user =
                         loginWithEmailAndPasswordUseCase(_state.value.email, _state.value.password)
                     user?.let {
-                        _effect.emit(LoginScreenEffect.DisplaySnack("Login Success: ${it.displayName}"))
                         _state.update { it.copy(isLoading = false) }
                         Const.isLoggedIn=true
                         _effect.emit(LoginScreenEffect.GoToHomeScreen)

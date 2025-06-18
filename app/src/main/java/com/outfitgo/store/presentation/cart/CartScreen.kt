@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -125,7 +126,7 @@ fun CartScreen(
                 },
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 200.dp)
+                    .padding(bottom = 250.dp)
             )
 
             CartCostSection(
@@ -364,7 +365,7 @@ fun CartItemQuantity(
 
 @Composable
 fun CartCostSection(
-    isCartEmpty:Boolean,
+    isCartEmpty: Boolean,
     cost: Cost,
     couponCode: String,
     isCouponApplied: Boolean,
@@ -390,13 +391,13 @@ fun CartCostSection(
             .padding(16.dp)
     ) {
         PromoCodeInput(
-            isCartEmpty=isCartEmpty,
+            isCartEmpty = isCartEmpty,
             promoCode = couponCode,
             onCodeChange = onCouponCodeChange,
             onApply = onApplyCouponClick
         )
 
-        if (!couponMessage.isNullOrBlank()&& couponCode.isNotBlank()) {
+        if (!couponMessage.isNullOrBlank() && couponCode.isNotBlank()) {
             Text(
                 text = couponMessage,
                 color = if (isCouponApplied)
@@ -405,6 +406,28 @@ fun CartCostSection(
             )
         }
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Sub total", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "${cost.subtotalAmount.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Discount", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "${cost.discountedAmount.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -419,7 +442,7 @@ fun CartCostSection(
 
         Button(
             onClick = onContinueClick,
-            enabled =  !isCartEmpty ,
+            enabled = !isCartEmpty,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Continue to Purchase")
