@@ -3,7 +3,7 @@ package com.outfitgo.store.presentation.util.auth
 import android.util.Patterns
 import com.outfitgo.store.domain.usecase.auth.ValidationResult
 
-private const val MIN_PASSWORD_LENGTH: Int = 5
+private const val MIN_PASSWORD_LENGTH: Int = 8
 
 fun String.isValidName(): ValidationResult {
     if (this.isBlank()) {
@@ -32,7 +32,7 @@ fun String.isValidPassword(): ValidationResult {
         return ValidationResult(false, "Password must be at least $MIN_PASSWORD_LENGTH characters long.")
     }
 
-    /*// Regex for at least one uppercase letter
+    // Regex for at least one uppercase letter
     if (!this.matches(Regex(".*[A-Z].*"))) {
         return ValidationResult(false, "Password must contain at least one uppercase letter.")
     }
@@ -52,7 +52,6 @@ fun String.isValidPassword(): ValidationResult {
     if (!this.matches(Regex(".*[!@#\$%^&*()\\-_=+\\|\\[{\\]};:'\",<.>/?`~].*"))) {
         return ValidationResult(false, "Password must contain at least one special character.")
     }
-*/
 
     // If all checks pass, the password is considered valid
     return ValidationResult(true)
