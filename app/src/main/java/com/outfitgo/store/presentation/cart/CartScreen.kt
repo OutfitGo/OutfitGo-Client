@@ -1,11 +1,11 @@
 package com.outfitgo.store.presentation.cart
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,13 +26,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,17 +54,20 @@ import com.outfitgo.store.domain.model.cart.CartItem
 import com.outfitgo.store.domain.model.cart.Cost
 import com.outfitgo.store.presentation.cart.components.PromoCodeInput
 import com.outfitgo.store.presentation.components.EmptyState
+import com.outfitgo.store.presentation.profile.components.UnAuthenticatedScreen
 import com.outfitgo.store.presentation.ui.theme.OutfitGoTheme
 
 @Composable
 fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
     onCheckout: (String)->Unit,
+    onLogIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val cartState = viewModel.cartState.collectAsStateWithLifecycle()
     val showRemoveDialog = remember { mutableStateOf(false) }
     val itemToRemove = remember { mutableStateOf("") }
+
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -100,7 +101,9 @@ fun CartScreen(
             }
         )
     }
-    if (cartState.value.isLoading) {
+    if (!cartState.value.isAuthrized) {
+        UnAuthenticatedScreen(onClickLogin = onLogIn)
+    }else if (cartState.value.isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
@@ -454,6 +457,6 @@ fun CartCostSection(
 @Composable
 private fun CartScreenPreview() {
     OutfitGoTheme {
-        CartScreen(onCheckout = {})
+//        CartScreen(onCheckout = {})
     }
 }

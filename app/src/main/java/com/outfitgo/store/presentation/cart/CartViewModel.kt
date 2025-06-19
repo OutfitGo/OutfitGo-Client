@@ -1,13 +1,13 @@
 package com.outfitgo.store.presentation.cart
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outfitgo.store.core.util.Const
 import com.outfitgo.store.domain.model.FinancialStatus
 import com.outfitgo.store.domain.model.cart.Cost
 import com.outfitgo.store.domain.model.order.OrderShippingAddress
+import com.outfitgo.store.domain.usecase.auth.IsUserLoggedInUseCase
 import com.outfitgo.store.domain.usecase.cart.ApplyCouponToCartUseCase
 import com.outfitgo.store.domain.usecase.cart.GetCartUseCase
 import com.outfitgo.store.domain.usecase.cart.RemoveItemFromCartUseCase
@@ -29,7 +29,8 @@ class CartViewModel @Inject constructor(
     private val applyCouponToCartUseCase: ApplyCouponToCartUseCase,
     private val removeItemFromCartUseCase: RemoveItemFromCartUseCase,
     private val updateCartLineQuantityUseCase: UpdateCartLineQuantityUseCase,
-    private val createOrderUseCase: CreateOrderUseCase
+    private val createOrderUseCase: CreateOrderUseCase,
+    private val isUserLoggedInUseCase: IsUserLoggedInUseCase
 ) : ViewModel() {
     private val _cartState: MutableStateFlow<CartState> = MutableStateFlow(CartState())
     val cartState = _cartState.asStateFlow()
@@ -38,34 +39,7 @@ class CartViewModel @Inject constructor(
     val effect = _effect.asSharedFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _cartState.update { it.copy(isLoading = true) }
-                val response = getCartUseCase.execute(cartId)
-                _cartState.update {
-                    it.copy(
-                        cartItems = response.items ?: emptyList(),
-                        coupon = response.discountCode?.code ?: "",
-                        isCouponApplied = response.discountCode?.applicable ?: false,
-                        couponMessage = if (response.discountCode?.applicable == true) {
-                            "Coupon Applied"
-                        } else {
-                            "Invalid Coupon"
-                        },
-                        cartCost = response.cost ?: Cost("0.0", "0.0", "0.0"),
-                        isLoading = false,
-                        checkoutUrl = response.checkoutUrl
-                    )
-                }
-            } catch (e: Exception) {
-                _cartState.update {
-                    it.copy(
-                        error = "${e.message}",
-                        isLoading = false
-                    )
-                }
-            }
-        }
+        getCart()
     }
 
     fun processIntent(intent: CartIntent) {
@@ -76,6 +50,42 @@ class CartViewModel @Inject constructor(
             is CartIntent.RemoveItem -> removeItem(intent.id)
             is CartIntent.UpdateCouponCode -> updateCoupon(intent.code)
             is CartIntent.Checkout -> createOrder()
+        }
+    }
+
+    private fun getCart(){
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isUserLoggedInUseCase.execute()){
+                try {
+                    _cartState.update { it.copy(isLoading = true) }
+                    val response = getCartUseCase.execute(cartId)
+                    _cartState.update {
+                        it.copy(
+                            cartItems = response.items ?: emptyList(),
+                            coupon = response.discountCode?.code ?: "",
+                            isCouponApplied = response.discountCode?.applicable ?: false,
+                            couponMessage = if (response.discountCode?.applicable == true) {
+                                "Coupon Applied"
+                            } else {
+                                "Invalid Coupon"
+                            },
+                            cartCost = response.cost ?: Cost("0.0", "0.0", "0.0"),
+                            isLoading = false,
+                            checkoutUrl = response.checkoutUrl
+                        )
+                    }
+                } catch (e: Exception) {
+                    _cartState.update {
+                        it.copy(
+                            error = "${e.message}",
+                            isLoading = false
+                        )
+                    }
+                }
+
+            } else{
+                _cartState.update{it.copy(isAuthrized=false)}
+            }
         }
     }
 
