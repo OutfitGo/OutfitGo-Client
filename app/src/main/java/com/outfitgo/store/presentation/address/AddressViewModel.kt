@@ -54,7 +54,7 @@ class AddressViewModel @Inject constructor(
             }
 
             is AddressIntent.AddNewAddress -> {
-                intent.run { addAddress(Address("", firstName, lastName, line, city, false)) }
+                intent.also { addAddress(Address("", it.firstName, it.lastName, it.line, it.city, false)) }
             }
 
             is AddressIntent.updateAddress -> {
