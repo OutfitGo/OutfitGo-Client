@@ -54,6 +54,7 @@ class CategoriesViewModelTest {
         assertThat(state.categories, `is`(mockCategories))
     }
 
+
     @OptIn(ExperimentalCoroutinesApi::class)
     class MainCoroutineRule(
         private val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
