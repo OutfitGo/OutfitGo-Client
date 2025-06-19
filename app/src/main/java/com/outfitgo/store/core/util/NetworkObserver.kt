@@ -75,6 +75,6 @@ class ConnectivityManagerNetworkObserver(
             // This scope should live as long as the application.
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             started = SharingStarted.WhileSubscribed(5000), // Keep active as long as there are collectors
-            initialValue = false // Or your desired initial value
+            initialValue = true // Or your desired initial value
         )
 }
