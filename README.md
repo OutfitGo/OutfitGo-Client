@@ -31,3 +31,5 @@
 
 ![](media/screenshots/client/20.jpg)
 
+![](media/screenshots/client/OutfitGo-team.jpg)
+
