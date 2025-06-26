@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.outfitgo.store.R
 import com.outfitgo.store.core.util.CurrencyExchange
+import com.outfitgo.store.core.util.toCurrency
 import com.outfitgo.store.domain.model.order.Order
 import com.outfitgo.store.domain.model.order.OrderShippingAddress
 import com.outfitgo.store.presentation.components.AppScreenHeader
@@ -136,7 +137,7 @@ fun OrderDetailsScreenContent(
                         )
 
                         Text(
-                            text = "${order.totalPrice} ${CurrencyExchange.currentCurrencyUnit}",
+                            text = "${order.totalPrice.toCurrency()} ${CurrencyExchange.currentCurrencyUnit}",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                             color = MaterialTheme.colorScheme.onBackground
                         )

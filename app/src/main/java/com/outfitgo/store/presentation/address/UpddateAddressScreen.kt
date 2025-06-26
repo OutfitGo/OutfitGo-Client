@@ -35,7 +35,7 @@ fun UpdateAddressScreen(
     var lastName by remember { mutableStateOf(addressLastName) }
     var addressLine by remember { mutableStateOf(lineFromMap ?: addressLine) }
     var expanded by remember { mutableStateOf(false) }
-    var selectedCity by remember { mutableStateOf(cityFromMap ?: "Cairo") }
+    var selectedCity by remember { mutableStateOf(cityFromMap ?: addressCity) }
     val state by viewModel.state.collectAsState()
     var isDefault by remember { mutableStateOf(addressIsDefault) }
     val context = LocalContext.current

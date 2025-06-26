@@ -89,7 +89,7 @@ fun ApplyCouponToCartMutation.Cart.toDomain(): Cart {
         Cost(
             "${this.cost.totalAmount.amount}",
             "${this.cost.subtotalAmount.amount}",
-            "${this.discountAllocations.firstOrNull()?.discountedAmount?.amount?:0.00}"
+            discountAllocations.sumOf { it.discountedAmount.amount.toString().toDouble() }.toString() ?: "0"
         ),
         ""
     )

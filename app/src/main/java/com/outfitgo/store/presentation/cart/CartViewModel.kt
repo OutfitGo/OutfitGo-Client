@@ -147,7 +147,8 @@ class CartViewModel @Inject constructor(
                 _cartState.update {
                     it.copy(
                         couponMessage = "Invalid Coupon",
-                        isCouponApplied = false
+                        isCouponApplied = false,
+                        cartCost = response.cost ?: Cost("0.0", "0.0", "0.0")
                     )
                 }
             }
