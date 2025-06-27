@@ -146,6 +146,9 @@ fun AppNavHost(
             CartScreen(
                 onCheckout = {
                     navController.navigate(CheckoutRoute(it))
+                },
+                onLogIn = {
+                    navController.navigate(LoginRoute)
                 }
             )
         }

@@ -11,5 +11,6 @@ data class CartState(
     val couponMessage: String? = null,
     val isCouponApplied: Boolean = false,
     val cartCost: Cost = Cost("0.0","0.0","0.0"),
-    val error:String? = null
+    val error:String? = null,
+    val isAuthrized: Boolean = true
 )

@@ -16,7 +16,7 @@ mutation CreateAddressMutation(
             city: $city
             country: $country
             phone: "0100000"
-            province: $city
+            province: "Giza"
             zip: "123"
         }
     ) {

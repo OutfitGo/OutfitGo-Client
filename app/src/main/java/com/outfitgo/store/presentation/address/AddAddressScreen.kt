@@ -1,5 +1,6 @@
 package com.outfitgo.store.presentation.address
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -150,6 +151,7 @@ fun AddAddressScreen(
                     addressLine.isNotBlank() && selectedCity.isNotBlank()
             Button(
                 onClick = {
+                    Log.d("``TAG``", "AddAddressScreen: $selectedCity")
                     viewModel.processIntent(
                         AddressIntent.AddNewAddress(
                             firstName = firstName,

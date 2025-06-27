@@ -47,24 +47,23 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomeState>(HomeState())
     val uiState = _uiState.asStateFlow()
 
-    private fun cartInit(){
-        viewModelScope.launch(Dispatchers.IO){
+    private fun cartInit() {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                getCartIdUseCase.execute().collect{
-                    if (it.isBlank()){
+                getCartIdUseCase.execute().collect {
+                    Log.d("``TAG``", "cartInit: before $it")
+                    if (it.isBlank() && isUserLoggedInUseCase.execute()) {
                         val cartId = createCartUseCase.execute()
-                        Const.cartId =cartId
+                        Const.cartId = cartId
                         saveCartIdUseCase.execute(cartId)
-                        if (isUserLoggedInUseCase.execute()){
-                            addBuyerToCartUseCase.execute(cartId)
-                        }
-                    }else{
-                        Const.cartId=it
+                        addBuyerToCartUseCase.execute(cartId)
+                    } else {
+                        Const.cartId = it
                     }
                     Log.d("``TAG``", "cartInit: Success ${Const.cartId}")
                 }
 
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.d("```TAG```", "cartInit: ${e.message}")
             }
         }
@@ -115,6 +114,7 @@ class HomeViewModel @Inject constructor(
             }
         }
     )
+
     init {
         getBrands()
         observeCurrencyAndRate()
@@ -151,7 +151,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { it.copy(isCouponsLoading = true) }
                 val coupons = getCouponsUseCase.execute()
                 _uiState.update { it.copy(coupons = coupons, isCouponsLoading = false) }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 Log.d("TAG", "getCoupons: ${e.message}")
             }
         }

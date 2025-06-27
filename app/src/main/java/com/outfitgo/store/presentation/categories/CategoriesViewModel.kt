@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
-    private val getCategoriesUseCase: GetCategoriesUseCase
+    private val getCategoriesUseCase: GetCategoriesUseCase,
 ): ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesState())
     val uiState = _uiState.asStateFlow()
@@ -23,7 +23,7 @@ class CategoriesViewModel @Inject constructor(
     }
 
     fun getCategories(){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 val categories = getCategoriesUseCase.execute()
                 _uiState.update {
