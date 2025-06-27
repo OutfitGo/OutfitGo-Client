@@ -90,7 +90,7 @@ fun WishlistItem(
                 Spacer(Modifier.height(8.dp))
                 // price
                 Text(
-                    "${product.price} ${CurrencyExchange.currentCurrencyUnit}",
+                    "${String.format("%.2f", (product.price.toDoubleOrNull() ?: 0.0) * CurrencyExchange.rate)} ${CurrencyExchange.currentCurrencyUnit}",
                     fontWeight = FontWeight.Bold
                 )
 
